@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinke.project.system.scanUpload.mapper.ScanUploadMapper">
+    
+    <resultMap type="ScanUpload" id="ScanUploadResult">
+        <result property="id"    column="id"    />
+        <result property="sanLink"    column="san_link"    />
+        <result property="validTime"    column="valid_time"    />
+        <result property="folderPath"    column="folder_path"    />
+        <result property="folderId"    column="folder_id"    />
+        <result property="userBusinessId"    column="user_business_id"    />
+        <result property="status"    column="status"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="businessId"    column="business_id"    />
+    </resultMap>
+	
+	<sql id="selectScanUploadVo">
+        select id, san_link, valid_time, folder_path, folder_id, user_business_id, status, create_time, update_time, business_id from sys_scan_upload
+    </sql>
+	
+    <select id="selectScanUploadList" parameterType="ScanUpload" resultMap="ScanUploadResult">
+        <include refid="selectScanUploadVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+             <if test="sanLink != null  and sanLink != '' "> and san_link = #{sanLink}</if>
+             <if test="validTime != null "> and valid_time >= #{validTime}</if>
+             <if test="folderPath != null  and folderPath != '' "> and folder_path = #{folderPath}</if>
+             <if test="folderId != null  and folderId != '' "> and folder_id = #{folderId}</if>
+             <if test="userBusinessId != null  and userBusinessId != '' "> and user_business_id = #{userBusinessId}</if>
+             <if test="status != null  and status != '' "> and status = #{status}</if>
+             <if test="createTime != null "> and create_time = #{createTime}</if>
+             <if test="updateTime != null "> and update_time = #{updateTime}</if>
+             <if test="businessId != null  and businessId != '' "> and business_id = #{businessId}</if>
+         </where>
+    </select>
+    
+    <select id="selectScanUploadById" parameterType="Integer" resultMap="ScanUploadResult">
+        <include refid="selectScanUploadVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertScanUpload" parameterType="ScanUpload" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_scan_upload
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="sanLink != null  and sanLink != ''  ">san_link,</if>
+			<if test="validTime != null  ">valid_time,</if>
+			<if test="folderPath != null  and folderPath != ''  ">folder_path,</if>
+			<if test="folderId != null  and folderId != ''  ">folder_id,</if>
+			<if test="userBusinessId != null  and userBusinessId != ''  ">user_business_id,</if>
+			<if test="status != null  and status != ''  ">status,</if>
+			<if test="createTime != null  ">create_time,</if>
+			<if test="updateTime != null  ">update_time,</if>
+			<if test="businessId != null  and businessId != ''  ">business_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="sanLink != null  and sanLink != ''  ">#{sanLink},</if>
+			<if test="validTime != null  ">#{validTime},</if>
+			<if test="folderPath != null  and folderPath != ''  ">#{folderPath},</if>
+			<if test="folderId != null  and folderId != ''  ">#{folderId},</if>
+			<if test="userBusinessId != null  and userBusinessId != ''  ">#{userBusinessId},</if>
+			<if test="status != null  and status != ''  ">#{status},</if>
+			<if test="createTime != null  ">#{createTime},</if>
+			<if test="updateTime != null  ">#{updateTime},</if>
+			<if test="businessId != null  and businessId != ''  ">#{businessId},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateScanUpload" parameterType="ScanUpload">
+        update sys_scan_upload
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="sanLink != null  and sanLink != ''  ">san_link = #{sanLink},</if>
+            <if test="validTime != null  ">valid_time = #{validTime},</if>
+            <if test="folderPath != null  and folderPath != ''  ">folder_path = #{folderPath},</if>
+            <if test="folderId != null  and folderId != ''  ">folder_id = #{folderId},</if>
+            <if test="userBusinessId != null  and userBusinessId != ''  ">user_business_id = #{userBusinessId},</if>
+            <if test="status != null  and status != ''  ">status = #{status},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="businessId != null  and businessId != ''  ">business_id = #{businessId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteScanUploadById" parameterType="Integer">
+        delete from sys_scan_upload where id = #{id}
+    </delete>
+	
+    <delete id="deleteScanUploadByIds" parameterType="String">
+        delete from sys_scan_upload where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

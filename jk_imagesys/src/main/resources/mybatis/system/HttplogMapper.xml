@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinke.project.system.httplog.mapper.HttplogMapper">
+
+    <resultMap type="Httplog" id="HttplogResult">
+        <result property="id" column="id"/>
+        <result property="type" column="type"/>
+        <result property="status" column="status"/>
+        <result property="syncType" column="sync_type"/>
+        <result property="method" column="method"/>
+        <result property="requestUrl" column="request_url"/>
+        <result property="requestParam" column="request_param"/>
+        <result property="createTime" column="create_time"/>
+        <result property="requestParamEncrypt" column="request_param_encrypt"/>
+        <result property="response" column="response"/>
+        <result property="responseTime" column="response_time"/>
+        <result property="msg" column="msg"/>
+    </resultMap>
+
+    <sql id="selectHttplogVo">
+        select id, type, status, sync_type, method, request_url, request_param, create_time, request_param_encrypt, response, response_time, msg from sys_httplog
+    </sql>
+
+    <select id="selectHttplogList" parameterType="Httplog" resultMap="HttplogResult">
+        <include refid="selectHttplogVo"/>
+        <where>
+            <if test="id != null ">and id = #{id}</if>
+            <if test="type != null  and type != '' ">and type = #{type}</if>
+            <if test="status != null  and status != '' ">and status = #{status}</if>
+            <if test="syncType != null  and syncType != '' ">and sync_type = #{syncType}</if>
+            <if test="method != null  and method != '' ">and method = #{method}</if>
+            <if test="requestUrl != null  and requestUrl != '' ">and request_url = #{requestUrl}</if>
+            <if test="requestParam != null  and requestParam != '' ">and request_param = #{requestParam}</if>
+            <if test="createTime != null ">and create_time = #{createTime}</if>
+            <if test="requestParamEncrypt != null  and requestParamEncrypt != '' ">and request_param_encrypt =
+                #{requestParamEncrypt}
+            </if>
+            <if test="response != null  and response != '' ">and response = #{response}</if>
+            <if test="responseTime != null ">and response_time = #{responseTime}</if>
+            <if test="msg != null  and msg != '' ">and msg = #{msg}</if>
+        </where>
+    </select>
+
+    <select id="selectHttplogById" parameterType="Integer" resultMap="HttplogResult">
+        <include refid="selectHttplogVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertHttplog" parameterType="Httplog" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_httplog
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="type != null  and type != ''  ">type,</if>
+            <if test="status != null  and status != ''  ">status,</if>
+            <if test="syncType != null  and syncType != ''  ">sync_type,</if>
+            <if test="method != null  and method != ''  ">method,</if>
+            <if test="requestUrl != null  and requestUrl != ''  ">request_url,</if>
+            <if test="requestParam != null  and requestParam != ''  ">request_param,</if>
+            <if test="createTime != null  ">create_time,</if>
+            <if test="requestParamEncrypt != null  and requestParamEncrypt != ''  ">request_param_encrypt,</if>
+            <if test="response != null  and response != ''  ">response,</if>
+            <if test="responseTime != null  ">response_time,</if>
+            <if test="msg != null  and msg != ''  ">msg,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="type != null  and type != ''  ">#{type},</if>
+            <if test="status != null  and status != ''  ">#{status},</if>
+            <if test="syncType != null  and syncType != ''  ">#{syncType},</if>
+            <if test="method != null  and method != ''  ">#{method},</if>
+            <if test="requestUrl != null  and requestUrl != ''  ">#{requestUrl},</if>
+            <if test="requestParam != null  and requestParam != ''  ">#{requestParam},</if>
+            <if test="createTime != null  ">#{createTime},</if>
+            <if test="requestParamEncrypt != null  and requestParamEncrypt != ''  ">#{requestParamEncrypt},</if>
+            <if test="response != null  and response != ''  ">#{response},</if>
+            <if test="responseTime != null  ">#{responseTime},</if>
+            <if test="msg != null  and msg != ''  ">#{msg},</if>
+        </trim>
+    </insert>
+
+    <update id="updateHttplog" parameterType="Httplog">
+        update sys_httplog
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="type != null  and type != ''  ">type = #{type},</if>
+            <if test="status != null  and status != ''  ">status = #{status},</if>
+            <if test="syncType != null  and syncType != ''  ">sync_type = #{syncType},</if>
+            <if test="method != null  and method != ''  ">method = #{method},</if>
+            <if test="requestUrl != null  and requestUrl != ''  ">request_url = #{requestUrl},</if>
+            <if test="requestParam != null  and requestParam != ''  ">request_param = #{requestParam},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="requestParamEncrypt != null  and requestParamEncrypt != ''  ">request_param_encrypt =
+                #{requestParamEncrypt},
+            </if>
+            <if test="response != null  and response != ''  ">response = #{response},</if>
+            <if test="responseTime != null  ">response_time = #{responseTime},</if>
+            <if test="msg != null  and msg != ''  ">msg = #{msg},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteHttplogById" parameterType="Integer">
+        delete from sys_httplog where id = #{id}
+    </delete>
+
+    <delete id="deleteHttplogByIds" parameterType="String">
+        delete from sys_httplog where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

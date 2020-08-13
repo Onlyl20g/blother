@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Start your development with a Design System for Bootstrap 4.">
+    <meta name="author" content="Creative Tim">
+    <title>查看已提交资料</title>
+    <link th:href="@{/css/nucleo.css}" rel="stylesheet"/>
+    <link th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
+
+    <link th:href="@{/css/toastr.min.css}" rel="stylesheet"/>
+    <!-- Argon CSS -->
+    <link type="text/css" href="/css/argon.css?v=1.0.0" th:href="@{/css/argon.css}" rel="stylesheet">
+    <!--  bootstrap-fileinput-css  -->
+    <th:block th:include="include :: bootstrap-fileinput-css"/>
+
+    <style>
+        .font-noraml {
+            margin-bottom: 15px;
+            margin-top: 15px;
+            font-size: large;
+        }
+    </style>
+    <!-- Core -->
+    <script src="/js/jquery.min.js" th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <!--JQueryVali-->
+    <script src="/ajax/libs/validate/jquery.validate.min.js"
+            th:src="@{/ajax/libs/validate/jquery.validate.min.js}"></script>
+    <script src="/ajax/libs/validate/messages_zh.min.js"
+            th:src="@{/ajax/libs/validate/messages_zh.min.js}"></script>
+    <script src="/ajax/libs/validate/jquery.validate.extend.js"
+            th:src="@{/ajax/libs/validate/jquery.validate.extend.js}"></script>
+    <script src="/vendor/popper/popper.min.js" th:src="@{/vendor/popper/popper.min.js}"></script>
+    <script src="/vendor/headroom/headroom.min.js" th:src="@{/vendor/headroom/headroom.min.js}"></script>
+    <!-- Argon JS -->
+    <script src="/js/argon.js?v=1.0.0" th:src="@{/js/argon.js}"></script>
+    <script src="/js/piexif.js" th:src="@{/js/piexif.js}"></script>
+    <script src="/js/toastr.min.js" th:src="@{/js/toastr.min.js}"></script>
+    <script src="/vendor/layer/layer.js" th:src="@{/vendor/layer/layer.js}"></script>
+    <th:block th:include="include :: bootstrap-fileinput-js"/>
+    <script src="/extra/js/showCredit.js" th:src="@{/extra/js/showCredit.js}"></script>
+</head>
+
+<body>
+<form id="addForm">
+    <div class="container mb-5">
+        <!-- Inputs -->
+        <h3 class="h4 text-success font-weight-bold text-center mb-4">查看已提交资料</h3>
+        <div class="row">
+            <div class="col-lg-12">
+                <table class="table" width="80%">
+                    <thead>
+                    <label class="font-noraml">业务申请书已上传材料</label>
+                    </thead>
+                    <tbody id="businessAppFormList">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <table class="table" width="80%">
+                    <thead>
+                    <label class="font-noraml">企业基本情况介绍已上传材料</label>
+                    </thead>
+                    <tbody id="fundamentalStateFormList">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <table class="table" width="80%">
+                    <thead>
+                    <label class="font-noraml">公司章程或合伙、联营协议复印件已上传材料</label>
+                    </thead>
+                    <tbody id="bylawFormList">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <table class="table" width="80%">
+                    <thead>
+                    <label class="font-noraml">法定代表人：身份证复印件、履历已上传材料</label>
+                    </thead>
+                    <tbody id="corporationFormList">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <table class="table" width="80%">
+                    <thead>
+                    <label class="font-noraml">财务负责人：身份证复印件、履历已上传材料</label>
+                    </thead>
+                    <tbody id="financePrincipalFormList">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <table class="table" width="80%">
+                    <thead>
+                    <label class="font-noraml">实际控制人（结婚证、本人及配偶身份证复印件、本人履历）已上传材料</label>
+                    </thead>
+                    <tbody id="actualControllerFormList">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <table class="table" width="80%">
+                    <thead>
+                    <label class="font-noraml">其他补充资料已上传材料</label>
+                    </thead>
+                    <tbody id="otherFormList">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="text-center">
+            <button type="button" onclick="parent.layer.closeAll();" class="btn btn-primary mt-4 btn-block">关闭</button>
+        </div>
+    </div>
+    </div>
+</form>
+
+<div id="imgInfo" style="display: none">
+    <img src="#" alt="" id="imgTag" width="100%">
+</div>
+</body>
+</html>

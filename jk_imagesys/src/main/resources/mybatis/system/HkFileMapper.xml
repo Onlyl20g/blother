@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinke.project.system.hkFile.mapper.HkFileMapper">
+
+    <resultMap type="HkFile" id="HkFileResult">
+        <result property="id" column="id"/>
+        <result property="billId" column="billId"/>
+        <result property="fileFullName" column="file_full_name"/>
+        <result property="filePath" column="file_path"/>
+        <result property="subordinate" column="subordinate"/>
+        <result property="code" column="code"/>
+        <result property="state" column="state"/>
+        <result property="creditTime" column="credit_time"/>
+        <result property="str1" column="str1"/>
+        <result property="str2" column="str2"/>
+        <result property="userName" column="user_name"/>
+    </resultMap>
+
+    <sql id="selectHkFileVo">
+        select id, billId, file_full_name, file_path, subordinate, code, state, credit_time, str1, str2, user_name from sys_hk_file
+    </sql>
+
+    <select id="selectHkFileList" parameterType="HkFile" resultMap="HkFileResult">
+        <include refid="selectHkFileVo"/>
+        <where>
+            <if test="id != null ">and id = #{id}</if>
+            <if test="billId != null  and billId != '' ">and billId = #{billId}</if>
+            <if test="fileFullName != null  and fileFullName != '' ">and file_full_name = #{fileFullName}</if>
+            <if test="filePath != null  and filePath != '' ">and file_path = #{filePath}</if>
+            <if test="subordinate != null  and subordinate != '' ">and subordinate = #{subordinate}</if>
+            <if test="code != null  and code != '' ">and code = #{code}</if>
+            <if test="state != null  and state != '' ">and state = #{state}</if>
+            <if test="creditTime != null ">and credit_time = #{creditTime}</if>
+            <if test="str1 != null  and str1 != '' ">and str1 = #{str1}</if>
+            <if test="str2 != null  and str2 != '' ">and str2 = #{str2}</if>
+            <if test="userName != null  and userName != '' ">and user_name = #{userName}</if>
+        </where>
+    </select>
+
+    <!---->
+    <select id="selectHkFileListBlockName" parameterType="HkFile" resultMap="HkFileResult">
+        select shk.id id,shk.billId billId,shk.file_full_name file_full_name,shk.file_path file_path,shk.subordinate subordinate,shk.state stet,shk.user_name user_name, shk.code code,shk.credit_time credit_time,sin.info_name str1
+        from sys_hk_file shk
+        left join sys_file_attach_type sin on shk.code = sin.code
+        where shk.billId = #{billId}
+        group by code
+    </select>
+
+    <select id="selectHkFileListByCode" parameterType="HkFile" resultMap="HkFileResult">
+        select shk.id id,shk.billId billId,shk.file_full_name file_full_name,shk.file_path file_path,shk.subordinate subordinate,shk.state stet,shk.user_name user_name, shk.code code,shk.credit_time credit_time,sin.info_name str1
+        from sys_hk_file shk
+        left join sys_file_attach_type sin on shk.code = sin.code
+        where shk.code = #{code}
+        and shk.billId = #{billId}
+        and shk.str2 = #{str2}
+        group by shk.id
+    </select>
+
+    <select id="selectHkFileListByBillId" parameterType="HkFile" resultMap="HkFileResult">
+        <include refid="selectHkFileVo"/>
+        <where>
+            <if test="billId != null  and billId != '' ">billId LIKE "%${billId}%"</if>
+        </where>
+--         group by billId
+    </select>
+
+    <select id="selectHkFileById" parameterType="Integer" resultMap="HkFileResult">
+        <include refid="selectHkFileVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertHkFile" parameterType="HkFile" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_hk_file
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="billId != null  and billId != ''  ">billId,</if>
+            <if test="fileFullName != null  and fileFullName != ''  ">file_full_name,</if>
+            <if test="filePath != null  and filePath != ''  ">file_path,</if>
+            <if test="subordinate != null  and subordinate != ''  ">subordinate,</if>
+            <if test="code != null  and code != ''  ">code,</if>
+            <if test="state != null  and state != ''  ">state,</if>
+            <if test="creditTime != null  ">credit_time,</if>
+            <if test="str1 != null  and str1 != ''  ">str1,</if>
+            <if test="str2 != null  and str2 != ''  ">str2,</if>
+            <if test="userName != null  and userName != ''  ">user_name,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="billId != null  and billId != ''  ">#{billId},</if>
+            <if test="fileFullName != null  and fileFullName != ''  ">#{fileFullName},</if>
+            <if test="filePath != null  and filePath != ''  ">#{filePath},</if>
+            <if test="subordinate != null  and subordinate != ''  ">#{subordinate},</if>
+            <if test="code != null  and code != ''  ">#{code},</if>
+            <if test="state != null  and state != ''  ">#{state},</if>
+            <if test="creditTime != null  ">#{creditTime},</if>
+            <if test="str1 != null  and str1 != ''  ">#{str1},</if>
+            <if test="str2 != null  and str2 != ''  ">#{str2},</if>
+            <if test="userName != null  and userName != ''  ">#{userName},</if>
+        </trim>
+    </insert>
+
+    <update id="updateHkFile" parameterType="HkFile">
+        update sys_hk_file
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="billId != null  and billId != ''  ">billId = #{billId},</if>
+            <if test="fileFullName != null  and fileFullName != ''  ">file_full_name = #{fileFullName},</if>
+            <if test="filePath != null  and filePath != ''  ">file_path = #{filePath},</if>
+            <if test="subordinate != null  and subordinate != ''  ">subordinate = #{subordinate},</if>
+            <if test="code != null  and code != ''  ">code = #{code},</if>
+            <if test="state != null  and state != ''  ">state = #{state},</if>
+            <if test="creditTime != null  ">credit_time = #{creditTime},</if>
+            <if test="str1 != null  and str1 != ''  ">str1 = #{str1},</if>
+            <if test="str2 != null  and str2 != ''  ">str2 = #{str2},</if>
+            <if test="userName != null  and userName != ''  ">user_name = #{userName},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteHkFileById" parameterType="Integer">
+        delete from sys_hk_file where id = #{id}
+    </delete>
+
+    <delete id="deleteHkFileByIds" parameterType="String">
+        delete from sys_hk_file where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

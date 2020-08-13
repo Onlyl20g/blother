@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinke.project.system.file.mapper.FileMapper">
+
+    <resultMap type="File" id="FileResult">
+        <result property="id" column="id"/>
+        <result property="businessId" column="business_id"/>
+        <result property="billId" column="bill_id"/>
+        <result property="userBusinessId" column="user_business_id"/>
+        <result property="folderBusinessId" column="folder_business_id"/>
+        <result property="name" column="name"/>
+        <result property="path" column="path"/>
+        <result property="fileClass" column="file_class"/>
+        <result property="fileSuffix" column="file_suffix"/>
+        <result property="fileSize" column="file_size"/>
+        <result property="fileLabel" column="file_label"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="status" column="status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectFileVo">
+        select id, business_id, bill_id, user_business_id, folder_business_id, name, path, file_class, file_suffix, file_size, file_label, del_flag, status, create_time, update_time from sys_file
+    </sql>
+
+    <select id="selectFileList" parameterType="File" resultMap="FileResult">
+        <include refid="selectFileVo"/>
+        <where>
+            <if test="id != null ">and id = #{id}</if>
+            <if test="businessId != null  and businessId != '' ">and business_id = #{businessId}</if>
+            <if test="billId != null  and billId != '' ">and bill_id = #{billId}</if>
+            <if test="userBusinessId != null  and userBusinessId != '' ">and user_business_id = #{userBusinessId}</if>
+            <if test="folderBusinessId != null  and folderBusinessId != '' ">and folder_business_id =
+                #{folderBusinessId}
+            </if>
+            <if test="name != null  and name != '' ">and name = #{name}</if>
+            <if test="path != null  and path != '' ">and path = #{path}</if>
+            <if test="fileClass != null  and fileClass != '' ">and file_class = #{fileClass}</if>
+            <if test="fileSuffix != null  and fileSuffix != '' ">and file_suffix = #{fileSuffix}</if>
+            <if test="fileSize != null ">and file_size = #{fileSize}</if>
+            <if test="fileLabel != null ">and file_label = #{fileLabel}</if>
+            <if test="delFlag != null  and delFlag != '' ">and del_flag = #{delFlag}</if>
+            <if test="status != null  and status != '' ">and status = #{status}</if>
+            <if test="createTime != null ">and create_time = #{createTime}</if>
+            <if test="updateTime != null ">and update_time = #{updateTime}</if>
+            order by create_time desc
+        </where>
+    </select>
+
+    <select id="selectFileListGroupByPath" parameterType="File" resultType="File">
+        <!--<include refid="selectFileVo"/>
+        <where>
+            <if test="id != null ">and id = #{id}</if>
+            <if test="businessId != null  and businessId != '' ">and business_id = #{businessId}</if>
+            <if test="billId != null  and billId != '' ">and bill_id = #{billId}</if>
+            <if test="userBusinessId != null  and userBusinessId != '' ">and user_business_id = #{userBusinessId}</if>
+            <if test="folderBusinessId != null  and folderBusinessId != '' ">and folder_business_id =
+                #{folderBusinessId}
+            </if>
+            <if test="name != null  and name != '' ">and name like CONCAT('%',#{name},'%')</if>
+            <if test="path != null  and path != '' ">and path = #{path}</if>
+            <if test="fileClass != null  and fileClass != '' ">and file_class = #{fileClass}</if>
+            <if test="fileSuffix != null  and fileSuffix != '' ">and file_suffix = #{fileSuffix}</if>
+            <if test="fileSize != null ">and file_size = #{fileSize}</if>
+            <if test="fileLabel != null ">and file_label = #{fileLabel}</if>
+            <if test="delFlag != null  and delFlag != '' ">and del_flag = #{delFlag}</if>
+            <if test="status != null  and status != '' ">and status = #{status}</if>
+            <if test="createTime != null ">and create_time = #{createTime}</if>
+            <if test="updateTime != null ">and update_time = #{updateTime}</if>
+            group by path
+            order by create_time desc
+
+        </where>-->
+
+        select file.id id, file.business_id businessId, file.bill_id billId, file.user_business_id userBusinessId,
+        file.name name,  file.file_class fileClass, file.file_suffix fileSuffix, file.file_size fileSize,
+        file.create_time createTime, folder.folder_path path
+        from sys_file file left join  sys_folder folder on file.folder_business_id = folder.business_id
+        where
+            file.del_flag = #{delFlag}
+            and file.user_business_id = #{userBusinessId}
+            <if test="name != null  and name != '' ">and file.name like CONCAT('%',#{name},'%')</if>
+            <if test="fileClass != null  and fileClass != '' ">and file.file_class = #{fileClass}</if>
+        group by file.path
+        order by file.create_time desc
+    </select>
+
+    <select id="selectFileLists" parameterType="File" resultMap="FileResult">
+        <include refid="selectFileVo"/>
+        <where>
+            <if test="id != null ">and id = #{id}</if>
+            <if test="folderBusinessId != null  and folderBusinessId != '' ">and folder_business_id =
+                #{folderBusinessId}
+            </if>
+            <if test="name != null  and name != '' ">and name like CONCAT('%',#{name},'%')</if>
+            <if test="fileClass != null  and fileClass != '' ">and file_class = #{fileClass}</if>
+            <if test="fileSuffix != null  and fileSuffix != '' ">and file_suffix = #{fileSuffix}</if>
+            <if test="delFlag != null  and delFlag != '' ">and del_flag = #{delFlag}</if>
+            order by file_suffix,create_time
+        </where>
+    </select>
+
+    <select id="selectShareFile" parameterType="File" resultMap="FileResult">
+        <include refid="selectFileVo"/>
+        <where>
+            <if test="ids != null  and ids != '' ">
+                id in
+                <foreach collection="ids.split(',')" index="index" item="item" open="(" separator=","
+                         close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="delFlag != null  and delFlag != '' ">and del_flag = #{delFlag}</if>
+
+            order by file_suffix,create_time
+        </where>
+    </select>
+
+    <select id="selectFileListByLabel" parameterType="File" resultMap="FileResult">
+        <include refid="selectFileVo"/>
+        <where>
+            <if test="id != null ">and id = #{id}</if>
+            <if test="businessId != null  and businessId != '' ">and business_id = #{businessId}</if>
+            <if test="billId != null  and billId != '' ">and bill_id = #{billId}</if>
+            <if test="userBusinessId != null  and userBusinessId != '' ">and user_business_id = #{userBusinessId}</if>
+            <if test="folderBusinessId != null  and folderBusinessId != '' ">and folder_business_id =
+                #{folderBusinessId}
+            </if>
+            <if test="name != null  and name != '' ">and name = #{name}</if>
+            <if test="path != null  and path != '' ">and path = #{path}</if>
+            <if test="fileClass != null  and fileClass != '' ">and file_class = #{fileClass}</if>
+            <if test="fileSuffix != null  and fileSuffix != '' ">and file_suffix = #{fileSuffix}</if>
+            <if test="fileSize != null ">and file_size = #{fileSize}</if>
+            <if test="fileLabel != null ">and file_label like concat('%',#{fileLabel},'%')</if>
+            <if test="delFlag != null  and delFlag != '' ">and del_flag = #{delFlag}</if>
+            <if test="status != null  and status != '' ">and status = #{status}</if>
+            <if test="createTime != null ">and create_time = #{createTime}</if>
+            <if test="updateTime != null ">and update_time = #{updateTime}</if>
+            order by create_time desc
+        </where>
+    </select>
+
+    <select id="selectFileById" parameterType="Integer" resultMap="FileResult">
+        <include refid="selectFileVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertFile" parameterType="File" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_file
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="businessId != null  and businessId != ''  ">business_id,</if>
+            <if test="billId != null  and billId != ''  ">bill_id,</if>
+            <if test="userBusinessId != null  and userBusinessId != ''  ">user_business_id,</if>
+            <if test="folderBusinessId != null  and folderBusinessId != ''  ">folder_business_id,</if>
+            <if test="name != null  and name != ''  ">name,</if>
+            <if test="path != null  and path != ''  ">path,</if>
+            <if test="fileClass != null  and fileClass != ''  ">file_class,</if>
+            <if test="fileSuffix != null  and fileSuffix != ''  ">file_suffix,</if>
+            <if test="fileSize != null  ">file_size,</if>
+            <if test="fileLabel != null ">file_label ,</if>
+            <if test="delFlag != null  and delFlag != ''  ">del_flag,</if>
+            <if test="status != null  and status != ''  ">status,</if>
+            <if test="createTime != null  ">create_time,</if>
+            <if test="updateTime != null  ">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="businessId != null  and businessId != ''  ">#{businessId},</if>
+            <if test="billId != null  and billId != ''  ">#{billId},</if>
+            <if test="userBusinessId != null  and userBusinessId != ''  ">#{userBusinessId},</if>
+            <if test="folderBusinessId != null  and folderBusinessId != ''  ">#{folderBusinessId},</if>
+            <if test="name != null  and name != ''  ">#{name},</if>
+            <if test="path != null  and path != ''  ">#{path},</if>
+            <if test="fileClass != null  and fileClass != ''  ">#{fileClass},</if>
+            <if test="fileSuffix != null  and fileSuffix != ''  ">#{fileSuffix},</if>
+            <if test="fileSize != null  ">#{fileSize},</if>
+            <if test="fileLabel != null ">#{fileLabel},</if>
+            <if test="delFlag != null  and delFlag != ''  ">#{delFlag},</if>
+            <if test="status != null  and status != ''  ">#{status},</if>
+            <if test="createTime != null  ">#{createTime},</if>
+            <if test="updateTime != null  ">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateFile" parameterType="File">
+        update sys_file
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="businessId != null  and businessId != ''  ">business_id = #{businessId},</if>
+            <if test="billId != null  and billId != ''  ">bill_id = #{billId},</if>
+            <if test="userBusinessId != null  and userBusinessId != ''  ">user_business_id = #{userBusinessId},</if>
+            <if test="folderBusinessId != null  and folderBusinessId != ''  ">folder_business_id =
+                #{folderBusinessId},
+            </if>
+            <if test="name != null  and name != ''  ">name = #{name},</if>
+            <if test="path != null  and path != ''  ">path = #{path},</if>
+            <if test="fileClass != null  and fileClass != ''  ">file_class = #{fileClass},</if>
+            <if test="fileSuffix != null  and fileSuffix != ''  ">file_suffix = #{fileSuffix},</if>
+            <if test="fileSize != null  ">file_size = #{fileSize},</if>
+            <if test="fileLabel != null ">file_label = #{fileLabel},</if>
+            <if test="delFlag != null  and delFlag != ''  ">del_flag = #{delFlag},</if>
+            <if test="status != null  and status != ''  ">status = #{status},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFileById" parameterType="Integer">
+        delete from sys_file where id = #{id}
+    </delete>
+
+    <delete id="deleteFileByIds" parameterType="String">
+        delete from sys_file where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="returnFile" parameterType="File">
+        update sys_file
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="businessId != null  and businessId != ''  ">business_id = #{businessId},</if>
+            <if test="billId != null  and billId != ''  ">bill_id = #{billId},</if>
+            <if test="userBusinessId != null  and userBusinessId != ''  ">user_business_id = #{userBusinessId},</if>
+            <if test="folderBusinessId != null  and folderBusinessId != ''  ">folder_business_id =
+                #{folderBusinessId},
+            </if>
+            <if test="name != null  and name != ''  ">name = #{name},</if>
+            <if test="path != null  and path != ''  ">path = #{path},</if>
+            <if test="fileClass != null  and fileClass != ''  ">file_class = #{fileClass},</if>
+            <if test="fileSuffix != null  and fileSuffix != ''  ">file_suffix = #{fileSuffix},</if>
+            <if test="fileSize != null  ">file_size = #{fileSize},</if>
+            <if test="fileLabel != null ">file_label = #{fileLabel},</if>
+            <if test="delFlag != null  and delFlag != ''  ">del_flag = #{delFlag},</if>
+            <if test="status != null  and status != ''  ">status = #{status},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+        </trim>
+        where id in
+        <foreach collection="ids.split(',')" index="index" item="item" open="(" separator=","
+                 close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <update id="cleanAllFile" parameterType="File">
+        update sys_file
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="delFlag != null  and delFlag != ''  ">del_flag = 3,</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+        </trim>
+        where user_business_id = #{userBusinessId} and del_flag in (1,2)
+    </update>
+
+</mapper>

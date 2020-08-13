@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinke.project.system.bankCardInfo.mapper.BankCardInfoMapper">
+
+    <resultMap type="BankCardInfo" id="BankCardInfoResult">
+        <result property="id" column="id"/>
+        <result property="supplierBillId" column="supplier_bill_id"/>
+        <result property="billId" column="bill_id"/>
+        <result property="bankCard" column="bank_card"/>
+        <result property="bank" column="bank"/>
+        <result property="owner" column="owner"/>
+        <result property="deleteFlag" column="delete_flag"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="str1" column="str1"/>
+        <result property="str2" column="str2"/>
+        <result property="str3" column="str3"/>
+        <result property="str4" column="str4"/>
+        <result property="str5" column="str5"/>
+    </resultMap>
+
+    <sql id="selectBankCardInfoVo">
+        select id, supplier_bill_id, bill_id, bank_card, bank, owner, delete_flag, create_time, update_time, str1, str2, str3, str4, str5 from sys_bank_card_info
+    </sql>
+
+    <select id="selectBankCardInfoList" parameterType="BankCardInfo" resultMap="BankCardInfoResult">
+        <include refid="selectBankCardInfoVo"/>
+        <where>
+            <if test="id != null ">and id = #{id}
+            </if>
+            <if test="supplierBillId != null  and supplierBillId != '' ">and supplier_bill_id = #{supplierBillId}
+            </if>
+            <if test="billId != null  and billId != '' ">and bill_id = #{billId}
+            </if>
+            <if test="bankCard != null  and bankCard != '' ">and bank_card = #{bankCard}
+            </if>
+            <if test="bank != null  and bank != '' ">and bank = #{bank}
+            </if>
+            <if test="owner != null  and owner != '' ">and owner = #{owner}
+            </if>
+            <if test="deleteFlag != null  and deleteFlag != '' ">and delete_flag = #{deleteFlag}
+            </if>
+            <if test="createTime != null ">and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null ">and update_time = #{updateTime}
+            </if>
+            <if test="str1 != null  and str1 != '' ">and str1 = #{str1}
+            </if>
+            <if test="str2 != null  and str2 != '' ">and str2 = #{str2}
+            </if>
+            <if test="str3 != null  and str3 != '' ">and str3 = #{str3}
+            </if>
+            <if test="str4 != null  and str4 != '' ">and str4 = #{str4}
+            </if>
+            <if test="str5 != null  and str5 != '' ">and str5 = #{str5}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectBankCardInfoById" parameterType="Long" resultMap="BankCardInfoResult">
+        <include refid="selectBankCardInfoVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectBankCard" parameterType="String" resultMap="BankCardInfoResult">
+        <include refid="selectBankCardInfoVo"/>
+        where bank_card = #{bankCard}
+    </select>
+
+    <insert id="insertBankCardInfo" parameterType="BankCardInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_bank_card_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="supplierBillId != null  and supplierBillId != ''  ">supplier_bill_id,
+            </if>
+            <if test="billId != null  and billId != ''  ">bill_id,
+            </if>
+            <if test="bankCard != null  and bankCard != ''  ">bank_card,
+            </if>
+            <if test="bank != null  and bank != ''  ">bank,
+            </if>
+            <if test="owner != null  and owner != ''  ">owner,
+            </if>
+            <if test="deleteFlag != null  and deleteFlag != ''  ">delete_flag,
+            </if>
+            <if test="createTime != null  ">create_time,
+            </if>
+            <if test="updateTime != null  ">update_time,
+            </if>
+            <if test="str1 != null  and str1 != ''  ">str1,
+            </if>
+            <if test="str2 != null  and str2 != ''  ">str2,
+            </if>
+            <if test="str3 != null  and str3 != ''  ">str3,
+            </if>
+            <if test="str4 != null  and str4 != ''  ">str4,
+            </if>
+            <if test="str5 != null  and str5 != ''  ">str5,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="supplierBillId != null  and supplierBillId != ''  ">#{supplierBillId},
+            </if>
+            <if test="billId != null  and billId != ''  ">#{billId},
+            </if>
+            <if test="bankCard != null  and bankCard != ''  ">#{bankCard},
+            </if>
+            <if test="bank != null  and bank != ''  ">#{bank},
+            </if>
+            <if test="owner != null  and owner != ''  ">#{owner},
+            </if>
+            <if test="deleteFlag != null  and deleteFlag != ''  ">#{deleteFlag},
+            </if>
+            <if test="createTime != null  ">#{createTime},
+            </if>
+            <if test="updateTime != null  ">#{updateTime},
+            </if>
+            <if test="str1 != null  and str1 != ''  ">#{str1},
+            </if>
+            <if test="str2 != null  and str2 != ''  ">#{str2},
+            </if>
+            <if test="str3 != null  and str3 != ''  ">#{str3},
+            </if>
+            <if test="str4 != null  and str4 != ''  ">#{str4},
+            </if>
+            <if test="str5 != null  and str5 != ''  ">#{str5},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateBankCardInfo" parameterType="BankCardInfo">
+        update sys_bank_card_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="supplierBillId != null  and supplierBillId != ''  ">supplier_bill_id = #{supplierBillId},
+            </if>
+            <if test="billId != null  and billId != ''  ">bill_id = #{billId},
+            </if>
+            <if test="bankCard != null  and bankCard != ''  ">bank_card = #{bankCard},
+            </if>
+            <if test="bank != null  and bank != ''  ">bank = #{bank},
+            </if>
+            <if test="owner != null  and owner != ''  ">owner = #{owner},
+            </if>
+            <if test="deleteFlag != null  and deleteFlag != ''  ">delete_flag = #{deleteFlag},
+            </if>
+            <if test="createTime != null  ">create_time = #{createTime},
+            </if>
+            <if test="updateTime != null  ">update_time = #{updateTime},
+            </if>
+            <if test="str1 != null  and str1 != ''  ">str1 = #{str1},
+            </if>
+            <if test="str2 != null  and str2 != ''  ">str2 = #{str2},
+            </if>
+            <if test="str3 != null  and str3 != ''  ">str3 = #{str3},
+            </if>
+            <if test="str4 != null  and str4 != ''  ">str4 = #{str4},
+            </if>
+            <if test="str5 != null  and str5 != ''  ">str5 = #{str5},
+            </if>
+        </trim>
+        where
+        id = #{id}
+        <if test="bankCard != null  and bankCard != ''  ">bank_card = #{bankCard},
+        </if>
+    </update>
+
+    <update id="updateBankCardInfoByBankCard" parameterType="BankCardInfo">
+        update sys_bank_card_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="supplierBillId != null  and supplierBillId != ''  ">supplier_bill_id = #{supplierBillId},
+            </if>
+            <if test="billId != null  and billId != ''  ">bill_id = #{billId},
+            </if>
+            <if test="bank != null  and bank != ''  ">bank = #{bank},
+            </if>
+            <if test="owner != null  and owner != ''  ">owner = #{owner},
+            </if>
+            <if test="deleteFlag != null  and deleteFlag != ''  ">delete_flag = #{deleteFlag},
+            </if>
+            <if test="createTime != null  ">create_time = #{createTime},
+            </if>
+            <if test="updateTime != null  ">update_time = #{updateTime},
+            </if>
+            <if test="str1 != null  and str1 != ''  ">str1 = #{str1},
+            </if>
+            <if test="str2 != null  and str2 != ''  ">str2 = #{str2},
+            </if>
+            <if test="str3 != null  and str3 != ''  ">str3 = #{str3},
+            </if>
+            <if test="str4 != null  and str4 != ''  ">str4 = #{str4},
+            </if>
+        </trim>
+        where bank_card = #{bankCard}
+    </update>
+
+    <delete id="deleteBankCardInfoById" parameterType="Long">
+        delete from sys_bank_card_info where id = #{id}
+    </delete>
+
+    <delete id="deleteBankCardInfoByIds" parameterType="String">
+        delete from sys_bank_card_info where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

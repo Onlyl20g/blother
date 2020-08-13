@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<footer class="footer has-cards" th:fragment="footer" style="flex-shrink: 0;">
+    <div class="container">
+        <div class="row align-items-center justify-content-md-between">
+            <div class="copyright" style="text-align: center; width: 100%;">
+                &copy;
+                <span th:text="${#dates.year(#dates.createNow())}"></span>
+                <!--<script>-->
+                <!--document.write(String(new Date().getFullYear()));-->
+                <!--</script>-->
+                <a href="http://www.jinkeholdings.com" target="_blank"> 重庆市金科商业保理有限公司</a>
+            </div>
+        </div>
+    </div>
+</footer>
+</html>

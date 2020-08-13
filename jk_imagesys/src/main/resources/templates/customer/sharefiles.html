@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>分享文件</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../dependency/bootstrap4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../dependency/mdui/css/mdui.min.css"/>
+    <link rel="stylesheet" href="../dependency/easyupload/easy-upload.css"/>
+    <link rel="stylesheet" href="../dependency/layui/css/layui.css"/>
+    <link rel="stylesheet" href="../dependency/zTree_v3/css/zTreeStyle/zTreeStyle.css"/>
+    <link rel="stylesheet" href="../dependency/bootstrap-table/locale/bootstrap-table.min.css"/>
+    <link rel="stylesheet" href="../dependency/toastr/toastr.min.css"/>
+</head>
+<body>
+<style>
+    #faildFile {
+        margin: 0 auto;
+        width: 300px;
+        height: 100px
+    }
+
+    .tag {
+        width: 100%;
+        height: auto;
+        display: flex;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    a {
+        color: inherit;
+    }
+
+    p {
+        user-select: none;
+    }
+
+    .inner {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+        background-color: #aaa;
+        height: 100%;
+        width: 100%;
+    }
+</style>
+<div style="display: none;text-align: center;margin-top: 150px" id="faildFile">
+    <img style="width: 50px;height: 50px" src="../dependency/images/demo/ico/28573d3d7011a20.jpg" alt=''/>
+    <h1 style="color: red">未找到文件或链接失效</h1></div>
+<!--有文件显示div-->
+<div id="successFile" style="display: none">
+    <div style="width: 100%" class="mdui-col-md-10 mdui-col-lg-10 mdui-col-xl-10 mdui-col-xs-8 " id="myfilecontent">
+        <!-- 工具栏 -->
+        <div class="mdui-toolbar mdui-color-theme mdui-shadow-4  mdui-col-xs-12" style="width:100%;">
+            <button class="mdui-btn mdui-btn-dense toHidden_1" onclick="downloadFiles()"><i
+                    class="mdui-icon material-icons">cloud_download</i><span style="vertical-align: middle;">下载</span>
+            </button>
+            <button class="mdui-btn mdui-btn-dense toHidden_1" id="online-show" style="display: none;"
+                    onclick="onlineShowInfo()"><i class="mdui-icon material-icons">open_with</i><span
+                    style="vertical-align: middle;">在线查看</span>
+            </button>
+        </div>
+
+        <div style="margin-top: 70px;font-size: large;user-select:none;" id="head">
+            <div style="border:1px solid darkgrey;width:auto;height:28px;border-radius: 5px">
+                <div id="baseFolder" style="float: left;margin-left: 8px;width: 72px;">
+                    <a href="javascript:">根目录</a>/&nbsp;
+                </div>
+
+                <div id="folderPath" style="">
+
+                </div>
+            </div>
+        </div>
+        <div id="tag" class="row tag" style="">
+
+        </div>
+    </div>
+    <div id="videoOpen" class="center-parent"
+         style="display: none;position:relative;width: 100%;height: 100%;text-align: center;">
+
+    </div>
+    <div id="fileInfo" style="display: none;">
+        <input type="hidden" id="fileInfoId">
+        <div class="row" style="margin: 20px;">
+            <label class="col-sm-2 control-label" style="text-align: left;margin-top: 5px;">文件：</label>
+            <div class="col-sm-9" style="text-align: left">
+                <input type="text" class="form-control no-border" readonly id="fileFullNameInfo"
+                       style="border: none; background-color: white;text-align: left">
+            </div>
+        </div>
+        <div class="row" style="margin: 20px;">
+            <label class="col-sm-2 control-label" style="text-align: left;margin-top: 5px;">大小：</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control no-border" readonly id="fileSizeInfo"
+                       style="border: none; background-color: white;">
+            </div>
+        </div>
+        <div class="row" style="margin: 20px;">
+            <div class="col-sm-2 control-label" style="text-align: left;margin-top: 5px;">
+                <a href="javascript:;" id="viewOnline" style="display: none;color: #1a7bb9">在线查看</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- JavaScript -->
+<!-- <script src="js/jquery-3.2.1.min.js"></script> -->
+<script src="../dependency/js/jquery-2.1.1.min.js"></script>
+<script src="../dependency/bootstrap4/js/bootstrap.min.js"></script>
+<script src="../dependency/mdui/js/mdui.min.js"></script>
+<!--<script src="../dependency/js/main.js"></script>-->
+<script src="../dependency/easyupload/easyUpload.js"></script>
+<script src="../dependency/easyupload/vendor/jquery.cookie-1.4.1.min.js"></script>
+<script src="../dependency/layui/layui.all.js"></script>
+<script src="../dependency/layui/layui.js"></script>
+<script src="../dependency/layui/lay/modules/layer.js"></script>
+<!--ztree-->
+<script src="../dependency/zTree_v3/js/jquery.ztree.all.js"></script>
+<script src="../dependency/zTree_v3/js/jquery.ztree.all.min.js"></script>
+<!--bootstrap table-->
+<script src="../dependency/bootstrap-table/bootstrap-table.min.js"></script>
+<script src="../dependency/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+<script src="../dependency/bootstrapvalidator/bootstrapValidator.min.js"></script>
+<script src="../dependency/bootstrap-table/bootstrap-editable.js"></script>
+<script src="../dependency/bootstrap-table/bootstrap-table-editable.js"></script>
+<script src="../dependency/toastr/toastr.min.js"></script>
+<script type="application/javascript">
+    var isPhoneFlag = false;
+    var documentTitle = document.title;
+    if (window.screen.height > window.screen.width && window.screen.width < 900) {
+        isPhoneFlag = true;
+    }
+    $(function () {
+        var linkUrl = window.location.href.toString();
+        $.ajax({
+            url: "/system/shareFile/list",
+            type: "POST",
+            data: {
+                link: linkUrl
+            },
+            async: false,
+            dataType: "json",
+            success: function (data) {
+                if (data.total == 0) {
+                    $("#faildFile").show();
+                    return;
+                } else {
+                    $("#successFile").show();
+                }
+
+            }
+        })
+
+    })
+
+    function getQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);//search,查询？后面的参数，并匹配正则
+        if (r != null) return unescape(r[2]);
+        return null;
+    }
+
+    var ids = getQueryString("rfgdwsfsd");
+    var folderIds = getQueryString("wesafwf")
+    var code = "";
+    var toggleCount = 0;
+    var lastClick = "btn-all";
+    var topUrlNum = 0;
+    var useFolder = "";
+    //加载图片文件
+    $(function () {
+        loadAll();
+    })
+
+    function loadAll() {
+        $("#tag").empty();
+        $.ajax({
+            url: "/system/folder/listTopShare?businessId=" + folderIds,
+            type: "POST",
+            data: {},
+            async: false,
+            dataType: "json",
+            contentType: "application/json",
+            success: function (data) {
+                useFolder = "";
+                var flag = 0;
+                code += "<div class=\"mdui-col-md-12 mdui-col-xs-12 \" style=\"text-align: center;\">";
+                code += "<div class=\"mdui-container-fluid tag\" style=\"padding-top:15px ;\">";
+                for (var i = 0; i < data.rows.length; i++) {
+                    flag++;
+                    if (i % 12 === 0) {
+                        code += "</div>";
+                        code += "</div>";
+                        code += "<div class=\"mdui-col-md-12 mdui-col-xs-12 \" style=\"text-align: center;\">";
+                        code += "<div class=\"mdui-container-fluid tag\" style=\"padding-top:15px ;\">";
+                    }
+                    code += "<div class=\"mdui-col-xs-3 mdui-col-xl-1 mdui-col-lg-1 mdui-col-md-2\" onclick='$(\"#" + data.rows[i].businessId + "\").click();$(\"#div" + data.rows[i].businessId + "\").click();' ondblclick='useFolder=\"" + data.rows[i].businessId + "\";loadFile(\"" + data.rows[i].id + "\",\"" + data.rows[i].businessId + "\",\"" + data.rows[i].businessPid + "\",\"" + data.rows[i].name + "\")'>";
+                    code += "<img width='56px' src=\"../dependency/images/demo/ico/dir.png\" />";
+                    code += "<p>" + subName(data.rows[i].name) + "</p><br/>";
+                    code += "<input style='position: relative;top: -15px;visibility: hidden;' class='jk-folder' type='checkbox' value='" + data.rows[i].businessId + "' id='" + data.rows[i].businessId + "' onclick='myToggle(this)'>";
+                    code += "</div>";
+                }
+                $.ajax({
+                    url: "/system/file/shareFile?ids=" + ids,
+                    type: "POST",
+                    data: {},
+                    async: false,
+                    dataType: "json",
+                    contentType: "application/json",
+                    success: function (data) {
+                        var row = null;
+                        var dataSize = flag + data.rows.length;
+                        for (var i = flag; i < dataSize; i++) {
+                            row = data.rows[i - flag];
+                            if (i % 12 === 0) {
+                                code += "</div>";
+                                code += "</div>";
+                                code += "<div class=\"mdui-col-md-12 mdui-col-xs-12 \" style=\"text-align: center;\">";
+                                code += "<div class=\"mdui-container-fluid tag\" style=\"padding-top:15px ;\">";
+                            }
+                            code += "<div class=\"mdui-col-xs-3 mdui-col-xl-1 mdui-col-lg-1 mdui-col-md-2\" onclick='$(\"#" + row.id + "\").click();$(\"#div" + row.id + "\").click();' ondblclick='openInfo(" + row.id + ")' >";
+                            if (row.fileClass === "document") {
+                                code += "<img width='56px' src=\"../dependency/images/demo/ico/" + row.fileSuffix + ".png\" alt=''/>";
+                                code += "<p>" + subName(row.name) + "</p><br/>";
+                                code += "<input style='position: relative;top: -15px;visibility: hidden;' class='jk-file' type='checkbox' value='" + row.id + "' id='" + row.id + "' onclick='myToggle(this)'>";
+                            } else if (row.fileClass === "video") {
+                                code += "<img width='56px' src=\"../dependency/images/demo/ico/video.png\" alt=''/>";
+                                code += "<p>" + subName(row.name) + "</p><br/>";
+                                code += "<input style='position: relative;top: -15px;visibility: hidden;' class='jk-file online-show' type='checkbox' value='" + row.id + "' id='" + row.id + "' onclick='myToggle(this)'>";
+                            } else if (row.fileClass === "img") {
+                                code += "<img class='center-son' style='width:56px;height:56px;' src=\"" + cusstr(location.href, "/", 3) + "/system/file/downloadMiFileShare?id=" + row.id + "\" alt=''>";
+                                code += "<p>" + subName(row.name) + "</p><br/>";
+                                code += "<input style='position: relative;top: -15px;visibility: hidden;' class='jk-file online-show' type='checkbox' value='" + row.id + "' id='" + row.id + "' onclick='myToggle(this)'>";
+                            } else {
+                                code += "<img width='56px' src=\"../dependency/images/demo/ico/file.png\" alt=''/>";
+                                code += "<p>" + subName(row.name) + "</p><br/>";
+                                code += "<input style='position: relative;top: -15px;visibility: hidden;' class='jk-file' type='checkbox' value='" + row.id + "' id='" + row.id + "' onclick='myToggle(this)'>";
+                            }
+                            code += "</div>";
+                        }
+                        code += "</div>";
+                        code += "</div>";
+                        $("#tag").append(code);
+                        code = "";
+                        bg();
+                        stopJKPropagation();
+                        addListener();
+                    },
+                    error: function (data) {
+                    }
+                });
+            },
+            error: function (data) {
+
+            }
+        });
+    }
+
+    //特效
+    function bg() {
+        $(".mdui-col-xl-1").each(function () {
+            $(this).mouseover(function () {
+                $(this).css("background-color", "#eee");
+            }).mouseout(function () {
+                $(this).css("background-color", "white");
+            });
+        })
+    }
+
+    //控制显示/隐藏
+    function myToggle(node) {
+        if ($(node).css('visibility') === 'hidden') {
+            $(node).css('visibility', 'visible');//元素显示
+        } else {
+            $(node).css('visibility', 'hidden');//元素隐藏
+        }
+    }
+
+    function cusstr(str, findStr, num) {
+        var idx = str.indexOf(findStr);
+        var count = 1;
+        while (idx >= 0 && count < num) {
+            idx = str.indexOf(findStr, idx + 1);
+            count++;
+        }
+        if (idx < 0) {
+            return '';
+        }
+        return str.substring(0, idx);
+    }
+
+    //格式化显示文件名称（只显示部分名称）
+    function subName(name) {
+        if (name === null) {
+            return "";
+        }
+        if (name.length > 10) {
+            return name.substring(0, 4) + ".." + name.substring(name.length - 4, name.length);
+        } else {
+            return name;
+        }
+    }
+
+    //打开文件详情窗口
+    function openInfo(id) {
+        $(".label-idinfo").remove();
+        var layerIndex = layer.open({
+            type: 1,
+            title: ' ',
+            shadeClose: false,
+            shade: [0.8, '#393D49'],
+            maxmin: !isPhoneFlag, //开启最大化最小化按钮
+            area: [isPhoneFlag ? '100%' : '50%', isPhoneFlag ? '100%' : '50%'],
+            content: $("#fileInfo"),
+            btn: ['取消'],
+            btn1: function () {
+                layer.close(layerIndex);
+            }
+        });
+        $.ajax({
+            url: "/system/file/selectFileByIdShare",
+            type: "POST",
+            data: {"id": id},
+            async: false,
+            dataType: "json",
+            success: function (data) {
+                $("#fileInfoId").val(data.id);
+                $("#fileFullNameInfo").val(data.name + "." + data.fileSuffix);
+                $("#fileSizeInfo").val(fileSizeFormatter(data.fileSize));
+                $("#fileCreateTimeInfo").val(data.createTime);
+                if (data.fileLabel != null && data.fileLabel !== "") {
+                    var labelIds = data.fileLabel.split(",");
+                    $(".labels").remove();
+                    for (var i = 0; i < labelIds.length; i++) {
+                        $.ajax({
+                            url: "/system/fileLabel/selectById",
+                            type: "POST",
+                            data: {"id": labelIds[i]},
+                            async: false,
+                            dataType: "json",
+                            success: function (data) {
+                                if (data.id != null && data.id !== "") {
+                                    $("#lables").append("<label class='labels' style='padding:5px;border-radius:5px;background-color: #e6ee9c; margin-right: 10px;' onclick='$(this).remove();'>" + data.name + "<i style='font-size: small' class=\"mdui-icon material-icons\">delete</i><input type='hidden' class='label-idinfo' value='" + data.id + "'></label>");
+                                }
+                            },
+                            error: function (data) {
+                            }
+                        });
+                    }
+                }
+                $("#viewOnline").unbind();
+                $("#viewOnline").hide();
+                if (data.fileSuffix === "mp4" || data.fileClass === "img" || data.fileSuffix === "mp3" || data.fileSuffix === "wav") {
+                    $("#viewOnline").show();
+                    $("#viewOnline").click(function () {
+                        $("#videoOpen").empty();
+                        if (data.fileSuffix === "mp4") {
+                            $("#videoOpen").append(videoCode(id));
+                        } else if (data.fileClass === "img") {
+                            $("#videoOpen").append(imgCode(id));
+                        } else if (data.fileSuffix === "mp3") {
+                            $("#videoOpen").append(mp3Code(id));
+                        } else if (data.fileSuffix === "wav") {
+                            $("#videoOpen").append(wavCode(id));
+                        }
+                        document.title = data.name;
+                        layer.open({
+                            type: 1,
+                            title: '在线查看',
+                            shadeClose: true,
+                            shade: [0.8, '#393D49'],
+                            maxmin: !isPhoneFlag, //开启最大化最小化按钮
+                            area: [isPhoneFlag ? '100%' : '50%', isPhoneFlag ? '100%' : '70%'],
+                            full: function (dom) {
+                                //$(dom).find('.layui-layer-content').css('height','100%')
+                            },
+                            content: $("#videoOpen"),
+                            success: function (layero, index) {
+                                $(':focus').blur();
+                            },
+                            end: function () {
+                                $("#videoOpen").empty();
+                                document.title = documentTitle;
+                            }
+                        });
+                    });
+                }
+            },
+            error: function (data) {
+            }
+        });
+    }
+
+    // function loadLabels() {
+    //     $.ajax({
+    //         url: "/system/fileLabel/selectShareFileLabels",
+    //         type: "POST",
+    //         data: {},
+    //         async: false,
+    //         dataType: "json",
+    //         success: function (data) {
+    //             console.log(data);
+    //             $(".labelOptions").remove();
+    //             var str = "";
+    //             for (var i = 0; i < data.rows.length; i++) {
+    //                 if (data.rows[i].delFlag === "0") {
+    //                     str += "<option value='" + data.rows[i].id + "' class='labelOptions'>" + data.rows[i].name + "</option>";
+    //                 }
+    //             }
+    //             $("#selectLabels").append(str);
+    //         },
+    //         error: function (data) {
+    //         }
+    //     });
+    // }
+
+    //传入KB值，返回格式化后的字符串
+    function fileSizeFormatter(fileSize) {
+        return fileLengthFormat(fileSize, 2);
+    }
+
+    /**
+     * [fileLengthFormat 格式化文件大小]
+     * @param  {[int]} total [文件大小]
+     * @param  {[int]} n     [total参数的原始单位如果为Byte，则n设为1，如果为kb，则n设为2，如果为mb，则n设为3]
+     * @return {[string]}       [带单位的文件大小的字符串]
+     */
+    function fileLengthFormat(total, n) {
+        var format;
+        var len = total / (1024.0);
+        if (len > 1000) {
+            return arguments.callee(len, ++n);
+        } else {
+            switch (n) {
+                case 1:
+                    format = len.toFixed(2) + "KB";
+                    break;
+                case 2:
+                    format = len.toFixed(2) + "MB";
+                    break;
+                case 3:
+                    format = len.toFixed(2) + "GB";
+                    break;
+                case 4:
+                    format = len.toFixed(2) + "TB";
+                    break;
+            }
+            return format;
+        }
+    }
+
+    //下载选中文件
+    function downloadFiles() {
+        var data = "";
+        var folderData = "";
+        $(".jk-file:checkbox:checked").each(function () {
+            data += this.value + ",";
+        });
+        $(".jk-folder:checkbox:checked").each(function () {
+            folderData += this.value + ",";
+        });
+        data = data.substring(0, data.length - 1);
+        folderData = folderData.substring(0, folderData.length - 1);
+
+
+        // var data = "";
+        // $("input:checkbox:checked").each(function () {
+        //     data += this.value + ",";
+        // });
+        if (data === "" && folderData === "") {
+            return;
+        }
+        if (data.indexOf(",") === -1 && folderData === "") {
+            window.location.href = "/system/file/downloadFile?id=" + data;
+        } else {
+            if (data == "") {
+                window.location.href = "/system/file/downloadZipShare?folders=" + folderData + "&files=" + data;
+            } else {
+                window.location.href = "/system/file/downloadZipShare?files=" + data + "&folders=" + folderData;
+            }
+        }
+    }
+
+    function imgCode(id) {
+        return "<img class='center-son'  style='max-width:100%;max-height:100%;' src=\"" + cusstr(location.href, "/", 3) + "/system/file/loadShareFile?id=" + id + "\" alt=''>";
+    }
+
+    function videoCode(id) {
+        return "<video class='inner' controls \n" +
+            "        <source src=\"" + cusstr(location.href, "/", 3) + "/system/file/loadShareFile?id=" + id + "\" type=\"video/mp4\">\n您的浏览器不支持 HTML5 video\n" +
+            "    </video>";
+    }
+
+    function wavCode(id) {
+        return "<audio class='center-son' controls>\n" +
+            "<source src=\"" + cusstr(location.href, "/", 3) + "/system/file/loadShareFile?id=" + id + "\" type=\"audio/wav\">\n" +
+            "</audio>";
+    }
+
+    function mp3Code(id) {
+        return "<audio class='center-son' controls>\n" +
+            "<source src=\"" + cusstr(location.href, "/", 3) + "/system/file/loadShareFile?id=" + id + "\" type=\"audio/mpeg\">\n" +
+            "</audio>";
+    }
+
+    function loadFile(id, busId, pid, name) {
+        $("#tag").empty();
+        $("#folderPath").append("<div class=\"top-url\" style='float: left;margin-top: 1px'><span style='float: left;'><input type='hidden' value='" + topUrlNum + "'>" +
+            "<a href=\'javascript:topUrlLoad(\"" + busId + "\"," + topUrlNum++ + ");\' class='top-url-a'>" + name + "</a> </span>\n" +
+            "<span style='margin-top: 1px' class=\"\">&nbsp;\/&nbsp;</span></div>");
+        loadFileByPId(busId);
+        /*useFoledePath = $("#folderPath").text();
+        useFoledePath = useFoledePath.replace(/\s*!/g, "");
+        useFoledePath = useFoledePath.substring(0, useFoledePath.length - 1);*/
+    }
+
+    function loadFileByPId(pid) {
+        useFolder = pid;
+        $("#tag").empty();
+        $.ajax({
+            url: "/system/folder/listByBusinessPidShare",
+            type: "POST",
+            data: {businessPid: pid},
+            async: false,
+            dataType: "json",
+            success: function (data) {
+                var flag = 0;
+                code += "<div class=\"mdui-col-md-12 mdui-col-xs-12 \" style=\"text-align: center;\">";
+                code += "<div class=\"mdui-container-fluid tag\" style=\"padding-top:15px ;\">";
+                for (var i = 0; i < data.rows.length; i++) {
+                    flag++;
+                    if (i % 12 === 0) {
+                        code += "</div>";
+                        code += "</div>";
+                        code += "<div class=\"mdui-col-md-12 mdui-col-xs-12 \" style=\"text-align: center;\">";
+                        code += "<div class=\"mdui-container-fluid tag\" style=\"padding-top:15px ;\">";
+                    }
+                    code += "<div class=\"mdui-col-xs-3 mdui-col-xl-1 mdui-col-lg-1 mdui-col-md-2\" onclick='$(\"#" + data.rows[i].businessId + "\").click();$(\"#div" + data.rows[i].businessId + "\").click();' ondblclick='useFolder=\"" + data.rows[i].businessId + "\";loadFile(\"" + data.rows[i].id + "\",\"" + data.rows[i].businessId + "\",\"" + data.rows[i].businessPid + "\",\"" + data.rows[i].name + "\")'>";
+                    code += "<img width='56px' src=\"../dependency/images/demo/ico/dir.png\" />";
+                    code += "<p>" + subName(data.rows[i].name) + "</p><br/>";
+                    code += "<input style='position: relative;top: -15px;visibility: hidden;' class='jk-folder' type='checkbox' value='" + data.rows[i].businessId + "' id='" + data.rows[i].businessId + "' onclick='myToggle(this)'>";
+                    code += "</div>";
+                }
+                $.ajax({
+                    url: "/system/file/listShare",
+                    type: "POST",
+                    data: {"folderBusinessId": pid, "fileClass": getFileclass()},
+                    async: false,
+                    dataType: "json",
+                    success: function (data) {
+                        var row = null;
+                        var dataSize = flag + data.rows.length;
+                        for (var i = flag; i < dataSize; i++) {
+                            row = data.rows[i - flag];
+                            if (i % 12 === 0) {
+                                code += "</div>";
+                                code += "</div>";
+                                code += "<div class=\"mdui-col-md-12 mdui-col-xs-12 \" style=\"text-align: center;\">";
+                                code += "<div class=\"mdui-container-fluid tag\" style=\"padding-top:15px ;\">";
+                            }
+                            code += "<div class=\"mdui-col-xs-3 mdui-col-xl-1 mdui-col-lg-1 mdui-col-md-2\" onclick='$(\"#" + row.id + "\").click();$(\"#div" + row.id + "\").click();' ondblclick='openInfo(" + row.id + ")' >";
+                            if (row.fileClass === "document") {
+                                code += "<img width='56px' src=\"../dependency/images/demo/ico/" + row.fileSuffix + ".png\" alt=''/>";
+                                code += "<p>" + subName(row.name) + "</p><br/>";
+                                code += "<input style='position: relative;top: -15px;visibility: hidden;' class='jk-file' type='checkbox' value='" + row.id + "' id='" + row.id + "' onclick='myToggle(this)'>";
+                            } else if (row.fileClass === "video") {
+                                code += "<img width='56px' src=\"../dependency/images/demo/ico/video.png\" alt=''/>";
+                                code += "<p>" + subName(row.name) + "</p><br/>";
+                                code += "<input style='position: relative;top: -15px;visibility: hidden;' class='jk-file online-show' type='checkbox' value='" + row.id + "' id='" + row.id + "' onclick='myToggle(this)'>";
+                            } else if (row.fileClass === "img") {
+                                code += "<img class='center-son' style='width:56px;height:56px;' src=\"" + cusstr(location.href, "/", 3) + "/system/file/downloadMiFileShare?id=" + row.id + "\" alt=''>";
+                                code += "<p>" + subName(row.name) + "</p><br/>";
+                                code += "<input style='position: relative;top: -15px;visibility: hidden;' class='jk-file online-show' type='checkbox' value='" + row.id + "' id='" + row.id + "' onclick='myToggle(this)'>";
+                            } else {
+                                code += "<img width='56px' src=\"../dependency/images/demo/ico/file.png\" alt=''/>";
+                                code += "<p>" + subName(row.name) + "</p><br/>";
+                                code += "<input style='position: relative;top: -15px;visibility: hidden;' class='jk-file' type='checkbox' value='" + row.id + "' id='" + row.id + "' onclick='myToggle(this)'>";
+                            }
+                            code += "</div>";
+                        }
+                        code += "</div>";
+                        code += "</div>";
+                        $("#tag").append(code);
+                        code = "";
+                        bg();
+                        stopJKPropagation();
+                        addListener();
+                    },
+                    error: function (data) {
+                    }
+                });
+            },
+            error: function (data) {
+            }
+        });
+    }
+
+    function topUrlLoad(pid, num) {
+        if (num != null && num !== "") {
+            topUrlNum = ++num;
+            $(".top-url-a").each(function () {
+                if ($(this.parentNode.firstChild).val() >= num) {
+                    $(this.parentNode.parentNode).remove();
+                }
+            });
+        }
+        loadFileByPId(pid);
+    }
+
+    //根据当前选中的页面类型，返回对应的文件类型
+    function getFileclass() {
+        if (lastClick == "btn-all") {
+            return "all";
+        } else if (lastClick == "btn-Img") {
+            return "img";
+        } else if (lastClick == "btn-doc") {
+            return "document";
+        } else if (lastClick == "btn-video") {
+            return "video";
+        } else if (lastClick == "btn-other") {
+            return "other";
+        } else {
+            console.log("getFileclass()方法未匹配到预设参数，加载全部");
+            return "all";
+        }
+    }
+
+    $("#baseFolder").click(function () {
+        removeTopUrl();
+        loadAll();
+    });
+
+    //移除顶部url
+    function removeTopUrl() {
+        $(".top-url-a").each(function () {
+            $(this.parentNode.parentNode).remove();
+        });
+    }
+
+    //阻止冒泡
+    function stopJKPropagation() {
+        $(".jk-folder ").each(function () {
+            $(this).click(function (evt) {
+                stopBubble(evt);
+            })
+        });
+        $(".jk-file ").each(function () {
+            $(this).click(function (evt) {
+                stopBubble(evt);
+            })
+        })
+    }
+
+    //浏览器兼容
+    function stopBubble(e) {
+        if (e && e.stopPropagation) {
+            e.stopPropagation();//w3c
+        } else {
+            window.event.cancelBubble = true;//ie
+        }
+    }
+
+    //显示/隐藏菜单栏的在线查看
+    function onlineShow() {
+        if ($(".online-show:checkbox:checked").length == 1 && ($(".jk-file:checkbox:checked").length + $(".jk-folder:checkbox:checked").length) == 1) {
+            $("#online-show").show();
+        } else {
+            $("#online-show").hide();
+        }
+    }
+
+    function addListener() {
+        $(".jk-file").each(function () {
+            $(this).click(function () {
+                onlineShow();
+            });
+        });
+        $(".jk-folder").each(function () {
+            $(this).click(function () {
+                onlineShow();
+            });
+        });
+    }
+
+    function onlineShowInfo() {
+        if ($(".online-show:checkbox:checked").length == 1 && ($(".jk-file:checkbox:checked").length + $(".jk-folder:checkbox:checked").length) == 1) {
+            onlineShowOpen();
+        }
+    }
+
+    //打开在线查看窗口
+    function onlineShowOpen() {
+        var id = $(".online-show:checkbox:checked")[0].value;
+        $.ajax({
+            url: "/system/file/selectFileByIdShare",
+            type: "POST",
+            data: {"id": id},
+            async: false,
+            dataType: "json",
+            success: function (data) {
+                $("#videoOpen").empty();
+                if (data.fileSuffix === "mp4") {
+                    $("#videoOpen").append(videoCode(id));
+                } else if (data.fileClass === "img") {
+                    $("#videoOpen").append(imgCode(id));
+                } else if (data.fileSuffix === "mp3") {
+                    $("#videoOpen").append(mp3Code(id));
+                } else if (data.fileSuffix === "wav") {
+                    $("#videoOpen").append(wavCode(id));
+                }
+                document.title = data.name;
+                layer.open({
+                    type: 1,
+                    title: '在线查看',
+                    shadeClose: true,
+                    shade: [0.8, '#393D49'],
+                    maxmin: !isPhoneFlag, //开启最大化最小化按钮
+                    area:['100%','100%'],
+                    area: [isPhoneFlag ? '100%' : '50%', isPhoneFlag ? '100%' : '70%'],
+                    full: function (dom) {
+                        //$(dom).find('.layui-layer-content').css('height','100%')
+                    },
+                    content: $("#videoOpen"),
+                    success: function (layero, index) {
+                        $(':focus').blur();
+                    },
+                    end: function () {
+                        $("#videoOpen").empty();
+                        document.title = documentTitle;
+                    }
+                });
+            }
+        });
+    }
+</script>
+</body>
+</html>

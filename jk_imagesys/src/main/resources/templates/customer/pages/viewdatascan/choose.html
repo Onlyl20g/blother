@@ -1,0 +1,62 @@
+<div class="mdui-container-fluid " id="choose">
+    <div class="mdui-col-xs-12" style="margin-top: 30px;">
+        <br>
+        <center><h1>影像扫描</h1></center>
+        <center><h4>请选择扫描类型：</h4></center>
+        <br>
+        <div style="text-align: center;width: 100%;">
+            <label class="mdui-radio">
+                <input type="radio" name="group1" checked value="singleImage"/>
+                <i class="mdui-radio-icon"></i>
+                单个影像扫描
+            </label>
+            <label class="mdui-radio">
+                <input type="radio" name="group1" value="multiImage"/>
+                <i class="mdui-radio-icon"></i>
+                多个影像扫描
+            </label>
+            <label class="mdui-radio">
+                <input type="radio" name="group1" value="multiPageImagesPDF"/>
+                <i class="mdui-radio-icon"></i>
+                多页影像扫描生成pdf
+            </label>
+            <label class="mdui-radio">
+                <input type="radio" name="group1" value="singlePageImage"/>
+                <i class="mdui-radio-icon"></i>
+                单页影像扫描生成图片
+            </label>
+            <label class="mdui-radio">
+                <input type="radio" name="group1" value="multiPageImage"/>
+                <i class="mdui-radio-icon"></i>
+                多页影像扫描生成图片
+            </label>
+        </div>
+        <div class="mdui-row-xs-1" style="padding-top: 30px;">
+            <div class="mdui-col-xs-4 mdui-col-offset-xs-4">
+                <button class="mdui-btn mdui-btn-block mdui-color-blue mdui-ripple" onclick="next()">下一步</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div style="display: none;margin: 20px;" id="ocr_div" class="mdui-container-fluid ">
+    <iframe id="ocriframe" width="100%" height="500" style="border: none;"/>
+</div>
+
+<script type="text/javascript">
+    function next() {
+        sessionStorage.setItem("imageType", $("input[name='group1']:checked").val());
+        $("#choose").hide();
+        /*$("#choose").hide();
+        if($("input[name='group1']:checked").val() == "invoice" || $("input[name='group1']:checked").val() == "businessLicense"){
+            $('#ocriframe').attr('src','customer/pages/ocrinvoice');
+        } else {
+            $('#ocriframe').attr('src','customer/pages/ocrdistinguishother');
+        }*/
+        $('#ocriframe').attr('src', 'customer/pages/onlinedemoscan');
+        $("#ocr_div").css("display", "block")
+    }
+
+    var ifm = document.getElementById("ocriframe");
+    ifm.height = document.documentElement.clientHeight;
+</script>

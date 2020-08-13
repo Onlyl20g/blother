@@ -1,0 +1,123 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header">
+    <style>
+        html {
+            overflow: auto;
+        }
+    </style>
+</head>
+<body class="gray-bg">
+
+<div class="container-div" style="overflow-y: scroll;">
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form id="formId">
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            文件名：<input type="text" name="name"/>
+                        </li>
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()">&nbsp;搜索</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" style="margin-left: 30px;"
+                               onclick="$.form.reset()">&nbsp;重置</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" style="margin-left: 30px;"
+                               onclick="addHKFilesByFile()">&nbsp;确认</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+<div th:include="include :: footer"></div>
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('system:fileAttachType:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('system:fileAttachType:remove')}]];
+    var prefix = ctx + "system/file/";
+
+    $(function () {
+        var options = {
+            url: prefix + "/listImgBySys",
+            /*createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            exportUrl: prefix + "/export",
+            modalName: "其他系统文件分类",*/
+            // showExport: false,
+            clickToSelect: true,
+            showSearch: false,                     // 是否显示检索信息
+            showPageGo: false,               		// 是否显示跳转页
+            showRefresh: false,                   // 是否显示刷新按钮
+            showColumns: false,                   // 是否显示隐藏某列下拉框
+            showToggle: false,                     // 是否显示详细视图和列表视图的切换按钮
+            showExport: false,
+            singleSelect: true,
+            pageSize: 10,
+            pageList: [5, 10, 25, 50],
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'id',
+                    title: 'ID',
+                    visible: false
+                },
+                {
+                    field: 'sysType',
+                    title: '',
+                    formatter: function (value, row, index) {
+                        var src = window.location.href.split("customer")[0] + "/system/file/loadFile" + "?id=" + row.id;
+                        if (row.fileClass == "img") {
+                            return "<div class=\"mdui-list-item-avatar\" ><img width='36' height='36' src=\"" + src + "\"></div>";
+                        }
+                        if (row.fileClass == "other") {
+                            return "<div class=\"mdui-list-item-avatar\" ><img width='36' height='36' src=\"/dependency/images/demo/ico/file.png\"></div>";
+                        } else {
+                            return "<div class=\"mdui-list-item-avatar\" ><img width='36' height='36' src=\"/dependency/images/demo/ico/file.png\"></div>";
+                        }
+                    }
+
+                },
+                {
+                    field: 'name',
+                    title: '文件名称'
+                },
+                {
+                    field: 'path',
+                    title: '文件路径'
+                },
+                {
+                    field: 'createTime',
+                    title: '时间'
+                }]
+        };
+        $.table.init(options);
+        // $(".fixed-table-toolbar").css("display","none");
+    });
+
+
+    function addHKFilesByFile() {
+
+        var rows = $.common.isEmpty($.table._option.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.uniqueId);
+        if (rows.length == 0) {
+            $.modal.alertWarning("请至少选择一条记录");
+            return;
+        }
+        /*$.modal.confirm("确认选中数据", function () {
+
+        });*/
+        sessionStorage.setItem("fileId", rows.join());
+        parent.layer.closeAll();
+    }
+
+
+</script>
+</body>
+</html>

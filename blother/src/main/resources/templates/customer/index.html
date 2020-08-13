@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Start your development with a Design System for Bootstrap 4.">
+    <meta name="author" content="Creative Tim">
+    <title>金科保理获客系统</title>
+    <!--    <link th:href="@{favicon.ico}" rel="shortcut icon"/>-->
+    <link th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
+    <link th:href="@{/css/nucleo.css}" rel="stylesheet"/>
+    <link type="text/css" href="/css/argon.css" th:href="@{/css/argon.css}" rel="stylesheet">
+    <link href="/ruoyi/css/ry-ui.css" th:href="@{/ruoyi/css/ry-ui.css}" rel="stylesheet"/>
+    <link href="/extra/css/loginbase.css" th:href="@{/extra/css/loginbase.css}" rel="stylesheet"/>
+    <link th:href="@{/css/toastr.min.css}" rel="stylesheet"/>
+    <style>
+        .ctr_row {
+            word-break: break-all;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+        }
+
+        .menu-item {
+            font-size: 14px;
+            color: #ffffff;
+            width: 16%;
+            padding: 10px;
+            margin-right: 30px;
+            border-radius: 2px;
+            /*background-color: #748EF4 !important;*/
+        }
+
+        .menu-item:hover {
+            color: #16181b;
+            background-color: #f6f9fc;
+            border-radius: 2px;
+        }
+
+        /* #navbarGlobal{
+
+         }*/
+
+    </style>
+    <!-- Core -->
+    <script src="/vendor/jquery/jquery.min.js" th:src="@{/vendor/jquery/jquery.min.js}"></script>
+    <script src="/vendor/popper/popper.min.js" th:src="@{/vendor/popper/popper.min.js}"></script>
+    <script src="/vendor/bootstrap/bootstrap.min.js" th:src="@{/vendor//bootstrap/bootstrap.min.js}"></script>
+    <script src="/vendor/headroom/headroom.min.js" th:src="@{/vendor/headroom/headroom.min.js}"></script>
+    <!--表单验证控件-->
+    <script src="/ajax/libs/validate/jquery.validate.min.js"></script>
+    <script src="/ajax/libs/validate/messages_zh.min.js"></script>
+    <script src="/ajax/libs/validate/jquery.validate.extend.js"></script>
+    <script src="/ajax/libs/layer/layer.min.js"></script>
+    <script src="/ajax/libs/blockUI/jquery.blockUI.js"></script>
+    <script src="/ruoyi/js/ry-ui.js"></script>
+    <!-- Argon JS -->
+    <script src="/js/argon.js?v=1.0.0" th:src="@{/js/argon.js}"></script>
+    <script src="/js/piexif.js" th:src="@{/js/piexif.js}"></script>
+    <script src="/js/toastr.min.js" th:src="@{/js/toastr.min.js}"></script>
+    <script src="/extra/js/loginbase.js" th:src="@{/extra/js/loginbase.js}"></script>
+    <script type="text/javascript">
+        $(function () {
+            var borwser = browserVersion();
+            if (borwser == "IE7") {
+                layer.msg("IE版本过低，建议升级或使用谷歌浏览器");
+            } else if (borwser == "IE8") {
+                layer.msg("IE版本过低，建议升级或使用谷歌浏览器");
+            } else if (borwser == "IE9") {
+                layer.msg("IE版本过低，建议升级或使用谷歌浏览器");
+            }
+        });
+
+        function browserVersion() {
+            var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串
+            var isIE = userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1; //判断是否IE<11浏览器
+            var isIE11 = userAgent.indexOf('Trident') > -1 && userAgent.indexOf("rv:11.0") > -1;
+            var isEdge = userAgent.indexOf("Edge") > -1 && !isIE; //Edge浏览器
+            var isFirefox = userAgent.indexOf("Firefox") > -1; //Firefox浏览器
+            var isOpera = userAgent.indexOf("Opera") > -1 || userAgent.indexOf("OPR") > -1; //Opera浏览器
+            var isChrome = userAgent.indexOf("Chrome") > -1 && userAgent.indexOf("Safari") > -1 && userAgent.indexOf("Edge") == -1 && userAgent.indexOf("OPR") == -1; //Chrome浏览器
+            var isSafari = userAgent.indexOf("Safari") > -1 && userAgent.indexOf("Chrome") == -1 && userAgent.indexOf("Edge") == -1 && userAgent.indexOf("OPR") == -1; //Safari浏览器
+            if (isIE) {
+                var reIE = new RegExp("MSIE (\\d+\\.\\d+);");
+                reIE.test(userAgent);
+                var fIEVersion = parseFloat(RegExp["$1"]);
+                if (fIEVersion == 7) {
+                    return 'IE7';
+                } else if (fIEVersion == 8) {
+                    return 'IE8';
+                } else if (fIEVersion == 9) {
+                    return 'IE9';
+                } else if (fIEVersion == 10) {
+                    return 'IE10';
+                } else {
+                    return 'IE6';//IE版本<7
+                }
+            } else if (isIE11) {
+                return 'IE11';
+            } else if (isEdge) {
+                return 'Edge' + userAgent.split('Edge/')[1].split('.')[0];
+            } else if (isFirefox) {
+                return 'Firefox' + userAgent.split('Firefox/')[1].split('.')[0];
+            } else if (isOpera) {
+                return 'Opera' + userAgent.split('OPR/')[1].split('.')[0];
+            } else if (isChrome) {
+                return 'Chrome' + userAgent.split('Chrome/')[1].split('.')[0];
+            } else if (isSafari) {
+                return 'Safari';
+                +userAgent.split('Safari/')[1].split('.')[0];
+            } else {
+                return -1;//不是ie浏览器
+            }
+        }
+    </script>
+</head>
+
+<body>
+<header class="header-global">
+    <nav id="navbar-main" class="navbar navbar-main navbar-expand-lg navbar-transparent navbar-light">
+        <div class="container">
+            <a class="navbar-brand mr-lg-5" href="/">
+                <img src="/img/factoring_logo_light.png" th:src="@{/img/factoring_logo_light.png}">
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarGlobal"
+                    aria-controls="navbarGlobal" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse collapse" id="navbarGlobal" style="margin-left: 30px;">
+                <div id="bus-hand">
+                    <a href="credit" class="menu-item">授信申请</a>
+                    <a href="withdraw" class="menu-item">提款申请</a>
+                    <a href="repayment" class="menu-item">我的还款</a>
+                    <a href="usercenter" class="menu-item">用户中心</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+<main>
+    <div class="position-relative">
+        <!-- shape Hero -->
+        <section class="section-shaped my-0">
+            <div class="shape shape-style-1 shape-default shape-skew">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="container shape-container d-flex">
+                <div class="col px-0">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h1 class="display-3  text-white">金科保理
+                                <span>保理获客系统</span>
+                            </h1>
+                            <p class="lead  text-white">
+                                保理获客系统是本公司为商业保理业务精心打造的一套全流程管理平台。为商业保理业务规范作业流程，降低操作风险，加强业务各环节的精细化管理，提高审批及工作效率，杜绝人为差错，提高企业信息化、电子化管理水平。 </p>
+                        </div>
+                        <div class="col-md-2"></div>
+                        <div id="pwdModel" class="col-lg-4">
+                            <div id="loginForm" class="card shadow border-0 bg-gradient-lighter hidden-bus">
+                                <div class="card-header bg-white">
+                                    <div class="text-muted text-center mb-3">
+                                        <small>账号登录</small>
+                                    </div>
+                                    <form id="login-form" method="post">
+                                        <div class="form-group mb-3">
+                                            <div class="input-group input-group-alternative">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="ni ni-email-83"></i></span>
+                                                </div>
+                                                <input id="username" name="username" class="form-control"
+                                                       placeholder="账号" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="input-group input-group-alternative">
+                                                <div class="input-group-prepend">
+                                                <span class="input-group-text"><i
+                                                        class="ni ni-lock-circle-open"></i></span>
+                                                </div>
+                                                <input id="password" name="password" class="form-control"
+                                                       placeholder="密码" type="password">
+                                            </div>
+                                        </div>
+                                        <div class="text-center">
+                                            <input id="sub" type="submit" class="btn btn-block btn-primary my-4"
+                                                   value="登录"/>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div class="card-body pb-5">
+                                    <div class="text-muted text-center mb-3">
+                                        <small>没有账号?</small>
+                                    </div>
+                                    <a href="/register" class="btn btn-lg btn-white btn-block mt-3">
+                                        <span class="btn-inner--icon"><i class="ni ni-cloud-download-95"></i></span>
+                                        <span>点击注册</span></a>
+                                </div>
+                            </div>
+
+                            <div id="userForm" class="hidden-bus" style="width: 100%;">
+                                <div class="card shadow border-0">
+                                    <div class="card-body py-5">
+                                        <div class="text-center">
+                                            <img src="/img/profile_default.png"
+                                                 th:src="@{/img/profile_default.png}"
+                                                 style="position: relative; max-width: 120px;"
+                                                 class="rounded-circle shadow-sm">
+                                        </div>
+                                        <div class="form-group user_style">
+                                            <div id="loginName" class="description text-center"
+                                                 style="color: #ced4da;"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div id="corprName" class="lead text-center mt-0"
+                                                 style="color: #32325d;"></div>
+                                        </div>
+                                        <div class="mt-sm">
+                                            <a href="/usercenter" type="button"
+                                               class="btn btn-primary btn-block mt-3">
+                                                进入用户中心
+                                            </a>
+                                            <a id="logoutservice" href="logout" style="display: none">退出服务器</a>
+                                            <a id="logout">
+                                                <button type="button" class="btn btn-danger btn-block mt-3">
+                                                    退出登陆
+                                                </button>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- 1st Hero Variation -->
+    </div>
+    <section class="section section-lg pt-lg-0 mt--200">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-12">
+                    <div class="row row-grid">
+                        <div class="col-lg-4">
+                            <div class="card card-lift--hover shadow border-0">
+                                <div class="card-body py-5">
+                                    <div class="icon icon-shape icon-shape-primary rounded-circle mb-4">
+                                        <i class="ni ni-check-bold"></i>
+                                    </div>
+                                    <h6 class="text-primary text-uppercase">融资金额大</h6>
+                                    <p class="description mt-3">单笔融资额1000万以上，单一客户授信可达2亿元。</p>
+                                    <div>
+                                    </div>
+                                    <a href="/register" class="btn btn-primary mt-4">了解更多</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="card card-lift--hover shadow border-0">
+                                <div class="card-body py-5">
+                                    <div class="icon icon-shape icon-shape-success rounded-circle mb-4">
+                                        <i class="ni ni-istanbul"></i>
+                                    </div>
+                                    <h6 class="text-success text-uppercase">融资期限长</h6>
+                                    <p class="description mt-3">可根据项目和应收款账期情况最长延长到3年。</p>
+                                    <div>
+                                    </div>
+                                    <a href="/register" class="btn btn-success mt-4">了解更多</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="card card-lift--hover shadow border-0">
+                                <div class="card-body py-5">
+                                    <div class="icon icon-shape icon-shape-warning rounded-circle mb-4">
+                                        <i class="ni ni-planet"></i>
+                                    </div>
+                                    <h6 class="text-warning text-uppercase">审批放款效率高</h6>
+                                    <p class="description mt-3">在资料齐全的情况下，可在一周内完成全流程审批和放款。</p>
+                                    <div>
+                                    </div>
+                                    <a href="/register" class="btn btn-warning mt-4">了解更多</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section section-lg">
+        <div class="container">
+            <div class="row row-grid align-items-center">
+                <div class="col-md-6 order-md-2">
+                    <img src="/img/theme/promo-1.png" th:src="@{/img/theme/promo-1.png}"
+                         class="img-fluid floating" alt="">
+                </div>
+                <div class="col-md-6 order-md-1">
+                    <div class="pr-md-5">
+                        <div class="icon icon-lg icon-shape icon-shape-success shadow rounded-circle mb-5">
+                            <i class="ni ni-settings-gear-65"></i>
+                        </div>
+                        <h3>产品类别多</h3>
+                        <p>创新类产品丰富，可根据客户需求提供量身定做型产品，如并购类保理融资、预期收益权保理融资等。</p>
+                        <ul class="list-unstyled mt-5">
+                            <li class="py-2">
+                                <div class="d-flex align-items-center">
+                                    <div>
+                                        <div class="badge badge-circle badge-success mr-3">
+                                            <i class="ni ni-settings-gear-65"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0">并购类保理融资</h6>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="py-2">
+                                <div class="d-flex align-items-center">
+                                    <div>
+                                        <div class="badge badge-circle badge-success mr-3">
+                                            <i class="ni ni-html5"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0">预期收益权保理融资</h6>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="py-2">
+                                <div class="d-flex align-items-center">
+                                    <div>
+                                        <div class="badge badge-circle badge-success mr-3">
+                                            <i class="ni ni-satisfied"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0">...保理融资</h6>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section section-lg">
+        <div class="container">
+            <div class="row justify-content-center text-center mb-lg">
+                <div class="col-lg-8">
+                    <h2 class="display-3">合作企业</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-lg-4 mb-5 mb-lg-0">
+                    <div class="px-4">
+                        <img src="/img/partner_logo/1.png" class="rounded-circle img-center img-fluid shadow-sm"
+                             style="width: 200px;">
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 mb-5 mb-lg-0">
+                    <div class="px-4">
+                        <img src="/img/partner_logo/2.png" class="rounded-circle img-center img-fluid shadow-sm"
+                             style="width: 200px;">
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 mb-5 mb-lg-0">
+                    <div class="px-4">
+                        <img src="/img/partner_logo/3.png" class="rounded-circle img-center img-fluid shadow-sm"
+                             style="width: 200px;">
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 mb-5 mb-lg-0">
+                    <div class="px-4">
+                        <img src="/img/partner_logo/4.png" class="rounded-circle img-center img-fluid shadow-sm"
+                             style="width: 200px;">
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 mb-5 mb-lg-0">
+                    <div class="px-4">
+                        <img src="/img/partner_logo/5.png" class="rounded-circle img-center img-fluid shadow-sm"
+                             style="width: 200px;">
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 mb-5 mb-lg-0">
+                    <div class="px-4">
+                        <img src="/img/partner_logo/6.png" class="rounded-circle img-center img-fluid shadow-sm"
+                             style="width: 200px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section section-lg pt-0">
+        <div class="container">
+            <div class="card bg-gradient-warning shadow-lg border-0">
+                <div class="p-5">
+                    <div class="row align-items-center">
+                        <div class="col-lg-12">
+                            <h3 class="text-white">联系我们</h3>
+
+                            <p class="lead text-white mt-3">电话：023-67061666</p>
+                            <p class="lead text-white mt-3">传真：023-67061600</p>
+                            <p class="lead text-white mt-3">公司地址:重庆市渝北区佳园路2号康田·凯旋国际大厦北楼13层</p>
+                        </div>
+                        <div class="col-lg-4 ml-lg-auto">
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!--修改密码弹框-->
+    <div class="col-md-4">
+        <div class="modal fade" data-backdrop="false" data-keyboard="false" id="modify-form" tabindex="-1" role="dialog"
+             aria-labelledby="modal-form" aria-hidden="true">
+            <div class="modal-dialog modal- modal-dialog-centered modal-sm" role="document">
+                <div class="modal-content">
+                    <div style="margin:10px;">
+                        <div class="card-header bg-white pb-2">
+                            <div class="text-muted text-center mb-3" style="margin-top: 10px;">
+                                <big>首次登录-修改密码</big>
+                            </div>
+                            <div>
+                                <div id="confir-form">
+                                    <div class="form-group">
+                                        <div class="input-group input-group-alternative">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i
+                                                        class="ni ni-lock-circle-open"></i></span>
+                                            </div>
+                                            <input id="textPos" class="hidden-bus" placeholder="旧密码" value="123456"
+                                                   type="text"/>
+                                            <input id="oldPas" class="form-control col-md-8" name="oldPas"
+                                                   placeholder="旧密码" type="password" value=""/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="input-group input-group-alternative">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="ni ni-chat-round"></i></span>
+                                            </div>
+                                            <input id="newPas" class="form-control col-md-8" name="newPas"
+                                                   placeholder="新密码" type="password" value="">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="input-group input-group-alternative">
+                                            <label for="confir-pas"></label>
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="ni ni-map-big"></i></span>
+                                            </div>
+                                            <input id="confir-pas" class="form-control col-md-8" name="confirPas"
+                                                   placeholder="确认密码" type="password" value="">
+                                        </div>
+                                    </div>
+                                    <div class="text-center">
+                                        <button id="confir-btn" onclick="checkForm();" class="btn btn-primary my-4">确认
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<div th:replace="fragment/footer :: footer"></div>
+</body>
+
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link th:href="@{/dependency/layui/css/layui.css}" rel="stylesheet"/>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-system-add">
+        <!--			<div class="form-group">	-->
+        <!--				<label class="col-sm-3 control-label">：</label>-->
+        <!--				<div class="col-sm-8">-->
+        <!--					<input id="code" name="code" class="form-control" type="text">-->
+        <!--				</div>-->
+        <!--			</div>-->
+        <div class="form-group">
+            <label class="col-sm-3 control-label">系统名称：</label>
+            <div class="col-sm-8">
+                <input id="name" name="name" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">密钥：</label>
+            <div class="col-sm-8">
+                <input id="keyCode" name="keyCode" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">失效时间：</label>
+            <div class="col-sm-8">
+                <input id="expiryTime" name="expiryTime" class="form-control" type="text">
+            </div>
+        </div>
+    </form>
+</div>
+<div th:include="include::footer"></div>
+<script th:src="@{/dependency/layui/layui.js}"></script>
+<script type="text/javascript">
+    var prefix = ctx + "system/system"
+    var laydate = "";
+    $(function () {
+        $("#keyCode").val(randomString(16));
+    });
+    layui.use('laydate', function () {
+        laydate = layui.laydate;
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#expiryTime', //指定元素
+            type: "datetime"
+        });
+    });
+    $("#form-system-add").validate({
+        rules: {
+            xxxx: {
+                required: true
+            }
+        },
+        focusCleanup: true
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/add", $('#form-system-add').serialize());
+        }
+    }
+
+    function randomString(len) {
+        len = len || 16;
+        var $chars = '1234567890abcdef';
+        /****默认去掉了容易混淆的字符oOLl,9gq,Vv,Uu,I1****/
+        var maxPos = $chars.length;
+        var pwd = '';
+        for (i = 0; i < len; i++) {
+            pwd += $chars.charAt(Math.floor(Math.random() * maxPos));
+        }
+        return pwd;
+    }
+</script>
+</body>
+</html>

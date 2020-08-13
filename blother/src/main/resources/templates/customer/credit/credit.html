@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <title>授信申请</title>
+    <!--    <link th:href="@{/favicon.ico}" rel="shortcut icosn"/>-->
+    <link href="/css/font-awesome.min.css" rel="stylesheet"/>
+
+    <link href="/css/main/bootstrap.min14ed.css" rel="stylesheet"/>
+    <link href="/css/nucleo.css" rel="stylesheet"/>
+    <link type="text/css" href="/css/argon.css" rel="stylesheet">
+    <!--<link type="text/css" href="/argon/argonchange.css?v=1.0.0" th:href="@{/argon/argonchange.css}" rel="stylesheet">-->
+    <link href="/ruoyi/css/ry-ui.css" rel="stylesheet"/>
+    <link href="/ajax/libs/bootstrap-table/bootstrap-table.min.css"
+          rel="stylesheet"/>
+    <link href="/css/toastr.min.css" rel="stylesheet"/>
+    <style>td {
+        vertical-align: middle !important;
+    }</style>
+    <!-- Core -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <!--JQueryVali-->
+    <script src="/ajax/libs/validate/jquery.validate.min.js"></script>
+    <script src="/ajax/libs/validate/messages_zh.min.js"></script>
+    <script src="/ajax/libs/validate/jquery.validate.extend.js"></script>
+    <script src="/vendor/popper/popper.min.js"></script>
+    <script src="/vendor/headroom/headroom.min.js"></script>
+    <!-- Argon JS -->
+    <script src="/js/argon.js"></script>
+    <script src="/js/piexif.js"></script>
+    <script src="/js/toastr.min.js"></script>
+    <!-- bootstrap-table 表格插件 -->
+    <script src="/ajax/libs/bootstrap-table/bootstrap-table.min.js"></script>
+    <script src="/ajax/libs/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+    <script src="/ajax/libs/bootstrap-table/extensions/mobile/bootstrap-table-mobile.js"></script>
+    <script src="/ajax/libs/bootstrap-table/extensions/toolbar/bootstrap-table-toolbar.min.js"></script>
+    <script src="/ajax/libs/bootstrap-table/extensions/columns/bootstrap-table-fixed-columns.js"></script>
+    <script src="/ajax/libs/layer/layer.min.js"></script>
+    <script src="/ruoyi/js/ry-ui.js"></script>
+    <script src="/js/toastr.min.js"></script>
+    <script src="/extra/js/credit.js" th:src="@{/extra/js/credit.js}"></script>
+
+    <th:block th:include="include :: bootstrap-fileinput-js"/>
+    <script> var ctx = "\/";
+    var captchaType = "math"; </script>
+    <style>
+        .menu-item {
+            font-size: 14px;
+            color: #ffffff;
+            width: 16%;
+            padding: 10px;
+            margin-right: 30px;
+        }
+
+        .menu-item:hover {
+            color: #16181b;
+            background-color: #f6f9fc;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+
+<body>
+<div style="position: fixed; left: 0; top: 0; width: 100%; height: 100%; overflow-y: auto; display: flex; flex-direction: column;">
+    <header class="header-global">
+        <nav id="navbar-main" class="navbar navbar-main navbar-expand-lg navbar-transparent navbar-light">
+            <div class="container">
+                <a class="navbar-brand mr-lg-5" href="/">
+                    <img src="/img/factoring_logo_light.png" th:src="@{/img/factoring_logo_light.png}">
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar_global"
+                        aria-controls="navbar_global" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse" id="navbar_global" style="margin-top: -18px;">
+                    <div>
+                        <a href="credit" class="menu-item">授信申请</a>
+                        <a href="withdraw" class="menu-item">提款申请</a>
+                        <a href="repayment" class="menu-item">我的还款</a>
+                        <a href="usercenter" class="menu-item">用户中心</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main class="profile-page" style="flex: 1 0 auto;">
+        <section class="section-profile-cover section-shaped my-0">
+            <div class="shape shape-style-1 shape-primary shape-skew alpha-4">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </section>
+        <section class="section section-skew" style="margin-top:-200px;">
+            <div class="container">
+                <div class="card card-profile shadow mt--300">
+                    <div class="px-4">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-3 order-lg-2">
+                                <div class="text-muted text-center mb-2" style="padding-top: 20px;">
+                                    <big>授信申请</big>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-left ">
+                            <button class="btn btn-sm btn-primary" type="button" onclick="newcredit()"
+                                    style="font-size: 0.87rem">新的授信
+                            </button>
+                        </div>
+                        <div class="mt-2 py-5 border-top text-center">
+                            <div class="container-div">
+                                <div class="row justify-content-center">
+                                    <div class="col-sm-12 select-table ">
+                                        <table id="bootstrap-table" data-mobile-responsive="true"
+                                               style="max-height: 500px"></table>
+                                    </div>
+                                </div>
+                            </div>
+                            <br/>
+                            <span style="">当前所示的状态、数据等展示仅供参考，不作为双方是否开展保理融资业务的依据，双方的权利义务以最终签署合同为准</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div th:replace="fragment/footer :: footer"></div>
+</div>
+
+<script type="application/javascript">
+
+</script>
+</body>
+
+</html>

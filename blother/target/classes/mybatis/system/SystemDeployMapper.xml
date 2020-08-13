@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinke.project.system.systemDeploy.mapper.SystemDeployMapper">
+
+    <resultMap type="SystemDeploy" id="SystemDeployResult">
+        <result property="id" column="id"/>
+        <result property="sysKey" column="sys_key"/>
+        <result property="value" column="value"/>
+        <result property="state" column="state"/>
+    </resultMap>
+
+    <sql id="selectSystemDeployVo">
+        select id, sys_key, value, state from sys_system_deploy
+    </sql>
+
+    <select id="selectSystemDeployList" parameterType="SystemDeploy" resultMap="SystemDeployResult">
+        <include refid="selectSystemDeployVo"/>
+        <where>
+            <if test="id != null ">and id = #{id}
+            </if>
+            <if test="sysKey != null  and sysKey != '' ">and sys_key = #{sysKey}
+            </if>
+            <if test="value != null  and value != '' ">and value = #{value}
+            </if>
+            <if test="state != null  and state != '' ">and state = #{state}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectSystemDeployById" parameterType="Long" resultMap="SystemDeployResult">
+        <include refid="selectSystemDeployVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertSystemDeploy" parameterType="SystemDeploy">
+        insert into sys_system_deploy
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null  ">id,
+            </if>
+            <if test="sysKey != null  and sysKey != ''  ">sys_key,
+            </if>
+            <if test="value != null  and value != ''  ">value,
+            </if>
+            <if test="state != null  and state != ''  ">state,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null  ">#{id},
+            </if>
+            <if test="sysKey != null  and sysKey != ''  ">#{sysKey},
+            </if>
+            <if test="value != null  and value != ''  ">#{value},
+            </if>
+            <if test="state != null  and state != ''  ">#{state},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateSystemDeploy" parameterType="SystemDeploy">
+        update sys_system_deploy
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="sysKey != null  and sysKey != ''  ">sys_key = #{sysKey},
+            </if>
+            <if test="value != null  and value != ''  ">value = #{value},
+            </if>
+            <if test="state != null  and state != ''  ">state = #{state},
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSystemDeployById" parameterType="Long">
+        delete from sys_system_deploy where id = #{id}
+    </delete>
+
+    <delete id="deleteSystemDeployByIds" parameterType="String">
+        delete from sys_system_deploy where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

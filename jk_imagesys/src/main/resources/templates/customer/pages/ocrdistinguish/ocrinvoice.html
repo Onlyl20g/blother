@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="../../css/ocr/ds.demo.css">
+    <link rel="stylesheet" href="../../dependency/mdui/css/mdui.min.css"/>
+    <link rel="stylesheet" href="../../dependency/bootstrap4/css/bootstrap.min.css">
+    <script src="../../dependency/js/jquery-2.1.1.min.js"></script>
+    <script src="../../dependency/mdui/js/mdui.min.js"></script>
+    <script src="../../dependency/bootstrap4/js/bootstrap.min.js"></script>
+    <script src="../../ajax/libs/layer/layer.min.js"></script>
+    <script src="../../ajax/libs/layui/layui.js"></script>
+    <style>
+        .btn_style {
+            padding: .375rem .75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #ced4da;
+            border-radius: .25rem;
+        }
+
+        .data_style {
+            padding: 10px 15px;
+            width: 100%;
+            height: 546px;
+            line-height: 546px;
+            border: 1px solid #ccc;
+            text-align: center;
+            vertical-align: middle;
+        }
+    </style>
+
+    <script>
+        $(function () {
+            $("#ocr_data").change(function () {
+                var file = this.files[0];
+                sessionStorage.setItem("file", file);
+                var fileType = this.files[0].type.split("/")[1].toLowerCase().trim(); //文件类型
+                var fileSize = (this.files[0].size / 1024).toFixed(2);    //文件大小
+                if (fileType != "jpg" && fileType != "gif" && fileType != "jpeg" && fileType != "png" && fileType != "bmp") {
+                    showResult("您选择的文件不符合要求,请从新选择...", '关闭', 1);
+                    return false;
+                }
+                var reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = function (evt) {
+                    var imgstr = evt.target.result; //base64字符串
+                    $("#show_img").attr("hidden", false);
+                    $("#show_img").attr("src", imgstr);
+                    setTimeout(function () {
+                        doOCR(file);
+                    }, 1000);
+                };
+            });
+        });
+
+
+        var files = {
+            data: [],
+            newData: []
+        };
+
+        function loadLineImages() {
+            layer.open({
+                type: 2,
+                scrollbar: false,
+                title: '文件信息',
+                area: ["90%", "70%"],
+                offset: '10px',
+                content: ['online', 'no'],
+                resize: false,
+                // offset: 'auto',
+                end: function () {
+                    selectOcrImg(sessionStorage.getItem("fileId"));
+
+                }
+            });
+        }
+
+        function filterFile() {
+            $("#tag").html("");
+            var condition = $("#condition").val();
+            var newDate = [];
+            // for (var file of files.data) {
+            for (var i = 0; i < files.data.length; i++) {
+                var file = files.data[i];
+                var b = file.name.includes(condition);
+                if (b) {
+                    newDate.push(file);
+                }
+            }
+            addContent(newDate);
+        }
+
+        function addContent(newDate) {
+            var code = "";
+            code += "<ul class=\"mdui-list\">";
+            var row = null;
+            var dataSize = newDate.length;
+            for (var i = 0; i < dataSize; i++) {
+                row = newDate[i];
+                code += "<li class=\"mdui-list-item mdui-ripple\" onclick='$(\"#" + row.id + "\").click();' ondblclick='selectOcrImg(" + row.id + ")' >";
+                code += "<div class=\"mdui-list-item-content mdui-col-xs-1\"><input name='ocrImg' style='position: relative;top: 0px;visibility: hidden;' type='checkbox' value='" + row.id + "' id='" + row.id + "' onclick='myToggle(event)'></div>";
+                code += "<div class=\"mdui-list-item-avatar\"><img width='56px'src=\"../../dependency/images/demo/ico/" + row.fileSuffix + ".png\" \"></div>";
+                code += "<div class=\"mdui-list-item-content mdui-col-xs-6 \">" + row.name + "</div>";
+                code += "<div class=\"mdui-list-item-content mdui-col-xs-2\" style='text-align:left;'>" + row.createTime + "</div>";
+                code += "</li>";
+            }
+            code += "</ul>";
+            $("#tag").append(code);
+        }
+
+        function selectOcrImg(id) {
+            if (id == null || id == "") {
+                return;
+            }
+            sessionStorage.removeItem("fileId");
+            removeSelected();
+            sessionStorage.setItem("dataSource", "online");
+            $.ajax({
+                type: 'POST',
+                url: '/system/file/selectFileImg',
+                data: {"id": id},
+                dataType: 'JSON',
+                success: function (data) {
+                    layer.closeAll();
+                    $("#show_img").attr("hidden", false);
+                    $("#show_img").attr("src", data.baseDate);
+                    var file = dataURLtoFile(data.baseDate, "business.jpg");
+                    doOCR(file);
+                }
+            });
+        }
+
+        function loadImages() {
+            sessionStorage.setItem("dataSource", "local");
+            removeSelected();
+            $("#ocr_data")[0].click();
+        }
+
+
+        function removeSelected() {
+            $("#show_img").attr("hidden", "hidden");
+            $("#ocr_data").val("");
+            $("#divNoteMessage>p").html("");
+        }
+
+
+        function ocrClick() {
+            var file = $("#ocr_data")[0].files[0];
+            doOCR(file);
+        }
+
+        /**
+         * 执行解析
+         */
+        function doOCR(file) {
+            var index = layer.load(1, {
+                shade: [0.1, '#fff'] //0.1透明度的白色背景
+            });
+
+            var formData = new FormData();
+            formData.append("file", file);
+            if (file == null) {
+                layer.closeAll();
+                return;
+            }
+            var type = sessionStorage.getItem("businessType");
+            if (type == "businessLicense") {
+                parseBusinessDate(formData);
+            } else {
+                parseInvoice(formData);
+            }
+        }
+
+        /**
+         * 解析发票
+         */
+        function parseInvoice(formData) {
+            $.ajax({
+                type: "POST",
+                url: "/ocr/parseInvoice",
+                cache: false,
+                data: formData,
+                dataType: "json",
+                mimeType: "multipart/form-data",
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    if (data.result == "") {
+                        showResult("您选择的文件不符合要求...", '', 0);
+                        setTimeout(function () {
+                            layer.closeAll();
+                            removeSelected();
+                        }, 2000);
+                        return;
+                    }
+                    var html = invoiceStyle(data.result)
+                    $("#divNoteMessage>p").html(html);
+                    layer.closeAll();
+                }
+            });
+        }
+
+        /**
+         * 解析营业执照
+         */
+        function parseBusinessDate(formData) {
+            $.ajax({
+                type: "POST",
+                url: "/ocr/parseBusiness",
+                cache: false,
+                data: formData,
+                dataType: "json",
+                mimeType: "multipart/form-data",
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    layer.closeAll();
+                    var html = "";
+                    if (data.msg == null) {
+                        var code = data.result.enterpriseId.split(":")[1];
+                        if (code.length == 1) {//判断图片是否解析营业执照
+                            showResult("您选择的文件不符合要求...", '', 0);
+                            setTimeout(function () {
+                                layer.closeAll();
+                                removeSelected();
+                            }, 2000);
+                            return;
+                        }
+                    } else {
+                        showResult("您选择的文件不符合要求...", '', 0);
+                        setTimeout(function () {
+                            layer.closeAll();
+                            removeSelected();
+                        }, 2000);
+                        return;
+                    }
+                    $.each(data.result, function (n, value) {
+                        if (value != null && value != "") {
+                            html += value + " ;" + "<br>";
+                        }
+                    });
+                    $("#divNoteMessage>p").html(html);
+                }
+            });
+        }
+
+        /**
+         * 显示提示信息
+         * @param content
+         * @param type
+         */
+        var showResult = function (content, btn, closeBtn) {
+            layer.open({
+                title: '提示',
+                btn: btn,
+                closeBtn: closeBtn,
+                content: content
+            });
+        };
+
+        /**
+         * 保存
+         */
+        function save() {
+            var businessType = sessionStorage.getItem("businessType");
+            var dataSource = sessionStorage.getItem("dataSource");
+//        var file = sessionStorage.getItem("file");
+            var result = $("#divNoteMessage>p").text().trim();
+            var formData = new FormData();
+            formData.append("file", $("#ocr_data")[0].files[0]);
+            formData.append("businessType", businessType);
+            formData.append("dataSource", dataSource);
+            formData.append("result", result);
+            if (result == null || result == "" || result == "<br>") {
+                showResult("解析内容不能为空", '', 1);
+                setTimeout(function () {
+                    layer.closeAll();
+                }, 1000);
+                return;
+            }
+            $.ajax({
+                type: "POST",
+                url: "/ocr/save",
+                cache: false,
+                data: formData,
+                dataType: "json",
+                mimeType: "multipart/form-data",
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    if (data.code == 200) {
+                        removeSelected();
+                        showResult("保存成功", '关闭', 1);
+                    }
+                }
+            })
+        }
+
+        /**
+         * 将base64转换为file
+         */
+        function dataURLtoFile(dataurl, filename) {
+            var dataURLtoBlob1 = dataURLtoBlob(dataurl);
+            var blobToFile1 = blobToFile(dataURLtoBlob1, filename);
+            return blobToFile1;
+        }
+
+        function dataURLtoBlob(dataurl) {
+            var arr = dataurl.split(',');
+            var mime = arr[0].match(/:(.*?);/)[1];
+            var bstr = atob(arr[1]);
+            var n = bstr.length;
+            var u8arr = new Uint8Array(n);
+            while (n--) {
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            return new Blob([u8arr], {type: mime});
+        }
+
+        //将blob转换为file
+        function blobToFile(theBlob, fileName) {
+            theBlob.lastModifiedDate = new Date();
+            theBlob.name = fileName;
+            return theBlob;
+        }
+
+        /**
+         * 格式化发票数据
+         * @param data
+         * @returns {string}
+         */
+        function invoiceStyle(data) {
+            var html = "";
+            var row = JSON.parse(data);
+            var INVOICE_SELLER_NAME = "增值税发票开票机构名称: " + row["INVOICE_SELLER_NAME"];
+            html += INVOICE_SELLER_NAME + ";<br>";
+            var INVOICE_SELLER_BANK = "增值税发票开票机构银行名称及账号: " + row["INVOICE_SELLER_BANK"];
+            html += INVOICE_SELLER_BANK + ";<br>";
+            var INVOICE_SELLER_ADDRESS = "增值税发票开票机构地址: " + row["INVOICE_SELLER_ADDRESS"];
+            html += INVOICE_SELLER_ADDRESS + ";<br>";
+            var INVOICE_SELLER_REGISTER_ID = "增值税发票开票机构组织机构代码: " + row["INVOICE_SELLER_REGISTER_ID"];
+            html += INVOICE_SELLER_REGISTER_ID + ";<br>";
+            var INVOICE_TOTAL_AMOUNT = "增值税发票总金额: " + row["INVOICE_TOTAL_AMOUNT"];
+            html += INVOICE_TOTAL_AMOUNT + ";<br>";
+            var INVOICE_SELLER_TAX_RATE = "增值税发票开票税率: " + row["INVOICE_SELLER_TAX_RATE"];
+            html += INVOICE_SELLER_TAX_RATE + ";<br>";
+            var INVOICE_TOTAL_TAX = "增值税发票总金额: " + row["INVOICE_TOTAL_TAX"];
+            html += INVOICE_TOTAL_TAX + ";<br>";
+            var INVOICE_TIME = "增值税发票开票时间: " + row["INVOICE_TIME"];
+            html += INVOICE_TIME + ";<br>";
+            var INVOICE_PURCHASER_NAME = "增值税发票购买机构名称: " + row["INVOICE_PURCHASER_NAME"];
+            html += INVOICE_PURCHASER_NAME + ";<br>";
+            var INVOICE_PURCHASER_BANK = "增值税发票购买机构银行名称及账号: " + row["INVOICE_PURCHASER_BANK"];
+            html += INVOICE_PURCHASER_BANK + ";<br>";
+            var INVOICE_PURCHASER_ADDRESS = "增值税发票购买机构地址: " + row["INVOICE_PURCHASER_ADDRESS"];
+            html += INVOICE_PURCHASER_ADDRESS + ";<br>";
+            var INVOICE_PURCHASER_REGISTER_ID = "增值税发票购买机构组织机构代码: " + row["INVOICE_PURCHASER_REGISTER_ID"];
+            html += INVOICE_PURCHASER_REGISTER_ID + ";<br>";
+            var INVOICE_ID = "增值税发票编号: " + row["INVOICE_ID"];
+            html += INVOICE_ID + ";<br>";
+            var INVOICE_CODE = "增值税发票编码: " + row["INVOICE_CODE"];
+            html += INVOICE_CODE + ";<br>";
+            var INVOICE_TYPE = "增值税发票类型: " + row["INVOICE_TYPE"];
+            html += INVOICE_TYPE + ";<br>";
+            var detail = row["INVOICE_DETAIL"][0];
+            var ITEM_ROW_NUMBER = "增值税发票详情行号: " + detail["ITEM_ROW_NUMBER"];
+            html += ITEM_ROW_NUMBER + ";<br>";
+            var ITEM_PRODUCT_NAME = "增值税发票详情货物或应税劳务、服务名称: " + detail["ITEM_PRODUCT_NAME"];
+            html += ITEM_PRODUCT_NAME + ";<br>";
+            var ITEM_PRODUCT_TYPE = "增值税发票详情规格类型: " + detail["ITEM_PRODUCT_TYPE"];
+            html += ITEM_PRODUCT_TYPE + ";<br>";
+            var ITEM_PRODUCT_UNIT = "增值税发票详情单位: " + detail["ITEM_PRODUCT_UNIT"];
+            html += ITEM_PRODUCT_UNIT + ";<br>";
+            var ITEM_PRODUCT_AMOUNT = "增值税发票详情数量: " + detail["ITEM_PRODUCT_AMOUNT"];
+            html += ITEM_PRODUCT_AMOUNT + ";<br>";
+            var ITEM_PRODUCT_PRICE = "增值税发票详情单价: " + detail["ITEM_PRODUCT_PRICE"];
+            html += ITEM_PRODUCT_PRICE + ";<br>";
+            var ITEM_PRODUCT_SUM_MONEY = "增值税发票详情金额: " + detail["ITEM_PRODUCT_SUM_MONEY"];
+            html += ITEM_PRODUCT_SUM_MONEY + ";<br>";
+            var ITEM_PRODUCT_TAX_RATE = "增值税发票详情税率: " + detail["ITEM_PRODUCT_TAX_RATE"];
+            html += ITEM_PRODUCT_TAX_RATE + ";<br>";
+            var ITEM_PRODUCT_SUM_TAX = "增值税发票详情税额: " + detail["ITEM_PRODUCT_SUM_TAX"];
+            html += ITEM_PRODUCT_SUM_TAX;
+            return html;
+        }
+    </script>
+</head>
+
+<body style="overflow: hidden;">
+<div style="margin: 40px 0;width: 100%;text-align: center;">
+    <button class="mdui-btn mdui-color-blue-400" onclick="loadImages();"><i class="mdui-icon material-icons">add</i>上传本地文件
+    </button>
+    <button class="mdui-btn mdui-color-blue-400" onclick="loadLineImages();" style="margin-left: 30px;"><i
+            class="mdui-icon material-icons">add</i>选择在线文件
+    </button>
+    <button class="mdui-btn mdui-color-blue-400" onclick="ocrClick();" style="margin-left: 30px;">扫描</button>
+    <button class="mdui-btn mdui-color-blue-500" onclick="removeSelected();" style="margin-left: 30px;">清空</button>
+    <button class="mdui-btn mdui-color-blue-500" onclick="save();" style="margin-left: 30px;">保存</button>
+</div>
+<div id="main">
+    <div class="container">
+        <div class="ct-lt clearfix">
+            <form enctype="multipare/form-data" id="file_form">
+                <input id="ocr_data" type="file" name="file" hidden>
+            </form>
+            <div id="dwtcontrolContainer" class="data_style">
+                <img id="show_img" src="#" hidden style="width: 94%;max-height: 510px;">
+            </div>
+        </div>
+        <div class="ct-rt">
+            <div class="content clearfix">
+                <div id="DWTcontainerBtm">
+                    <p>解析结果:</p>
+                    <div id="divNoteMessage">
+                        <p></p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div id="file_data" style="display: none;">
+    <div style="position: fixed;top: 52px;height: 60px;line-height: 60px;margin-left: 0px; background-color: #fafafa;z-index: 10;width: 700px;">
+        <form style="text-align: right;">
+            <div class="form-group" style="vertical-align: middle;">
+                <input type="text" class="btn_style" id="condition" placeholder="搜索文件名">
+                <button id="fat-btn" class="btn" type="button" onclick="filterFile();" style="margin:0px 10px;">
+                    搜索
+                </button>
+            </div>
+        </form>
+
+    </div>
+    <div style="height: 60px;"></div>
+    <div id="tag" style="overflow:scroll; height: 240px;">
+    </div>
+</div>
+
+</body>
+
+</html>

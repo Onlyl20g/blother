@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinke.project.system.supplierIdcardinfo.mapper.SupplierIdcardinfoMapper">
+
+    <resultMap type="SupplierIdcardinfo" id="SupplierIdcardinfoResult">
+        <result property="id" column="id"/>
+        <result property="billId" column="bill_id"/>
+        <result property="supplierBillId" column="supplier_bill_id"/>
+        <result property="address" column="address"/>
+        <result property="nationality" column="nationality"/>
+        <result property="num" column="num"/>
+        <result property="sex" column="sex"/>
+        <result property="name" column="name"/>
+        <result property="birth" column="birth"/>
+        <result property="requestId" column="request_id"/>
+        <result property="str1" column="str1"/>
+        <result property="str2" column="str2"/>
+        <result property="str3" column="str3"/>
+        <result property="str4" column="str4"/>
+        <result property="str5" column="str5"/>
+    </resultMap>
+
+    <sql id="selectSupplierIdcardinfoVo">
+        select id, bill_id, supplier_bill_id, address, nationality, num, sex, name, birth, request_id, str1, str2, str3, str4, str5 from sys_supplier_idcardinfo
+    </sql>
+
+    <select id="selectSupplierIdcardinfoList" parameterType="SupplierIdcardinfo" resultMap="SupplierIdcardinfoResult">
+        <include refid="selectSupplierIdcardinfoVo"/>
+        <where>
+            <if test="id != null ">and id = #{id}
+            </if>
+            <if test="billId != null  and billId != '' ">and bill_id = #{billId}
+            </if>
+            <if test="supplierBillId != null  and supplierBillId != '' ">and supplier_bill_id = #{supplierBillId}
+            </if>
+            <if test="address != null  and address != '' ">and address = #{address}
+            </if>
+            <if test="nationality != null  and nationality != '' ">and nationality = #{nationality}
+            </if>
+            <if test="num != null  and num != '' ">and num = #{num}
+            </if>
+            <if test="sex != null  and sex != '' ">and sex = #{sex}
+            </if>
+            <if test="name != null  and name != '' ">and name = #{name}
+            </if>
+            <if test="birth != null  and birth != '' ">and birth = #{birth}
+            </if>
+            <if test="requestId != null  and requestId != '' ">and request_id = #{requestId}
+            </if>
+            <if test="str1 != null  and str1 != '' ">and str1 = #{str1}
+            </if>
+            <if test="str2 != null  and str2 != '' ">and str2 = #{str2}
+            </if>
+            <if test="str3 != null  and str3 != '' ">and str3 = #{str3}
+            </if>
+            <if test="str4 != null  and str4 != '' ">and str4 = #{str4}
+            </if>
+            <if test="str5 != null  and str5 != '' ">and str5 = #{str5}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectSupplierIdcardinfoById" parameterType="Long" resultMap="SupplierIdcardinfoResult">
+        <include refid="selectSupplierIdcardinfoVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertSupplierIdcardinfo" parameterType="SupplierIdcardinfo" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_supplier_idcardinfo
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="billId != null  and billId != ''  ">bill_id,
+            </if>
+            <if test="supplierBillId != null  and supplierBillId != ''  ">supplier_bill_id,
+            </if>
+            <if test="address != null  and address != ''  ">address,
+            </if>
+            <if test="nationality != null  and nationality != ''  ">nationality,
+            </if>
+            <if test="num != null  and num != ''  ">num,
+            </if>
+            <if test="sex != null  and sex != ''  ">sex,
+            </if>
+            <if test="name != null  and name != ''  ">name,
+            </if>
+            <if test="birth != null  and birth != ''  ">birth,
+            </if>
+            <if test="requestId != null  and requestId != ''  ">request_id,
+            </if>
+            <if test="str1 != null  and str1 != ''  ">str1,
+            </if>
+            <if test="str2 != null  and str2 != ''  ">str2,
+            </if>
+            <if test="str3 != null  and str3 != ''  ">str3,
+            </if>
+            <if test="str4 != null  and str4 != ''  ">str4,
+            </if>
+            <if test="str5 != null  and str5 != ''  ">str5,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="billId != null  and billId != ''  ">#{billId},
+            </if>
+            <if test="supplierBillId != null  and supplierBillId != ''  ">#{supplierBillId},
+            </if>
+            <if test="address != null  and address != ''  ">#{address},
+            </if>
+            <if test="nationality != null  and nationality != ''  ">#{nationality},
+            </if>
+            <if test="num != null  and num != ''  ">#{num},
+            </if>
+            <if test="sex != null  and sex != ''  ">#{sex},
+            </if>
+            <if test="name != null  and name != ''  ">#{name},
+            </if>
+            <if test="birth != null  and birth != ''  ">#{birth},
+            </if>
+            <if test="requestId != null  and requestId != ''  ">#{requestId},
+            </if>
+            <if test="str1 != null  and str1 != ''  ">#{str1},
+            </if>
+            <if test="str2 != null  and str2 != ''  ">#{str2},
+            </if>
+            <if test="str3 != null  and str3 != ''  ">#{str3},
+            </if>
+            <if test="str4 != null  and str4 != ''  ">#{str4},
+            </if>
+            <if test="str5 != null  and str5 != ''  ">#{str5},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateSupplierIdcardinfoAll" parameterType="SupplierIdcardinfo">
+        update sys_supplier_idcardinfo
+        set address = #{address},nationality = #{nationality},sex = #{sex},birth = #{birth}
+        where id = #{id}
+    </update>
+
+    <update id="updateSupplierIdcardinfo" parameterType="SupplierIdcardinfo">
+        update sys_supplier_idcardinfo
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="billId != null  and billId != ''  ">bill_id = #{billId},
+            </if>
+            <if test="supplierBillId != null  and supplierBillId != ''  ">supplier_bill_id = #{supplierBillId},
+            </if>
+            <if test="address != null  and address != ''  ">address = #{address},
+            </if>
+            <if test="nationality != null  and nationality != ''  ">nationality = #{nationality},
+            </if>
+            <if test="num != null  and num != ''  ">num = #{num},
+            </if>
+            <if test="sex != null  and sex != ''  ">sex = #{sex},
+            </if>
+            <if test="name != null  and name != ''  ">name = #{name},
+            </if>
+            <if test="birth != null  and birth != ''  ">birth = #{birth},
+            </if>
+            <if test="requestId != null  and requestId != ''  ">request_id = #{requestId},
+            </if>
+            <if test="str1 != null  and str1 != ''  ">str1 = #{str1},
+            </if>
+            <if test="str2 != null  and str2 != ''  ">str2 = #{str2},
+            </if>
+            <if test="str3 != null  and str3 != ''  ">str3 = #{str3},
+            </if>
+            <if test="str4 != null  and str4 != ''  ">str4 = #{str4},
+            </if>
+            <if test="str5 != null  and str5 != ''  ">str5 = #{str5},
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSupplierIdcardinfoById" parameterType="Long">
+        delete from sys_supplier_idcardinfo where id = #{id}
+    </delete>
+
+    <delete id="deleteSupplierIdcardinfoByIds" parameterType="String">
+        delete from sys_supplier_idcardinfo where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

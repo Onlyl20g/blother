@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Start your development with a Design System for Bootstrap 4.">
+    <meta name="author" content="Creative Tim">
+    <title>金科保理获客系统</title>
+
+    <!-- Favicon -->
+    <!--    <link th:href="@{favicon.ico}" rel="stylesheet"/>-->
+    <!-- Fonts -->
+    <!--<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">-->
+    <!-- Icons -->
+    <link th:href="@{/css/nucleo.css}" rel="stylesheet"/>
+    <link th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
+
+    <link th:href="@{/css/toastr.min.css}" rel="stylesheet"/>
+    <!--  bootstrap CSS  -->
+    <!--<link href="../css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>-->
+    <!-- Argon CSS -->
+    <link type="text/css" href="/css/argon.css?v=1.1.0" th:href="@{/css/argon.css}" rel="stylesheet">
+    <link type="text/css" href="/css/jinke.css" th:href="@{/css/jinke.css}" rel="stylesheet">
+    <link type="text/css" href="/vendor/layui/css/layui.css" th:href="@{/vendor/layui/css/layui.css}" rel="stylesheet">
+    <!--  bootstrap-fileinput-css  -->
+    <th:block th:include="include :: bootstrap-fileinput-css"/>
+    <style>
+        .row {
+            margin-top: 20px;
+        }
+
+        .btn {
+            line-height: 1.7;
+        	!important;
+        }
+
+        .layui-input-block {
+            margin-left: 10px;
+        	!important;
+        }
+
+        .addImgDiv1 {
+            position: relative;
+            width: 500px;
+            overflow: hidden;
+            height: 200px;
+        }
+
+        .addImgDiv2 {
+            position: absolute;
+            width: auto;
+            height: auto;
+            left: 50%;
+            margin-left: -100px;
+        }
+    </style>
+    <!-- Core -->
+    <script src="/js/jquery.min.js" th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <!--JQueryVali-->
+    <script src="/ajax/libs/validate/jquery.validate.min.js"
+            th:src="@{/ajax/libs/validate/jquery.validate.min.js}"></script>
+    <script src="/ajax/libs/validate/messages_zh.min.js" th:src="@{/ajax/libs/validate/messages_zh.min.js}"></script>
+    <script src="/ajax/libs/validate/jquery.validate.extend.js"
+            th:src="@{/ajax/libs/validate/jquery.validate.extend.js}"></script>
+    <script src="/vendor/popper/popper.min.js" th:src="@{/vendor/popper/popper.min.js}"></script>
+    <script src="/vendor/headroom/headroom.min.js" th:src="@{/vendor/headroom/headroom.min.js}"></script>
+    <script src="/vendor/layui/layui.js" th:src="@{/vendor/layui/layui.js}"></script>
+    <!-- Argon JS -->
+    <script src="/js/argon.js?v=1.0.0" th:src="@{/js/argon.js}"></script>
+    <script src="/js/piexif.js" th:src="@{/js/piexif.js}"></script>
+    <script src="/js/toastr.min.js" th:src="@{/js/toastr.min.js}"></script>
+    <script src="/extra/js/register.js" th:src="@{/extra/js/register.js}"></script>
+    <script src="/extra/js/register.js" th:src="@{/extra/js/tools.js}"></script>
+    <th:block th:include="include :: bootstrap-fileinput-js"/>
+</head>
+
+<body>
+<header class="header-global">
+    <nav id="navbar-main" class="navbar navbar-main navbar-expand-lg navbar-transparent navbar-light">
+        <div class="container">
+            <a class="navbar-brand mr-lg-5" href="/">
+                <img src="/img/factoring_logo_light.png" th:src="@{/img/factoring_logo_light.png}">
+            </a>
+        </div>
+    </nav>
+</header>
+<main class="profile-page">
+    <section class="section-profile-cover section-shaped my-0">
+        <!-- Circles background -->
+        <div class="shape shape-style-1 bg-gradient-blue alpha-4">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <!-- SVG separator -->
+        <div class="separator separator-bottom separator-skew">
+            <svg x="0" y="0" viewBox="0 0 2560 100" preserveAspectRatio="none" version="1.1"
+                 xmlns="http://www.w3.org/2000/svg">
+                <polygon class="fill-white" points="2560 0 2560 100 0 100"></polygon>
+            </svg>
+        </div>
+    </section>
+    <section class="section">
+        <div class="container">
+            <div class="card card-profile shadow profile-container-mt">
+                <div>
+                    <div class="card bg-secondary border-0">
+                        <div class="card-header bg-white pb-2">
+                            <div class="text-muted text-center mb-3">
+                                <big>请填写以下注册资料</big>
+                            </div>
+
+                        </div>
+                        <div class="card-body px-lg-5 py-lg-5">
+                            <div class="text-center text-muted mb-4">
+                                <small></small>
+                            </div>
+                            <form role="form" id="registerForm" name="registerForm">
+                                <input type="hidden" id="bus1" name="bus1">
+                                <input type="hidden" id="bus2" name="bus2">
+                                <input type="hidden" id="bus3" name="bus3">
+                                <input type="hidden" id="nationality" name="nationality">
+                                <input type="hidden" id="sex" name="sex">
+                                <input type="hidden" id="birth" name="birth">
+                                <input type="hidden" id="address" name="address">
+                                <input type="hidden" id="request_id" name="request_id">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <label class="font-noraml">请上传营业执照<span style="color:red;margin:5px;">*</span>：</label>
+                                        <blockquote class="layui-elem-quote layui-quote-nm"
+                                                    style="margin-top: 10px;">
+                                            预览图：
+                                            <div class="layui-upload-list" id="businessLicenseView"></div>
+                                        </blockquote>
+                                        <div class="row">
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="businessLicensePath"
+                                                       placeholder="请上传营业执照">
+                                            </div>
+                                            <div style="display:block;float:left;">
+                                                <button type="button" class="btn btn-primary" id="businessLicenseUpload"
+                                                        style="margin-left: -5px;">上传
+                                                </button>
+                                            </div>
+                                            <div style="display:block;float:left;">
+                                                <button type="button" class="btn btn-primary" id="businessLicenseDelete"
+                                                        onclick="removeFileBusinessLicense();"
+                                                        style="margin-left: -2px;">移除
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="layui-progress layui-progress-big layui-bg-gray"
+                                             style="display: none"
+                                             lay-showPercent="yes" lay-filter="businessLicensePath">
+                                            <div class="layui-progress-bar layui-bg-green" lay-percent="0%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <label class="font-noraml">企业名称<span
+                                                style="color:red;margin:5px;">*</span>：</label>
+                                        <input type="text" class="form-control" id="companyname" name="companyname"
+                                               onblur="checkValue(this)">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <label class="font-noraml">统一社会信用代码<span style="color:red;margin:5px;">*</span>：</label>
+                                        <input type="text" class="form-control" id="code" name="code"
+                                               onblur="checkValue(this)">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <label class="font-noraml">注册资本<span
+                                                style="color:red;margin:5px;">*</span>：</label>
+                                        <input type="text" class="form-control" id="enterpriseCapital"
+                                               name="enterpriseCapital" onblur="checkValueLow(this)">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <label class="font-noraml">成立日期<span
+                                                style="color:red;margin:5px;">*</span>：</label>
+                                        <input type="text" class="form-control" id="enterpriseTime"
+                                               name="enterpriseTime">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <label class="font-noraml">营业期限<span
+                                                style="color:red;margin:5px;">*</span>：</label>
+                                        <div class="form-inline">
+                                            <input type="text" style="width: 35%;" class="form-control"
+                                                   id="validDateStart" name="enterpriseTime" placeholder="开始日期">&nbsp;&nbsp;到&nbsp;&nbsp;
+                                            <div id="dateTimeTag" style="width: 35%;">
+                                                <input type="text" style="width: 100%;float: right;"
+                                                       class="form-control" id="validDateEnd" name="validDateEnd"
+                                                       placeholder="截止日期">
+                                            </div>
+                                            <div id="controlDiv" class="layui-form form-inline"
+                                                 style="vertical-align:middle;">
+                                                <label style="margin-left: 20px;">是否永久：</label>
+                                                <div class="layui-input-block form-inline" onclick="forevery()"
+                                                     style="margin-bottom: 5px">
+                                                    <input type="checkbox" id="toggle-date" name="toggle-date"
+                                                           lay-skin="switch" lay-text="&nbsp;&nbsp;|&nbsp;&nbsp;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <label class="font-noraml">企业类型<span
+                                                style="color:red;margin:5px;">*</span>：</label>
+                                        <input type="text" class="form-control" id="corprType" name="corprType">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <label class="font-noraml">企业通讯地址<span
+                                                style="color:red;margin:5px;">*</span>：</label>
+                                        <input type="text" class="form-control" id="corprAddres" name="corprAddres">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <label class="font-noraml">客户经理</label><span
+                                            style="color:red;margin:5px;">*</span>
+                                        <select class="form-control" id="customerManagerName"
+                                                name="customerManagerName">
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <label class="font-noraml">请上传法定代表人身份证国徽面<span style="color:red;margin:5px;">*</span>：</label>
+                                        <blockquote class="layui-elem-quote layui-quote-nm"
+                                                    style="margin-top: 10px;">
+                                            预览图：
+                                            <div class="layui-upload-list" id="idcardFrontView" style=""></div>
+                                        </blockquote>
+                                        <div class="row">
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="idcardFrontPath"
+                                                       placeholder="请上传法定代表人身份证国徽面">
+                                            </div>
+                                            <div>
+                                                <button type="button" class="btn btn-primary" id="idcardFrontUpload"
+                                                        style="margin-left: -5px;">上传
+                                                </button>
+                                            </div>
+                                            <div>
+                                                <button type="button" class="btn btn-primary" id="idcardFrontDel"
+                                                        onclick="removeFileTwo();"
+                                                        style="margin-left: -2px;">移除
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="layui-progress layui-progress-big layui-bg-gray"
+                                             style="display: none"
+                                             lay-showPercent="yes" lay-filter="progressBar">
+                                            <div class="layui-progress-bar layui-bg-green" lay-percent="0%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <label class="font-noraml">请上传法定代表人身份证人像面<span style="color:red;margin:5px;">*</span>：</label>
+                                        <blockquote class="layui-elem-quote layui-quote-nm"
+                                                    style="margin-top: 10px;">
+                                            预览图：
+                                            <div class="layui-upload-list" id="idcardBackView"></div>
+                                        </blockquote>
+                                        <div class="row">
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="idcardBackPath"
+                                                       placeholder="请上传法定代表人身份证人像面" readonly
+                                                       style="background-color: white;">
+                                            </div>
+                                            <div>
+                                                <button type="button" class="btn btn-primary" id="idcardBackUpload"
+                                                        style="margin-left: -5px;">上传
+                                                </button>
+                                            </div>
+                                            <div>
+                                                <button type="button" class="btn btn-primary" id="idcardBackDel"
+                                                        onclick="removeFileThree();"
+                                                        style="margin-left: -2px;">移除
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="layui-progress layui-progress-big layui-bg-gray"
+                                             style="display: none"
+                                             lay-showPercent="yes" lay-filter="idcardBackPath">
+                                            <div class="layui-progress-bar layui-bg-green" lay-percent="0%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <label class="font-noraml">法定代表人姓名<span
+                                                style="color:red;margin:5px;">*</span>：</label>
+                                        <input type="text" class="form-control" id="legalPersonName"
+                                               name="legalPersonName" onblur="checkValue(this)">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <label class="font-noraml">法定代表人身份证号<span
+                                                style="color:red;margin:5px;">*</span>：</label>
+                                        <input type="text" class="form-control" id="legalPersonIdno"
+                                               name="legalPersonIdno" onblur="checkValue(this)">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <label class="font-noraml">法定代表人手机号<span
+                                                style="color:red;margin:5px;">*</span>：</label>
+                                        <input type="text" class="form-control" id="legalPersonPhone"
+                                               name="legalPersonPhone" maxlength="11"
+                                               onkeyup="this.value=this.value.replace(/\D/g,'')">
+                                    </div>
+                                </div>
+
+                                <div class="row my-4">
+                                    <div class="col-12">
+                                        <div class="custom-control custom-control-alternative custom-checkbox">
+                                            <input class="custom-control-input" id="customCheckRegister"
+                                                   type="checkbox">
+                                            <label class="custom-control-label" for="customCheckRegister">
+                          <span>我已阅读并同意
+                            <a href="javascript:void(0);" onclick='showUserProtocol()'>《用户协议》</a>
+                          </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-primary mt-4 btn-block">提交注册</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<div id="showImgDiv" style="display: none;">
+    <img id="showImg" src="" width="100%">
+</div>
+<div th:replace="fragment/footer :: footer"></div>
+
+</body>
+</html>

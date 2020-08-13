@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>金科控股-影像系统</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/dependency/bootstrap4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/dependency/mdui/css/mdui.min.css"/>
+    <link rel="stylesheet" href="/dependency/easyupload/easy-upload.css"/>
+    <link rel="stylesheet" href="/dependency/zTree_v3/css/zTreeStyle/zTreeStyle.css"/>
+    <link rel="sylesheet" href="/dependency/layui/css/layui.css"/>
+    <link rel="sttylesheet" href="/dependency/bootstrap-table/locale/bootstrap-table.min.css"/>
+    <link rel="stylesheet" href="/dependency/toastr/toastr.min.css"/>
+    <style>
+        .blockFile {
+            float: left;
+            margin: 5px 10px;
+            padding: 5px 5px;
+            width: 100px;
+            height: 100px;
+            line-height: 100px;
+            text-align: center;
+        }
+
+        .show-file {
+            width: 60px;
+            height: 60px;
+        }
+
+        .checkBox {
+            position: relative;
+            top: -92px;
+            right: -24px;
+        }
+
+        .file-name {
+            margin-top: -50px;
+            height: 20px;
+        }
+    </style>
+</head>
+<body>
+<div style="display: none;text-align: center;margin-top: 150px" id="faildFile">
+    <img style="width: 50px;height: 50px" src="/dependency/images/demo/ico/28573d3d7011a20.jpg" alt=''/>
+    <h1 style="color: red">未找到文件或链接失效</h1>
+</div>
+
+<div class="mdui-drawer-body-left">
+    <div id="successFile" style="display: none">
+        <!-- 导航栏 -->
+        <div class="mdui-appbar mdui-appbar-inset mdui-appbar-fixed">
+            <!-- 工具栏 -->
+            <div class="mdui-toolbar mdui-color-theme mdui-shadow-4  mdui-col-xs-12" style="width:98%;">
+                <button class="mdui-btn mdui-btn-dense toHidden_1" onclick="downloadFiles()"><i
+                        class="mdui-icon material-icons">cloud_download</i>下载
+                </button>
+            </div>
+        </div>
+
+        <!-- 侧边栏 -->
+        <div class="mdui-drawer mdui-drawer-full-height mdui-shadow-4" id="drawer">
+            <div class="mdui-appbar">
+                <div class="mdui-toolbar mdui-color-indigo">
+                    <img src="/dependency/images/demo/jinke_logo_light.png" width="100%"/>
+                </div>
+            </div>
+            <ul class="mdui-list menu-activi" id="nav">
+            </ul>
+        </div>
+
+        <!-- 内容 -->
+        <div id="content" style="width: 100% ;padding-top: 20px;margin-top: 60px;">
+
+        </div>
+
+        <div id="fileInfo" style="display: none;">
+            <input type="hidden" id="fileInfoId">
+            <div class="row" style="margin: 20px;">
+                <label class="col-sm-2 control-label" style="text-align: right;margin-top: 5px;">文件：</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control no-border" readonly id="fileFullNameInfo"
+                           style="border: none; background-color: white;">
+                </div>
+            </div>
+            <div class="row" style="margin: 20px;">
+                <label class="col-sm-2 control-label" style="text-align: right;margin-top: 5px;">资料模块：</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control no-border" readonly id="fileSizeInfo"
+                           style="border: none; background-color: white;">
+                </div>
+            </div>
+            <div class="row" style="margin: 20px;">
+                <label class="col-sm-2 control-label" style="text-align: right;margin-top: 5px;">上传时间：</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control no-border" readonly id="fileCreateTimeInfo"
+                           style="border: none; background-color: white;">
+                </div>
+            </div>
+            <div class="row" style="margin: 20px;">
+                <div id="link-img">
+                </div>
+            </div>
+        </div>
+        <div id="videoOpen" class="center-parent"
+             style="display: none;position:relative;width: 100%;height: 100%;text-align: center;">
+        </div>
+        <!-- 底部 -->
+        <nav class="navbar navbar-expand-sm bg-light navbar-dark fixed-bottom" style="text-align: center;">
+            <p class="text-muted text-center " style="margin: 0 auto;">&copy;2019 重庆市金科投资控股（集团）有限责任公司</p>
+        </nav>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<!-- <script src="js/jquery-3.2.1.min.js"></script> -->
+<script src="/dependency/js/jquery-2.1.1.min.js"></script>
+<script src="/dependency/bootstrap4/js/bootstrap.min.js"></script>
+<script src="/dependency/mdui/js/mdui.min.js"></script>
+<!--<script src="/dependency/js/main.js"></script>-->
+<script src="/dependency/easyupload/easyUpload.js"></script>
+<script src="/dependency/easyupload/vendor/jquery.cookie-1.4.1.min.js"></script>
+<script src="/dependency/layui/layui.all.js"></script>
+<script src="/dependency/layui/layui.js"></script>
+<script src="/dependency/layui/lay/modules/layer.js"></script>
+<!--ztree-->
+<script src="/dependency/zTree_v3/js/jquery.ztree.all.js"></script>
+<script src="/dependency/zTree_v3/js/jquery.ztree.all.min.js"></script>
+<script type="application/javascript">
+    var billId = "", path = '';
+
+    $(function () {
+        billId = window.location.href.split("=")[1];
+        loadNav(billId);
+        getPath();
+        loadData("");
+    })
+
+    function loadNav(billId) {
+        $.ajax({
+            url: '/system/hkFile/listFile',
+            type: 'post',
+            dateType: 'json',
+            data: {'billId': billId},
+            success: function (data) {
+                if (data.length == 0) {
+                    return;
+                }
+                /*var nav = `<li class="mdui-list-item mdui-ripple" id="all" onclick="findFile(this);">
+                 <i class="mdui-list-item-avatar mdui-icon material-icons mdui-hidden-xs">folder</i>
+                 <div class="mdui-list-item-content">全部文件</div>
+                 </li>`;*/
+                var nav = "<li class=\"mdui-list-item mdui-ripple\" id=\"all\" onclick=\"findFile(this);\">" +
+                    "<i class=\"mdui-list-item-avatar mdui-icon material-icons mdui-hidden-xs\">folder</i>" +
+                    "<div class=\"mdui-list-item-content\">全部文件</div></li>";
+                for (var obj of data) {
+                    /*nav += `<li class="mdui-list-item mdui-ripple" id="${obj.blockName}" onclick="findFile(this);">
+                     <i class="mdui-list-item-avatar mdui-icon material-icons mdui-hidden-xs">folder</i>
+                     <div class="mdui-list-item-content">${obj.str1}</div>
+                     </li>`*/
+                    nav += "<li class=\"mdui-list-item mdui-ripple\" id=\"" + obj.blockName +
+                        "\" onclick=\"findFile(this);\"><i class=\"mdui-list-item-avatar mdui-icon material-icons mdui-hidden-xs\">" +
+                        "folder</i><div class=\"mdui-list-item-content\">" + obj.str1 + "</div></li>";
+                }
+                $("#nav").html(nav);
+            }
+        })
+    }
+
+    function getPath() {
+        var http = window.location.href.split("//")[0];
+        var address = window.location.href.split("//")[1].split("/")[0];
+        path = http + "//" + address;
+    }
+
+    function findFile(btn) {
+        var blockName = btn.id;
+        if (blockName == "all") {
+            blockName = "";
+        }
+        loadData(blockName);
+    }
+
+    function downloadFiles() {
+        var data = "";
+        $("input:checkbox:checked").each(function () {
+            data += this.id + ",";
+        });
+        if (data === "") {
+            return;
+        }
+        data = data.substring(0, data.length - 1);
+        if (data.indexOf(",") === -1) {
+            window.location.href = "/system/file/downloadFileByHKId?id=" + data;
+        } else {
+            window.location.href = "/system/file/downFileByHKAll?urls=" + data;
+        }
+    }
+
+    function loadData(blockName) {
+        $.ajax({
+            url: '/system/hkFile/listAll',
+            type: 'post',
+            dateType: 'json',
+            data: {'billId': billId, 'blockName': blockName},
+            success: function (data) {
+                if (data == null || data == undefined || data == "") {
+                    $("#faildFile").show();
+                    return;
+                }
+                $("#successFile").show();
+                var html = "";
+                for (var obj of data) {
+                    var src = path + '/system/file/down?url=' + obj.filePath + '&name=' + obj.fileFullName;
+                    var type = obj.fileFullName.split('.')[1];
+                    var showName = obj.fileName;
+                    if (showName.length > 5) {
+                        showName = showName.substr(0, 3) + "..." + showName.substr(showName.length - 2, showName.length);
+                    }
+                    if (type == "docx" || type == "doc") {
+
+                        html += "<div class='blockFile' onclick=\"selectFile(this);\" ondblclick='openInfo(" + JSON.stringify(obj) + ");'><div><img class=\"show-file\" src=\"/dependency/images/demo/ico/docx.png\"><div class=\"file-name\">" + showName + "</div></div><div><input class=\"checkBox\" type=\"checkbox\" id=\"" + obj.id + "\" name=\"checkFile\" hidden onclick='ctrShow(event)'></div></div>";
+                    } else if (type == "jpg" || type == "jpeg" || type == "gif" || type == "png" || type == "bmp") {
+
+                        html += "<div class='blockFile' onclick=\"selectFile(this);\" ondblclick='openInfo(" + JSON.stringify(obj) + ");'><div><img class=\"show-file\" src=\"" + src + "\"><div class=\"file-name\">" + showName + "</div></div><div><input class=\"checkBox\"  type=\"checkbox\" id=\"" + obj.id + "\" name=\"checkFile\" hidden onclick='ctrShow(event)'></div></div>";
+                    } else {
+
+                        html += "<div class='blockFile' onclick=\"selectFile(this);\" ondblclick='openInfo(" + JSON.stringify(obj) + ");'><div><img class=\"show-file\" src=\"/dependency/images/demo/ico/file.png\"><div class=\"file-name\">" + showName + "</div></div><div><input class=\"checkBox\"  type=\"checkbox\" id=\"" + obj.id + "\" name=\"checkFile\" hidden onclick='ctrShow(event)'></div></div>";
+                    }
+
+                }
+                $("#content").html(html);
+            }
+        })
+    }
+
+    function selectFile(btn) {
+        /* var checkBox = btn.childNodes[1].childNodes[3];
+         $(checkBox).click();
+         $(checkBox).prop("hidden", !$(checkBox).prop("checked"));*/
+
+//        var checkBox = btn.childNodes[3].childNodes[1];
+        var checkBox = btn.childNodes[1].childNodes[0];
+        $(checkBox).click();
+        $(checkBox).prop("hidden", !$(checkBox).prop("checked"));
+    }
+
+    function openInfo(obj) {
+        $("#link-img").html("");
+        $("#fileFullNameInfo").val(obj.fileFullName);
+        $("#fileSizeInfo").val(obj.str1);
+        $("#fileCreateTimeInfo").val(obj.creditTime);
+        var type = obj.fileFullName.split(".")[1];
+        if (type == "jpg" || type == "jpeg" || type == "gif" || type == "png" || type == "bmp") {
+            var html = "<a href=\"javascript:;\" id=\"viewOnline\" onclick='showImg(" + JSON.stringify(obj) + ");' style=\"margin-left: 136px;\">在线查看</a>";
+            $("#link-img").html(html);
+        }
+        layer.open({
+            type: 1,
+            title: ' ',
+            shadeClose: true,
+            shade: [0.8, '#393D49'],
+            maxmin: true, //开启最大化最小化按钮
+            area: ['52%', '50%'],
+            content: $("#fileInfo"),
+            btn: ['取消'],
+            yes: function () {
+                layer.closeAll();
+//                updateLabels();
+            }
+        })
+    }
+
+    function showImg(obj) {
+        var src = path + '/system/file/down?url=' + obj.filePath + '&name=' + obj.fileFullName;
+//        var html = ` <img style="max-width: 100%;max-height: 100%;" src="${src}">`
+        var html = " <img style=\"max-width: 100%;max-height: 100%;\" src=\"".concat(src, "\">");
+        $("#videoOpen").html(html);
+        layer.open({
+            type: 1,
+            title: ' ',
+            shadeClose: true,
+            shade: [0.8, '#393D49'],
+            maxmin: true, //开启最大化最小化按钮
+            area: ['40%', '60%'],
+            content: $("#videoOpen"),
+        });
+    }
+
+    function ctrShow(e) {
+        window.event ? window.event.cancelBubble = true : e.stopPropagation();
+        var node = e.target;
+        $(node).prop("hidden", !$(node).prop("checked"));
+    }
+</script>
+</body>
+</html>

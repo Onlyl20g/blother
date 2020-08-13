@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinke.project.system.creditBuyerInfo.mapper.CreditBuyerInfoMapper">
+
+    <resultMap type="CreditBuyerInfo" id="CreditBuyerInfoResult">
+        <result property="creditsId" column="credits_id"/>
+        <result property="creditId" column="credit_id"/>
+        <result property="buyerCorprName" column="buyer_corpr_name"/>
+        <result property="buyerContactName" column="buyer_contact_name"/>
+        <result property="buyerContactTel" column="buyer_contact_tel"/>
+        <result property="str1" column="str1"/>
+        <result property="str2" column="str2"/>
+        <result property="str3" column="str3"/>
+        <result property="str4" column="str4"/>
+        <result property="str5" column="str5"/>
+    </resultMap>
+
+    <sql id="selectCreditBuyerInfoVo">
+        select credits_id, credit_id, buyer_corpr_name, buyer_contact_name, buyer_contact_tel, str1, str2, str3, str4, str5 from sys_credit_buyer_info
+    </sql>
+
+    <select id="selectCreditBuyerInfoList" parameterType="CreditBuyerInfo" resultMap="CreditBuyerInfoResult">
+        <include refid="selectCreditBuyerInfoVo"/>
+        <where>
+            <if test="creditsId != null ">and credits_id = #{creditsId}
+            </if>
+            <if test="creditId != null ">and credit_id = #{creditId}
+            </if>
+            <if test="buyerCorprName != null  and buyerCorprName != '' ">and buyer_corpr_name = #{buyerCorprName}
+            </if>
+            <if test="buyerContactName != null  and buyerContactName != '' ">and buyer_contact_name =
+                #{buyerContactName}
+            </if>
+            <if test="buyerContactTel != null  and buyerContactTel != '' ">and buyer_contact_tel = #{buyerContactTel}
+            </if>
+            <if test="str1 != null  and str1 != '' ">and str1 = #{str1}
+            </if>
+            <if test="str2 != null  and str2 != '' ">and str2 = #{str2}
+            </if>
+            <if test="str3 != null  and str3 != '' ">and str3 = #{str3}
+            </if>
+            <if test="str4 != null  and str4 != '' ">and str4 = #{str4}
+            </if>
+            <if test="str5 != null  and str5 != '' ">and str5 = #{str5}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectCreditBuyerInfoById" parameterType="Long" resultMap="CreditBuyerInfoResult">
+        <include refid="selectCreditBuyerInfoVo"/>
+        where credits_id = #{creditsId}
+    </select>
+
+    <insert id="insertCreditBuyerInfo" parameterType="CreditBuyerInfo" useGeneratedKeys="true" keyProperty="creditsId">
+        insert into sys_credit_buyer_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="creditId != null  ">credit_id,
+            </if>
+            <if test="buyerCorprName != null  and buyerCorprName != ''  ">buyer_corpr_name,
+            </if>
+            <if test="buyerContactName != null  and buyerContactName != ''  ">buyer_contact_name,
+            </if>
+            <if test="buyerContactTel != null  and buyerContactTel != ''  ">buyer_contact_tel,
+            </if>
+            <if test="str1 != null  and str1 != ''  ">str1,
+            </if>
+            <if test="str2 != null  and str2 != ''  ">str2,
+            </if>
+            <if test="str3 != null  and str3 != ''  ">str3,
+            </if>
+            <if test="str4 != null  and str4 != ''  ">str4,
+            </if>
+            <if test="str5 != null  and str5 != ''  ">str5,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="creditId != null  ">#{creditId},
+            </if>
+            <if test="buyerCorprName != null  and buyerCorprName != ''  ">#{buyerCorprName},
+            </if>
+            <if test="buyerContactName != null  and buyerContactName != ''  ">#{buyerContactName},
+            </if>
+            <if test="buyerContactTel != null  and buyerContactTel != ''  ">#{buyerContactTel},
+            </if>
+            <if test="str1 != null  and str1 != ''  ">#{str1},
+            </if>
+            <if test="str2 != null  and str2 != ''  ">#{str2},
+            </if>
+            <if test="str3 != null  and str3 != ''  ">#{str3},
+            </if>
+            <if test="str4 != null  and str4 != ''  ">#{str4},
+            </if>
+            <if test="str5 != null  and str5 != ''  ">#{str5},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateCreditBuyerInfo" parameterType="CreditBuyerInfo">
+        update sys_credit_buyer_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="creditId != null  ">credit_id = #{creditId},
+            </if>
+            <if test="buyerCorprName != null  and buyerCorprName != ''  ">buyer_corpr_name = #{buyerCorprName},
+            </if>
+            <if test="buyerContactName != null  and buyerContactName != ''  ">buyer_contact_name = #{buyerContactName},
+            </if>
+            <if test="buyerContactTel != null  and buyerContactTel != ''  ">buyer_contact_tel = #{buyerContactTel},
+            </if>
+            <if test="str1 != null  and str1 != ''  ">str1 = #{str1},
+            </if>
+            <if test="str2 != null  and str2 != ''  ">str2 = #{str2},
+            </if>
+            <if test="str3 != null  and str3 != ''  ">str3 = #{str3},
+            </if>
+            <if test="str4 != null  and str4 != ''  ">str4 = #{str4},
+            </if>
+            <if test="str5 != null  and str5 != ''  ">str5 = #{str5},
+            </if>
+        </trim>
+        where credits_id = #{creditsId}
+    </update>
+
+    <delete id="deleteCreditBuyerInfoById" parameterType="Long">
+        delete from sys_credit_buyer_info where credits_id = #{creditsId}
+    </delete>
+
+    <delete id="deleteCreditBuyerInfoByIds" parameterType="String">
+        delete from sys_credit_buyer_info where credits_id in
+        <foreach item="creditsId" collection="array" open="(" separator="," close=")">
+            #{creditsId}
+        </foreach>
+    </delete>
+
+</mapper>

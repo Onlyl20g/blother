@@ -1,0 +1,3024 @@
+<style>
+    video {
+        width: 100%;
+        height: auto
+    }
+
+    p {
+        user-select: none;
+    }
+
+    .tag {
+        width: 100%;
+        height: auto;
+        display: flex;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    #tagZ {
+        margin-top: 8px;
+        overflow-y: auto;
+        overflow-x: auto;
+        width: 100%;
+        height: 96%;
+    }
+
+    .flex {
+        /*flex 布局*/
+        display: flex;
+        /*实现垂直居中*/
+        align-items: center;
+        /*实现水平居中
+        justify-content: center;*/
+        text-align: justify;
+        margin: 0 auto;
+    }
+
+    #toolbar {
+        /*position: fixed;
+        z-index: 1000;*/
+    }
+
+    #mdui-toolbar > * {
+        margin: 0 8px;
+        overflow: visible !important;
+        text-overflow: inherit !important;
+        white-space: nowrap;
+    }
+
+    .not-arrow {
+        padding: 5px 0px;
+        border: 1px solid #dcd8d8;
+        /*-webkit-appearance: none;*/
+        /*-moz-appearance: none;*/
+        /*appearance: none; !*去掉下拉箭头*!*/
+    }
+
+    /*清除ie的默认选择框样式清除，隐藏下拉箭头*/
+    .not-arrow::-ms-expand {
+        /*display: none;*/
+    }
+
+    button {
+        /*-webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;*/
+        /*-webkit-user-modify: read-write-plaintext-only!important;*/
+        outline: none !important;
+    }
+
+    #litotal {
+        cursor: auto !important;
+    }
+
+    #litotal:hover {
+        background-color: white !important;
+    }
+
+    .inner {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+        background-color: #aaa;
+        height: 100%;
+        width: 100%;
+    }
+</style>
+
+<div class="mdui-container-fluid ">
+
+    <!-- 菜单栏 -->
+    <div class="mdui-col-xs-4 mdui-col-md-2 mdui-col-lg-2 mdui-col-xl-2  mdui-shadow-4 mdui-color-orange-50"
+         style="height: 600px;" id="toolbar">
+        <ul class="mdui-list filelist-activi ">
+            <li class="mdui-list-item mdui-ripple mdui-list-item-active" id="btn-all" onclick="lastClick = this.id">
+                <i class="mdui-list-item-avatar mdui-icon material-icons mdui-hidden-xs">folder</i>
+                <div class="mdui-list-item-content">全部文件</div>
+            </li>
+            <li class="mdui-list-item mdui-ripple" id="btn-Img" onclick="lastClick = this.id">
+                <i class="mdui-list-item-avatar mdui-icon material-icons mdui-hidden-xs">gif</i>
+                <div class="mdui-list-item-content">图片</div>
+            </li>
+            <li class="mdui-list-item mdui-ripple" id="btn-video" onclick="lastClick = this.id">
+                <i class="mdui-list-item-avatar mdui-icon material-icons mdui-hidden-xs">videocam</i>
+                <div class="mdui-list-item-content">视频</div>
+            </li>
+            <li class="mdui-list-item mdui-ripple" id="btn-doc" onclick="lastClick = this.id">
+                <i class="mdui-list-item-avatar mdui-icon material-icons mdui-hidden-xs">assignment</i>
+                <div class="mdui-list-item-content">文档</div>
+            </li>
+            <li class="mdui-list-item mdui-ripple" id="btn-other" onclick="lastClick = this.id">
+                <i class="mdui-list-item-avatar mdui-icon material-icons mdui-hidden-xs">help_outline</i>
+                <div class="mdui-list-item-content">其他</div>
+            </li>
+            <li class="mdui-list-item mdui-ripple" id="btn-back" onclick="lastClick = this.id">
+                <i class="mdui-list-item-avatar mdui-icon material-icons mdui-hidden-xs">delete</i>
+                <div class="mdui-list-item-content">回收站</div>
+            </li>
+        </ul>
+    </div>
+    <div class="mdui-col-md-10 mdui-col-lg-10 mdui-col-xl-10 mdui-col-xs-8 " id="myfilecontent">
+        <!-- 工具栏 -->
+        <div id="mdui-toolbar" class="mdui-toolbar mdui-color-theme mdui-shadow-4  mdui-col-xs-12"
+             style="overflow-y:hidden; overflow-x:auto;">
+            <a class="mdui-btn mdui-btn-icon btn1 " id="casetoolbar"><i class="mdui-icon material-icons">repeat</i></a>
+            <button class="mdui-btn mdui-btn-dense toHidden_2" style="display: none;" id="returnFile"><i
+                    class="mdui-icon material-icons" style="margin-right: 4px;">cloud_upload</i><span
+                    style="vertical-align: middle">还原</span>
+            </button>
+            <!--            <button class="mdui-btn mdui-btn-dense toHidden_2" style="display: none;" id="FolderManage"><i-->
+            <!--                    class="mdui-icon material-icons" style="margin-right: 4px;">folder</i><span-->
+            <!--                    style="vertical-align: middle">管理文件夹</span>-->
+            <!--            </button>-->
+            <button class="mdui-btn mdui-btn-dense toHidden_2" style="display: none;" id="cleanAll"><i
+                    class="mdui-icon material-icons">&#xe92b;</i><span
+                    style="vertical-align: middle">清空回收站</span>
+            </button>
+            <button class="mdui-btn mdui-btn-dense toHidden_2" style="display: none;" id="reallyRemove"><i
+                    class="mdui-icon material-icons" style="margin-right: 4px;">delete</i><span
+                    style="vertical-align: middle">删除</span>
+            </button>
+            <button class="mdui-btn mdui-btn-dense toHidden_1" style="margin-right: 16px;" id="newFolder"
+                    onclick="AddFolder()"><i
+                    class="mdui-icon material-icons" style="margin-right: 4px;width: 20px">folder</i><span
+                    style="vertical-align: middle">新建文件夹</span>
+            </button>
+            <button class="mdui-btn mdui-btn-dense toHidden_1" style="margin-right: 16px;" id="scanupload-btn">
+                <i class="mdui-icon material-icons" style="margin-right: 4px;">cloud_upload</i>
+                <span style="vertical-align: middle">二维码上传</span>
+            </button>
+            <button class="mdui-btn mdui-btn-dense toHidden_1" id="upload-btn"><i class="mdui-icon material-icons"
+                                                                                  style="margin-right: 4px;">cloud_upload</i>
+                <span style="vertical-align: middle">上传</span>
+            </button>
+            <button class="mdui-btn mdui-btn-dense toHidden_1" onclick="moveFiles()"><i id="moveIcon"
+                                                                                        class="mdui-icon material-icons"
+                                                                                        style="margin-right: 4px;">call_made</i><span
+                    id="moveText"
+                    style="vertical-align: middle">移动</span>
+            </button>
+            <button class="mdui-btn mdui-btn-dense toHidden_1" onclick="downloadFiles()"><i
+                    class="mdui-icon material-icons" style="margin-right: 4px;">cloud_download</i><span
+                    style="vertical-align: middle">下载</span>
+            </button>
+
+            <button class="mdui-btn mdui-btn-dense toHidden_1" id="rename"><i
+                    class="mdui-icon material-icons" style="margin-right: 4px;">edit</i><span
+                    style="vertical-align: middle">重命名</span>
+            </button>
+            <button class="mdui-btn mdui-btn-dense toHidden_1" id="delete-btn"><i
+                    class="mdui-icon material-icons" style="margin-right: 4px;">delete</i><span
+                    style="vertical-align: middle">删除</span>
+            </button>
+            <button class="mdui-btn mdui-btn-dense toHidden_1" onclick="shareFile()" id="shareFile"><i
+                    class="mdui-icon material-icons" style="margin-right: 4px;">reply</i><span
+                    style="vertical-align: middle">分享</span>
+            </button>
+            <button class="mdui-btn mdui-btn-dense toHidden_1" onclick="labelManage()"><i
+                    class="mdui-icon material-icons" style="margin-right: 4px;">label</i><span
+                    style="vertical-align: middle">标签</span>
+            </button>
+            <button class="mdui-btn mdui-btn-dense toHidden_1" id="checkAll"><i
+                    class="mdui-icon material-icons" style="margin-right: 4px;">check</i><span
+                    style="vertical-align: middle">全选</span>
+            </button>
+            <button class="mdui-btn mdui-btn-dense toHidden_1" id="clearCheck"><i
+                    class="mdui-icon material-icons" style="margin-right: 4px;">clear</i><span
+                    style="vertical-align: middle">全不选</span>
+            </button>
+            <div class="mdui-btn mdui-btn-dense toHidden_1">
+                <select class=" not-arrow" id="labelSerach"
+                        style="font-size: 13px;width: 74px;margin-top: 2px;border: 0;">
+                </select>
+            </div>
+            <!--            <div class="mdui-btn mdui-btn-dense toHidden_1" style="margin-left: -30px">-->
+            <!--                <a href="javascript:;" id="doSearch" class="mdui-icon selectFolderDiv">-->
+            <!--                    <i class="mdui-icon material-icons">search</i>-->
+            <!--                </a>-->
+            <!--            </div>-->
+            <!--<div class="mdui-toolbar-spacer toHidden_1"></div>-->
+            <div class="mdui-toolbar-spacer"></div><!-- 用于将后面的按钮抵到最右边-->
+            <a href="javascript:toggleList();titleController();" id="toggleList" class="mdui-btn mdui-btn-icon btn1 "><i
+                    class="mdui-icon material-icons">format_list_bulleted</i></a>
+            <!--<a  href="javascript:toggleList();titleController();" id="toggleList"
+               class="mdui-btn mdui-btn-icon mdui-hidden-xs"
+               style="float: right;"><i
+                    class="mdui-icon material-icons">format_list_bulleted</i></a>-->
+        </div>
+        <div style="margin-top: 70px;font-size: large;" id="head">
+            <div class="flex"
+                 style="border:1px solid darkgrey;width:auto;height:auto;border-radius: 5px;user-select:none;">
+                <div id="baseFolder"
+                     style="float: left;margin-left: 8px;margin-top: 0px;line-height: 40px;width: 72px;">
+                    <a href="javascript:">根目录</a>&nbsp;/&nbsp;
+                </div>
+                <div id="folderPath" style="margin-top:0px;">
+
+                </div>
+            </div>
+        </div>
+        <div style="display: none;" id="titleInfo">
+            <ul class="mdui-list">
+                <li class="mdui-list-item" id="litotal">
+                    <div>
+                        <input style="position: relative;top: 0px;visibility: hidden;" class="" type="checkbox"
+                               value="">
+                    </div>
+                    <div class=""></div>
+                    <div class="mdui-list-item-content mdui-col-xs-4">
+                        <div style="margin-left: 10%">名称</div>
+                    </div>
+                    <div class="mdui-list-item-content mdui-col-xs-2">
+                        <div style="margin-left: 8%">大小</div>
+                    </div>
+                    <div class="mdui-list-item-content mdui-col-xs-2" style="text-align:left;">
+                        <div style="margin-left: 0%;">创建时间</div>
+                    </div>
+                </li>
+            </ul>
+            <hr style="margin-top: -10px">
+        </div>
+        <div id="nullFolder" style="text-align: center;display: none;margin-top: 120px;">
+            <p style="color: #ddd;">当前文件夹为空</p>
+        </div>
+        <div id="tagZ">
+            <div id="tag" class="row tag" style="">
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div id="videoOpen" class="center-parent"
+     style="display: none;position:relative;width:100%;height:100%;max-width:100%;max-height: 100%;text-align: center;">
+</div>
+<!--文件上传-->
+<div id="upFile" class="center-parent"
+     style="display: none;position:relative;width: 100%;height: 100%;text-align: center;">
+</div>
+
+<div style="height: 80px;width: 100%;"></div>
+<div id="fileInfo" style="display: none;">
+    <input type="hidden" id="fileInfoId">
+    <div class="row" style="margin: 20px;">
+        <label class="col-sm-2 control-label" style="text-align: left;margin-top: 5px;">文&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件：</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control no-border" readonly id="fileFullNameInfo"
+                   style="border: none; background-color: white;">
+        </div>
+    </div>
+    <div class="row" style="margin: 20px;">
+        <label class="col-sm-2 control-label" style="text-align: left;margin-top: 5px;">大&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;小：</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control no-border" readonly id="fileSizeInfo"
+                   style="border: none; background-color: white;">
+        </div>
+    </div>
+    <div class="row" style="margin: 20px;">
+        <label class="col-sm-2 control-label" style="text-align: left;margin-top: 5px;">上传时间：</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control no-border" readonly id="fileCreateTimeInfo"
+                   style="border: none; background-color: white;">
+        </div>
+    </div>
+    <div class="row" style="margin: 20px;">
+        <label class="col-sm-2 control-label" style="text-align: left;margin-top: 10px">添加标签：</label>
+        <div id="">
+            <label><select id="selectLabels" class="select form-control">
+            </select></label>
+            <button class="btn" style="margin: 10px;" onclick="toAddLabel()">添加</button>&nbsp;<a href="javascript:;"
+                                                                                                 id="viewOnline"
+                                                                                                 style="display: none">在线查看</a>
+        </div>
+    </div>
+    <div class="row" style="margin: 20px;">
+        <label class="col-sm-2 control-label" style="text-align: left">标&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;签：</label>
+        <div id="lables"></div>
+    </div>
+</div>
+<!--标签管理-->
+<div id="labelDiv" style="display: none;">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-content table-responsive">
+                <table id="labelTB" data-mobile-responsive="true" class="table text-nowrap"></table>
+            </div>
+        </div>
+    </div>
+    <div id="toolbar1">
+        <div class="btn-group">
+            <button type="button" onclick="openAdd()" class="btn btn-primary">增加</button>
+        </div>
+        <div class="btn-group">
+            <button type="button" onclick="openRemove()" class="btn">删除</button>
+        </div>
+    </div>
+</div>
+<!-- 新增标签div-->
+<div id="AddlabelDiv" style="display: none;">
+    <div class="modal-body">
+        <form class="form-horizontal m-t">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">标签：</label>
+                <div class="col-sm-8">
+                    <input id="Labelname" name="" class="form-control" type="text">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!--新增文件夹-->
+<div id="FolderDiv" style="display: none;">
+    <div class="modal-body">
+        <form class="form-horizontal m-t">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">文件夹名称</label>
+                <div class="col-sm-12">
+                    <input id="FolderName" name="" class="form-control" type="text">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!--标签管理-->
+<div id="folderManageDiv" style="display: none;">
+    <div class="zTreeDemoBackground">
+        <ul id="tree" class="ztree"></ul>
+    </div>
+</div>
+<!--文件分享-->
+<div id="shareDiv" style="display: none">
+    <div class="modal-body" id="shujuDiv">
+        <form class="form-horizontal m-t" id="shareFrom">
+            <div class="form-group">
+                <label class="col-sm-4 control-label">有效时间(天)</label>
+                <div class="col-sm-8">
+                    <select id="validTime" name="" class="form-control" type="text">
+                        <option>30</option>
+                        <option>7</option>
+                        <option>1</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="form-group" id="fileLinkDiv" style="display: none">
+        <center>
+            <div style="margin-top: 20px" id="qrcode">
+            </div>
+        </center>
+        <center>
+            <div style="margin-top: 10px">
+                <input onfocus="this.select();" id="fileLink" name="" style="background-color:white;width: 80%"
+                       readonly="readonly"
+                       class="form-control" type="text">
+            </div>
+            <div style="margin-top: 20px">
+                <h4 style="color: red;">复制链接地址或者扫描二维码</h4>
+            </div>
+
+            <button class="btn btn-success" style="margin-top: 10px" onclick="copyshareText()">复制</button>
+        </center>
+    </div>
+    <!--<span id="shareFileId"></span>-->
+</div>
+
+<!--二维码上传-->
+<div id="scanUploadDiv" style="display: none;">
+    <center>
+        <div style="padding-top: 40px" id="scanQrcode">
+        </div>
+    </center>
+    <div style="padding: 20px 10px 10px;">
+        <center>
+            <input onfocus="this.select();" id="fileLinkScan" style="background-color:white;width: 95%"
+                   readonly="readonly" name=""
+                   class="form-control" type="text">
+        </center>
+    </div>
+    <center>
+        <div style="text-align: center;padding: 10px;">
+            <span id="upload-path">扫描二维码上传文件到</b>&nbsp;<b style="color: red;" id="pathName"></b></span>
+        </div>
+        <div style="text-align: center;padding: 10px;">
+            30分钟内有效
+        </div>
+        <div style="text-align: center; padding: 10px">
+            <button class="btn btn-success" onclick="copyText();" type="button" style="padding: 5px 28px;">复制</button>
+        </div>
+    </center>
+
+</div>
+
+<div style="display: none;" id="renameDiv">
+    <!--    <div class="modal-body">-->
+    <!--        <form class="form-horizontal m-t">-->
+    <!--            <div class="form-group">-->
+    <!--                <center class="form-inline" style="vertical-align: middle">-->
+    <!--                    <label class="col-sm-3 control-label" style="float: right;">名称:</label>-->
+    <!--                    <div class="col-sm-9">-->
+    <!--                        <input type="text" id="renameInput" class="form-control">-->
+    <!--                        <input type="hidden" id="renameData">-->
+    <!--                    </div>-->
+    <!--                </center>-->
+    <!--            </div>-->
+    <!--        </form>-->
+    <!--    </div>-->
+    <div class="modal-body">
+        <form class="form-horizontal m-t">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">名称:</label>
+                <div class="col-sm-12">
+                    <input type="text" id="renameInput" class="form-control">
+                    <input type="hidden" id="renameData">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script type="application/javascript">
+    var code = "";//用于拼接html
+    var toggleCount = 0;//判断切换次数
+    var lastClick = "btn-all";//最后点击的选项
+    var topUrlNum = 0;
+    var useFolder = "";//正在使用中的文件夹
+    if (sessionStorage.getItem("useFolders")) {
+        useFolder = sessionStorage.getItem("useFolders");
+    }
+    var useFoledePath = "";//正在使用中的文件夹路径
+    if (sessionStorage.getItem("useFoledePaths")) {
+        useFoledePath = sessionStorage.getItem("useFoledePaths");
+    }
+    var folderNum = 0;
+    var listFlag = false;//是否是list展示模式
+    var documentHeight = "";
+    var moveFile = "";
+    var moveFolder = "";
+    var backtotal = 0;
+    var isPhoneFlag = false;
+    if (window.screen.height > window.screen.width && window.screen.width < 900) {
+        isPhoneFlag = true;
+    }
+    $(document).ready(function () {
+        documentHeight = $(document).height();
+        $("#myfilecontent").height(documentHeight * 0.65 + "px");
+        /* 菜单隐藏显示 */
+        $('#casetoolbar').click(function () {
+            $("#toolbar").toggle(0, function () {
+                $("#myfilecontent").toggleClass("mdui-col-md-12 mdui-col-lg-12 mdui-col-xs-12 mdui-col-xl-12");
+                $("#myfilecontent").toggleClass("mdui-col-md-10 mdui-col-lg-10 mdui-col-xs-8  mdui-col-xl-10");
+            });
+        });
+        $('#casetoolbar').click();
+        $("#rename").click(function () {
+            $("#renameInput").val("");
+            $("#renameData").val("");
+            rename();
+        });
+        loadLabelSelect();
+        bindMenu();
+        loadAll();
+        // bindBlock();
+        if(sessionStorage.getItem("fileSort") != "block"){
+            $("#toggleList")[0].click();
+        }
+        layui.use(["layer", "form"], function () {
+            var $ = layui.jquery, layer = layui.layer;
+        });
+        $("#upload-btn").click(function () {
+            layer.open({
+                type: 2,
+                title: '文件上传',
+                shadeClose: true,
+                shade: [0.8, '#393D49'],
+                maxmin: !isPhoneFlag, //开启最大化最小化按钮
+                area: [isPhoneFlag ? '90%' : '65%', isPhoneFlag ? '90%' : '85%'],
+                content: ['customer/pages/viewdataupload/uploadFile'],
+                success: function (layero, index) {
+                    $(':focus').blur();
+                },
+                end: function () {
+                    if (listFlag) {
+                        loadFileListByPId(useFolder);
+                    } else {
+                        loadFileByPId(useFolder);
+                    }
+                }
+            })
+            //locationhref('customer/pages/viewdataupload', 'menu3');
+        });
+        $("#clearCheck").click(function () {
+            $("input:checkbox:checked").each(function () {
+                $(this).click();
+            });
+        });
+        $("#checkAll").click(function () {
+            $("input:checkbox:not(:checked)").each(function () {
+                $(this).click();
+            });
+        });
+
+        $("#delete-btn").click(function () {
+            deleteFiles();
+        });
+        $("#returnFile").click(function () {
+            returnFiles();
+        });
+        $("#reallyRemove").click(function () {
+            reallyRemove();
+        });
+        $("#FolderManage").click(function () {
+            FolderManages();
+        });
+    });
+
+    /* 切换菜单 */
+    function locationhref(a, b) {
+        if (a === null || a === "" || a === "null") {
+            storage.setItem("url", "customer/pages/myfiles");
+            storage.setItem("menuid", "menu1");
+        } else {
+            storage.setItem("url", a);
+            storage.setItem("menuid", b);
+        }
+        $("#content").load(storage.getItem("url"));
+        $("#" + storage.getItem("menuid")).addClass("mdui-list-item-active").siblings("li").removeClass("mdui-list-item-active");
+    }
+
+    //根据所选标签加载文件
+    function loadFileByLabel() {
+        if ($("#labelSerach").val() == "") {
+            useFolder = '';
+            useFoledePath = '根目录';
+            sessionStorage.setItem("useFolders", "");
+            sessionStorage.setItem("useFoledePaths", "根目录");
+            reloadController();
+            return;
+        }
+        sessionStorage.setItem("useFolders", "");
+        sessionStorage.setItem("useFoledePaths", "根目录");
+        $("#tag").empty();
+        $.ajax({
+            url: "/system/file/listByLabel",
+            type: "POST",
+            data: {"fileLabel": $("#labelSerach").val()},
+            async: false,
+            dataType: "json",
+            success: function (data) {
+                var flag = 0;
+                var row = null;
+                var dataSize = flag + data.rows.length;
+                for (var i = flag; i < dataSize; i++) {
+                    row = data.rows[i - flag];
+                    if (i % 12 === 0) {
+                        code += "</div>";
+                        code += "</div>";
+                        code += "<div class=\"mdui-col-md-12 mdui-col-xs-12 \" style=\"text-align: center;\">";
+                        code += "<div class=\"mdui-container-fluid tag\" style=\"padding-top:15px ;\">";
+                    }
+                    code += "<div class=\"mdui-col-xs-4 mdui-col-xl-1 mdui-col-lg-1 mdui-col-md-2\" onclick='$(\"#" + row.id + "\").click();$(\"#div" + row.id + "\").click();' ondblclick='openInfo(" + row.id + ")' >";
+                    if (row.fileClass === "document") {
+                        code += "<img width='56px' src=\"../dependency/images/demo/ico/" + row.fileSuffix + ".png\" alt=''/>";
+                    } else if (row.fileClass === "video") {
+                        code += "<img width='56px' src=\"../dependency/images/demo/ico/video.png\" alt=''/>";
+                    } else if (row.fileClass === "img") {
+                        code += "<img class='center-son' style='width:56px;height:56px;' src=\"" + cusstr(location.href, "/", 3) + "/system/file/loadMinFile?id=" + row.id + "\" alt=''>";
+                    } else {
+                        code += "<img width='56px' src=\"../dependency/images/demo/ico/file.png\" alt=''/>";
+                    }
+                    code += "<input class='jk-file' style='position: absolute;top: 0px;visibility: hidden;' type='checkbox' value='" + row.id + "' id='" + row.id + "' onclick='myToggle(this)'>";
+                    code += "<p style=\"margin-left: -2px;\">" + subName(row.name) + "</p>";
+                    code += "</div>";
+                }
+                code += "</div>";
+                code += "</div>";
+                $("#tag").append(code);
+                code = "";
+                bg();
+                stopJKPropagation();
+            },
+            error: function (data) {
+            }
+        });
+    }
+
+    //根据所选标签加载文件列表（list）
+    function loadFileListByLabel() {
+        if ($("#labelSerach").val() == "") {
+            useFolder = '';
+            useFoledePath = '根目录';
+            sessionStorage.setItem("useFolders", "");
+            sessionStorage.setItem("useFoledePaths", "根目录");
+            reloadController();
+            return;
+        }
+        sessionStorage.setItem("useFolders", "");
+        sessionStorage.setItem("useFoledePaths", "根目录");
+        $("#tag").empty();
+        $.ajax({
+            url: "/system/file/listByLabel",
+            type: "POST",
+            data: {"fileLabel": $("#labelSerach").val()},
+            async: false,
+            dataType: "json",
+            success: function (data) {
+                var row = null;
+                var dataSize = data.rows.length;
+                var fileSize = 0;
+                code += "<ul class=\"mdui-list\" style='width: 98%;margin-left: 20px'>";
+                for (var i = 0; i < dataSize; i++) {
+                    row = data.rows[i];
+                    code += "<li style=\"margin-top: 8px\" class=\"mdui-list-item mdui-ripple\" onclick='$(\"#" + row.id + "\").click();' ondblclick='openInfo(" + row.id + ")' >";
+                    code += "<div><input class='jk-file' style='position: relative;top: 0px;visibility: hidden;' type='checkbox' value='" + row.id + "' id='" + row.id + "' onclick='myToggle(this)'></div>";
+                    if (row.fileClass === "document") {
+                        code += "<div class=\"\"><img width='56px' src=\"../dependency/images/demo/ico/" + row.fileSuffix + ".png\" alt='' ></div>";
+                    } else if (row.fileClass === "video") {
+                        code += "<div class=\"\"><img width='56px' src=\"../dependency/images/demo/ico/video.png\"alt=''></div>";
+                    } else if (row.fileClass === "img") {
+                        code += "<div class=\"\"><img class='center-son' style='width:56px;height:56px;' src=\"" + cusstr(location.href, "/", 3) + "/system/file/loadMinFile?id=" + row.id + "\" alt=''></div>";
+                    } else {
+                        code += "<div class=\"\"><img width='56px' src=\"../dependency/images/demo/ico/file.png\" alt=''></div>";
+                    }
+                    code += "<div class=\"mdui-list-item-content mdui-col-xs-4 \">" + row.name + "." + row.fileSuffix + "</div>";
+                    code += "<div class=\"mdui-list-item-content mdui-col-xs-2\">" + fileSizeFormatter(row.fileSize) + "</div>";
+                    code += "<div class=\"mdui-list-item-content mdui-col-xs-2\" style='text-align:left;'>" + row.createTime + "</div>";
+                    code += "</li>";
+                }
+                code += "</ul>";
+                $("#tag").append(code);
+                code = "";
+                stopJKPropagation();
+            },
+            error: function (data) {
+            }
+        });
+    }
+
+    //打开文件详情窗口
+    function openInfo(id) {
+        $(".label-idinfo").remove();
+        loadLabels();
+        var layerIndex = layer.open({
+            type: 1,
+            title: ' ',
+            shadeClose: false,
+            shade: [0.8, '#393D49'],
+            maxmin: !isPhoneFlag, //开启最大化最小化按钮
+            area: [isPhoneFlag ? '90%' : '50%', isPhoneFlag ? '90%' : '50%'],
+            content: $("#fileInfo"),
+            btn: ['保存', '取消'],
+            yes: function () {
+                updateLabels();
+            },
+            btn2: function () {
+                layer.close(layerIndex);
+            }
+        });
+        $.ajax({
+            url: "/system/file/selectFileById",
+            type: "POST",
+            data: {"id": id},
+            async: false,
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 1) {
+                    logoutMsg(data.msg);
+                }
+                $("#fileInfoId").val(data.id);
+                $("#fileFullNameInfo").val(data.name + "." + data.fileSuffix);
+                $("#fileSizeInfo").val(fileSizeFormatter(data.fileSize));
+                $("#fileCreateTimeInfo").val(data.createTime);
+                $(".labels").remove();
+                if (data.fileLabel != null && data.fileLabel !== "") {
+                    var labelIds = data.fileLabel.split(",");
+                    for (var i = 0; i < labelIds.length; i++) {
+                        $.ajax({
+                            url: "/system/fileLabel/selectById",
+                            type: "POST",
+                            data: {"id": labelIds[i]},
+                            async: false,
+                            dataType: "json",
+                            success: function (data) {
+                                if (data.id != null && data.id !== "") {
+                                    $("#lables").append("<label class='labels' style='padding:5px;border-radius:5px;background-color: #e6ee9c; margin-right: 10px;' onclick='$(this).remove();'>" + data.name + "<i style='font-size: small' class=\"mdui-icon material-icons\">delete</i><input type='hidden' class='label-idinfo' value='" + data.id + "'></label>");
+                                }
+                            },
+                            error: function (data) {
+                            }
+                        });
+                    }
+                }
+                $("#viewOnline").unbind();
+                $("#viewOnline").hide();
+                if (data.fileSuffix === "mp4" || data.fileClass === "img" || data.fileSuffix === "mp3" || data.fileSuffix === "wav") {
+                    $("#viewOnline").show();
+                    $("#viewOnline").click(function () {
+                        $("#videoOpen").empty();
+                        if (data.fileSuffix === "mp4") {
+                            $("#videoOpen").append(videoCode(id));
+                        } else if (data.fileClass === "img") {
+                            $("#videoOpen").append(imgCode(id));
+                        } else if (data.fileSuffix === "mp3") {
+                            $("#videoOpen").append(mp3Code(id));
+                        } else if (data.fileSuffix === "wav") {
+                            $("#videoOpen").append(wavCode(id));
+                        }
+                        layer.open({
+                            type: 1,
+                            title: ' ',
+                            shadeClose: true,
+                            shade: [0.8, '#393D49'],
+                            maxmin: !isPhoneFlag, //开启最大化最小化按钮
+                            area: [isPhoneFlag ? '98%' : '70%', isPhoneFlag ? '80%' : '80%'],
+                            scrollbar: false,
+                            // area: ['100%','90%'],
+                            content: $("#videoOpen"),
+                            success: function (layero, index) {
+                                $(':focus').blur();
+                            },
+                            end: function () {
+                                $("#videoOpen").empty();
+                            }
+                        });
+                    });
+                }
+            },
+            error: function (data) {
+            }
+        });
+    }
+
+    function loadLabelSelect() {
+        $.ajax({
+            url: "/system/fileLabel/selectFileLabels",
+            type: "POST",
+            data: {},
+            async: false,
+            dataType: "json",
+            success: function (data) {
+                $("#labelSerach").empty();
+                var str = "";
+                str += "<option value='" + '' + "' style='max-width:100px' class=''>" + "请选择" + "</option>";
+                for (var i = 0; i < data.rows.length; i++) {
+                    if (data.rows[i].delFlag === "0") {
+                        str += "<option value='" + data.rows[i].id + "' style='max-width:100px' class=''>" + data.rows[i].name + "</option>";
+                    }
+                }
+                $("#labelSerach").append(str);
+            },
+            error: function (data) {
+            }
+        });
+    }
+
+    function toAddLabel() {
+        if ($("#selectLabels").val() != "" && $("#selectLabels").val() != null && $("#selectLabels").val() != "null") {
+            addLabel($("#selectLabels").val(), $("#selectLabels").find("option:selected").text());
+        }
+    }
+
+    //加载标签
+    function loadLabels() {
+        $.ajax({
+            url: "/system/fileLabel/selectFileLabels",
+            type: "POST",
+            data: {},
+            async: false,
+            dataType: "json",
+            success: function (data) {
+                $(".labelOptions").remove();
+                var str = "";
+                for (var i = 0; i < data.rows.length; i++) {
+                    if (data.rows[i].delFlag === "0") {
+                        str += "<option value='" + data.rows[i].id + "' class='labelOptions'>" + data.rows[i].name + "</option>";
+                    }
+                }
+                $("#selectLabels").append(str);
+            },
+            error: function (data) {
+            }
+        });
+    }
+
+    //在页面上增加标签html代码
+    function addLabel(id, name) {
+        $("#lables").append("<label class='labels' style='padding:5px;border-radius:5px;background-color: #e6ee9c; margin-right: 10px;' onclick='$(this).remove();'>" + name + "<i style='font-size: small' class=\"mdui-icon material-icons\">delete</i><input type='hidden' class='label-idinfo' value='" + id + "'></label>");
+    }
+
+    //更新设置标签
+    function updateLabels() {
+        var labData = "";
+        $(".label-idinfo").each(function () {
+            labData += this.value + ",";
+        });
+        labData = labData.substring(0, labData.length - 1);
+        $.ajax({
+            url: "/system/file/editLabel",
+            type: "POST",
+            data: {"id": $("#fileInfoId").val(), "fileLabel": labData},
+            async: false,
+            dataType: "json",
+            success: function (data) {
+                layer.closeAll();
+            },
+            error: function (data) {
+            }
+        });
+    }
+
+    function getColor(intStr) {
+        if (intStr % 2 === 0) {
+            return "0cdbff";
+        }
+        return "eeeeee";
+    }
+
+    //切换列表与普通展示效果
+    function toggleList() {
+        if (toggleCount++ % 2 === 1) {
+            if (lastClick == 'btn-back') {
+                sessionStorage.setItem("useFolders", "");
+                sessionStorage.setItem("useFoledePaths", "根目录");
+                $("#folderPath").empty();
+                deleteAllList();
+                bindBlock();
+            } else {
+                bindBlock();
+                loadFileByPId(useFolder);
+            }
+            listFlag = false;
+        } else {
+            if (lastClick == 'btn-back') {
+                sessionStorage.setItem("useFolders", "");
+                sessionStorage.setItem("useFoledePaths", "根目录");
+                $("#folderPath").empty();
+                deleteList();
+                bindList();
+            } else {
+                bindList();
+                loadFileListByPId(useFolder);
+            }
+            listFlag = true;
+        }
+    }
+
+    //切换为普通显示
+    function bindBlock() {
+        sessionStorage.setItem("fileSort","block");
+        //清除绑定
+        $("#btn-all").unbind();
+        $("#btn-doc").unbind();
+        $("#btn-Img").unbind();
+        $("#btn-video").unbind();
+        $("#btn-other").unbind();
+        $("#labelSerach").unbind();
+        $("#btn-back").unbind();
+        $("#baseFolder").unbind();
+        //绑定菜单与新的事件
+        bindMenu();
+        $("#btn-all").click(function () {
+            loadFileByPId(useFolder);
+            $("#head").show();
+            $("#newFolder").show();
+            $(".toHidden_1").show();
+            $(".toHidden_2").hide();
+            $(".selectFolderDiv").show();
+            $("#scanupload-btn").show();
+            $("#upload-btn").show();
+            titleController();
+        });
+        $("#btn-doc").click(function () {
+            folderNum = 2;
+            loadFileByPId(useFolder);
+            $("#head").show();
+            $(".toHidden_1").show();
+            $(".toHidden_2").hide();
+            $(".selectFolderDiv").hide();
+            $("#newFolder").hide();
+            $("#scanupload-btn").hide();
+            $("#upload-btn").hide();
+            titleController();
+        });
+        $("#btn-Img").click(function () {
+            folderNum = 2;
+            loadFileByPId(useFolder);
+            $("#head").show();
+            $(".toHidden_1").show();
+            $(".toHidden_2").hide();
+            $(".selectFolderDiv").hide();
+            $("#newFolder").hide();
+            $("#scanupload-btn").hide();
+            $("#upload-btn").hide();
+            titleController();
+        });
+        $("#btn-video").click(function () {
+            folderNum = 2;
+            loadFileByPId(useFolder);
+            $("#head").show();
+            $(".toHidden_1").show();
+            $(".toHidden_2").hide();
+            $(".selectFolderDiv").hide();
+            $("#newFolder").hide();
+            $("#scanupload-btn").hide();
+            $("#upload-btn").hide();
+            titleController();
+        });
+        $("#btn-other").click(function () {
+            //loadOther();
+            folderNum = 2;
+            loadFileByPId(useFolder);
+            $("#head").show();
+            $(".toHidden_1").show();
+            $(".toHidden_2").hide();
+            $(".selectFolderDiv").hide();
+            $("#newFolder").hide();
+            $("#scanupload-btn").hide();
+            $("#upload-btn").hide();
+            titleController();
+        });
+        $("#labelSerach").change(function () {
+            if ($("#labelSerach").text() == "") {
+                useFolder = "";
+                useFoledePath = "根目录";
+                sessionStorage.setItem("useFoledePaths", "根目录");
+                sessionStorage.setItem("useFolders", "");
+                reloadController();
+                return;
+            }
+            loadFileByLabel();
+            $("#folderPath").empty();
+            removeTopUrl();
+            useFolder = "";
+            useFoledePath = "根目录";
+        });
+        $("#btn-back").click(function () {
+            //$("#folderPath").empty();
+            deleteAllList();
+            $("#head").hide();
+            $(".toHidden_1").hide();
+            $(".toHidden_2").show();
+            $(".selectFolderDiv").hide();
+            titleController();
+        });
+        $("#baseFolder").click(function () {
+            sessionStorage.setItem("useFoledePaths", "根目录");
+            sessionStorage.setItem("useFolders", "");
+            useFolder = "";
+            useFoledePath = "根目录";
+            if (folderNum === 0) {
+                removeTopUrl();
+                loadAll();
+            } else {
+                removeTopUrl();
+                loadFileByPId();
+            }
+            titleController();
+        });
+    }
+
+    //切换为列表显示
+    function bindList() {
+        sessionStorage.setItem("fileSort","list");
+        $("#btn-all").unbind();
+        $("#btn-doc").unbind();
+        $("#btn-Img").unbind();
+        $("#btn-video").unbind();
+        $("#btn-other").unbind();
+        $("#labelSerach").unbind();
+        $("#btn-back").unbind();
+        $("#baseFolder").unbind();
+        bindMenu();
+        $("#btn-all").click(function () {
+            loadFileListByPId(useFolder);
+            $("#head").show();
+            $("#newFolder").show();
+            $(".toHidden_1").show();
+            $(".toHidden_2").hide();
+            $(".selectFolderDiv").show();
+            $("#scanupload-btn").show();
+            $("#upload-btn").show();
+            titleController();
+        });
+        $("#btn-doc").click(function () {
+            folderNum = 2;
+            loadFileListByPId(useFolder);
+            $("#head").show();
+            $(".toHidden_1").show();
+            $(".toHidden_2").hide();
+            $(".selectFolderDiv").hide();
+            $("#newFolder").hide();
+            $("#scanupload-btn").hide();
+            $("#upload-btn").hide();
+            titleController();
+        });
+        $("#btn-Img").click(function () {
+            folderNum = 2;
+            loadFileListByPId(useFolder);
+            $("#head").show();
+            $(".toHidden_1").show();
+            $(".toHidden_2").hide();
+            $(".selectFolderDiv").hide();
+            $("#newFolder").hide();
+            $("#scanupload-btn").hide();
+            $("#upload-btn").hide();
+            titleController();
+        });
+        $("#btn-video").click(function () {
+            folderNum = 2;
+            loadFileListByPId(useFolder);
+            $("#head").show();
+            $(".toHidden_1").show();
+            $(".toHidden_2").hide();
+            $(".selectFolderDiv").hide();
+            $("#newFolder").hide();
+            $("#scanupload-btn").hide();
+            $("#upload-btn").hide();
+            titleController();
+        });
+        $("#btn-other").click(function () {
+            folderNum = 2;
+            loadFileListByPId(useFolder);
+            $("#head").show();
+            $(".toHidden_1").show();
+            $(".toHidden_2").hide();
+            $(".selectFolderDiv").hide();
+            $("#newFolder").hide();
+            $("#scanupload-btn").hide();
+            $("#upload-btn").hide();
+            titleController();
+        });
+        $("#labelSerach").change(function () {
+            if ($("#labelSerach").text() == "") {
+                useFolder = "";
+                useFoledePath = "根目录";
+                sessionStorage.setItem("useFoledePaths", "根目录");
+                sessionStorage.setItem("useFolders", "");
+                reloadController();
+                return;
+            }
+            loadFileListByLabel();
+            $("#folderPath").empty();
+            removeTopUrl();
+            useFolder = "";
+            useFoledePath = "根目录";
+        });
+        $("#btn-back").click(function () {
+            deleteList();
+            $("#head").hide();
+            $(".toHidden_1").hide();
+            $(".toHidden_2").show();
+            $(".selectFolderDiv").hide();
+            titleController();
+        });
+        $("#baseFolder").click(function () {
+            sessionStorage.setItem("useFoledePaths", "根目录");
+            sessionStorage.setItem("useFolders", "");
+            useFolder = "";
+            useFoledePath = "根目录";
+            if (folderNum === 0) {
+                removeTopUrl();
+                loadAllList();
+            } else {
+                removeTopUrl();
+                loadFileListByPId();
+            }
+            titleController();
+        });
+    }
+
+    function clickBtnAll() {
+        $('#btn-all').click();
+    }
+
+    //鼠标移入背景特效
+    function bg() {
+        $(".mdui-col-xl-1").each(function () {
+            $(this).mouseover(function () {
+                $(this).css("background-color", "#eee");
+            }).mouseout(function () {
+                $(this).css("background-color", "white");
+            });
+        })
+    }
+
+    function loadFile(id, busId, pid, name) {
+        $("#tag").empty();
+        $("#folderPath").append("<div class=\"top-url\" style='float: left'><span style='float: left;'><input type='hidden' value='" + topUrlNum + "'>" +
+            "<a href=\'javascript:topUrlLoadController(\"" + busId + "\"," + topUrlNum++ + ");\' class='top-url-a'>" + subName(name) + "</a> </span>\n" +
+            "<span class=\"\">&nbsp;\/&nbsp;</span></div>");
+        loadFileByPId(busId);
+        useFoledePath = $("#folderPath").text();
+        useFoledePath = useFoledePath.replace(/\s*/g, "");
+        useFoledePath = useFoledePath.substring(0, useFoledePath.length - 1);
+        sessionStorage.setItem("useFoledePaths", useFoledePath);
+    }
+
+    function topUrlLoad(pid, num) {
+        useFolder = pid;
+        sessionStorage.setItem("useFolders", useFolder);
+        if (num != null && num !== "") {
+            topUrlNum = ++num;
+            $(".top-url-a").each(function () {
+                if ($(this.parentNode.firstChild).val() >= num) {
+                    $(this.parentNode.parentNode).remove();
+                }
+            });
+            useFoledePath = $("#folderPath").text();
+            useFoledePath = useFoledePath.replace(/\s*/g, "");
+            useFoledePath = useFoledePath.substring(0, useFoledePath.length - 1);
+            sessionStorage.setItem("useFoledePaths", useFoledePath);
+        }
+        loadFileByPId(pid);
+    }
+
+    //根据pid加载文件夹与文件
+    function loadFileByPId(pid) {
+        useFolder = pid;
+        sessionStorage.setItem("useFolders", useFolder);
+        $("#tag").empty();
+        $.ajax({
+            url: "/system/folder/listByBusinessPid",
+            type: "POST",
+            data: {businessPid: pid},
+            async: false,
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 1) {
+                    logoutMsg(data.msg);
+                }
+                if (data.total === 0) {
+                    $("#nullFolder").show();
+                } else {
+                    $("#nullFolder").hide();
+                }
+                var flag = 0;
+                code += "<div class=\"mdui-col-md-12 mdui-col-xs-12 \" style=\"text-align: center;\">";
+                code += "<div class=\"mdui-container-fluid tag\" style=\"padding-top:15px ;\">";
+                for (var i = 0; i < data.rows.length; i++) {
+                    flag++;
+                    if (i % 12 === 0) {
+                        code += "</div>";
+                        code += "</div>";
+                        code += "<div class=\"mdui-col-md-12 mdui-col-xs-12 \" style=\"text-align: center;\">";
+                        code += "<div class=\"mdui-container-fluid tag\" style=\"padding-top:15px ;\">";
+                    }
+                    code += "<div class=\"mdui-col-xs-4 mdui-col-xl-1 mdui-col-lg-1 mdui-col-md-2\" onclick='$(\"#" + data.rows[i].businessId + "\").click();$(\"#div" + data.rows[i].businessId + "\").click();' ondblclick='useFolder=\"" + data.rows[i].businessId + "\";loadFile(\"" + data.rows[i].id + "\",\"" + data.rows[i].businessId + "\",\"" + data.rows[i].businessPid + "\",\"" + data.rows[i].name + "\")'>";
+                    code += "<img width='56px' src=\"../dependency/images/demo/ico/dir.png\" />";
+                    code += "<input style='position: absolute;top: 0px;visibility: hidden;' class='jk-folder' type='checkbox' value='" + data.rows[i].businessId + "' id='" + data.rows[i].businessId + "' onclick='myToggle(this)'>";
+                    code += "<p style=\"margin-left: -2px;\">" + subName(data.rows[i].name) + "</p>";
+                    code += "</div>";
+                }
+                $.ajax({
+                    url: "/system/file/list",
+                    type: "POST",
+                    data: {"folderBusinessId": pid, "fileClass": getFileclass()},
+                    async: false,
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.total != 0) {
+                            $("#nullFolder").hide();
+                        }
+                        var row = null;
+                        var dataSize = flag + data.rows.length;
+                        for (var i = flag; i < dataSize; i++) {
+                            row = data.rows[i - flag];
+                            if (i % 12 === 0) {
+                                code += "</div>";
+                                code += "</div>";
+                                code += "<div class=\"mdui-col-md-12 mdui-col-xs-12 \" style=\"text-align: center;\">";
+                                code += "<div class=\"mdui-container-fluid tag\" style=\"padding-top:15px ;\">";
+                            }
+                            code += "<div class=\"mdui-col-xs-4 mdui-col-xl-1 mdui-col-lg-1 mdui-col-md-2\" onclick='$(\"#" + row.id + "\").click();$(\"#div" + row.id + "\").click();' ondblclick='openInfo(" + row.id + ")' >";
+                            if (row.fileClass === "document") {
+                                code += "<img width='56px' src=\"../dependency/images/demo/ico/" + row.fileSuffix + ".png\" alt=''/>";
+                                code += "<input style='position: absolute;top: 0px;visibility: hidden;' class='jk-file' type='checkbox' value='" + row.id + "' id='" + row.id + "' onclick='myToggle(this)'>";
+                            } else if (row.fileClass === "video") {
+                                code += "<img width='56px' src=\"../dependency/images/demo/ico/video.png\" alt=''/>";
+                                code += "<input style='position: absolute;top: 0px;visibility: hidden;' class='jk-file online-show' type='checkbox' value='" + row.id + "' id='" + row.id + "' onclick='myToggle(this)'>";
+                            } else if (row.fileClass === "img") {
+                                code += "<img class='center-son' style='width:56px;height:56px;' src=\"" + cusstr(location.href, "/", 3) + "/system/file/loadMinFile?id=" + row.id + "\" alt=''>";
+                                code += "<input style='position: absolute;top: 0px;visibility: hidden;' class='jk-file online-show' type='checkbox' value='" + row.id + "' id='" + row.id + "' onclick='myToggle(this)'>";
+                            } else {
+                                code += "<img width='56px' src=\"../dependency/images/demo/ico/file.png\" alt=''/>";
+                                code += "<input style='position: absolute;top: 0px;visibility: hidden;' class='jk-file' type='checkbox' value='" + row.id + "' id='" + row.id + "' onclick='myToggle(this)'>";
+                            }
+                            code += "<p style=\"margin-left: -2px;\">" + subName(row.name) + "</p>";
+                            code += "</div>";
+                        }
+                        code += "</div>";
+                        code += "</div>";
+                        $("#tag").append(code);
+                        code = "";
+                        bg();
+                        stopJKPropagation();
+                    },
+                    error: function (data) {
+                    }
+                });
+            },
+            error: function (data) {
+            }
+        });
+    }
+
+    //加载主目录文件夹，文件
+    function loadAll() {
+        sessionStorage.setItem("useFolders", "");
+        sessionStorage.setItem("useFoledePaths", "根目录");
+        $("#tag").empty();
+        $.ajax({
+            url: "/system/folder/listTop",
+            type: "POST",
+            data: {},
+            async: false,
+            dataType: "json",
+            contentType: "application/json",
+            success: function (data) {
+                if (data.total == 0) {
+                    $("#nullFolder").show();
+                } else {
+                    $("#nullFolder").hide();
+                }
+                if (data.code == 1) {
+                    logoutMsg(data.msg);
+                }
+                useFolder = "";
+                var flag = 0;
+                code += "<div class=\"mdui-col-md-12 mdui-col-xs-12 \" style=\"text-align: center;\">";
+                code += "<div class=\"mdui-container-fluid tag\" style=\"padding-top:15px ;\">";
+                for (var i = 0; i < data.rows.length; i++) {
+                    flag++;
+                    if (i % 12 === 0) {
+                        code += "</div>";
+                        code += "</div>";
+                        code += "<div class=\"mdui-col-md-12 mdui-col-xs-12 \" style=\"text-align: center;\">";
+                        code += "<div class=\"mdui-container-fluid tag\" style=\"padding-top:15px ;\">";
+                    }
+                    code += "<div class=\"mdui-col-xs-4 mdui-col-xl-1 mdui-col-lg-1 mdui-col-md-2\" onclick='$(\"#" + data.rows[i].businessId + "\").click();$(\"#div" + data.rows[i].businessId + "\").click();' ondblclick='useFolder=\"" + data.rows[i].businessId + "\";loadFile(\"" + data.rows[i].id + "\",\"" + data.rows[i].businessId + "\",\"" + data.rows[i].businessPid + "\",\"" + data.rows[i].name + "\")'>";
+                    code += "<img width='56px' src=\"../dependency/images/demo/ico/dir.png\" />";
+                    code += "<input style='position: absolute;top: 0px;visibility: hidden;' class='jk-folder' type='checkbox' value='" + data.rows[i].businessId + "' id='" + data.rows[i].businessId + "' onclick='myToggle(this)'>";
+                    code += "<p style=\"margin-left: -2px;\">" + subName(data.rows[i].name) + "</p>";
+                    code += "</div>";
+                }
+                $.ajax({
+                    url: "/system/file/listTop",
+                    type: "POST",
+                    data: {},
+                    async: false,
+                    dataType: "json",
+                    contentType: "application/json",
+                    success: function (data) {
+                        if (data.total != 0) {
+                            $("#nullFolder").hide();
+                        }
+                        var row = null;
+                        var dataSize = flag + data.rows.length;
+                        for (var i = flag; i < dataSize; i++) {
+                            row = data.rows[i - flag];
+                            if (i % 12 === 0) {
+                                code += "</div>";
+                                code += "</div>";
+                                code += "<div class=\"mdui-col-md-12 mdui-col-xs-12 \" style=\"text-align: center;\">";
+                                code += "<div class=\"mdui-container-fluid tag\" style=\"padding-top:15px ;\">";
+                            }
+                            code += "<div class=\"mdui-col-xs-4 mdui-col-xl-1 mdui-col-lg-1 mdui-col-md-2\" onclick='$(\"#" + row.id + "\").click();$(\"#div" + row.id + "\").click();' ondblclick='openInfo(" + row.id + ")' >";
+                            if (row.fileClass === "document") {
+                                code += "<img width='56px' src=\"../dependency/images/demo/ico/" + row.fileSuffix + ".png\" alt=''/>";
+                            } else if (row.fileClass === "video") {
+                                code += "<img width='56px' src=\"../dependency/images/demo/ico/video.png\" alt=''/>";
+                            } else if (row.fileClass === "img") {
+                                code += "<img class='center-son' style='width:56px;height:56px;' src=\"" + cusstr(location.href, "/", 3) + "/system/file/loadMinFile?id=" + row.id + "\" alt=''>";
+                            } else {
+                                code += "<img width='56px' src=\"../dependency/images/demo/ico/file.png\" alt=''/>";
+                            }
+                            code += "<input style='position: absolute;top: 0px;visibility: hidden;' class='jk-file' type='checkbox' value='" + row.id + "' id='" + row.id + "' onclick='myToggle(this)'>";
+                            code += "<p style=\"margin-left: -2px;\">" + subName(row.name) + "</p>";
+                            code += "</div>";
+                        }
+                        code += "</div>";
+                        code += "</div>";
+                        $("#tag").append(code);
+                        code = "";
+                        bg();
+                        stopJKPropagation();
+                    },
+                    error: function (data) {
+                    }
+                });
+            },
+            error: function (data) {
+
+            }
+        });
+    }
+
+    //加载全部（列表）
+    function loadAllList() {
+        sessionStorage.setItem("useFolders", "");
+        sessionStorage.setItem("useFoledePaths", "根目录");
+        useFolder = "";
+        $("#tag").empty();
+        $.ajax({
+            url: "/system/folder/listTop",
+            type: "POST",
+            data: {},
+            async: false,
+            dataType: "json",
+            contentType: "application/json",
+            success: function (data) {
+                if (data.total == 0) {
+                    $("#nullFolder").show();
+                } else {
+                    $("#nullFolder").hide();
+                }
+                if (data.code == 1) {
+                    logoutMsg(data.msg);
+                }
+                code += "<ul class=\"mdui-list\" style='width: 98%;margin-left: 20px'>";
+                // code += "<li class=\"mdui-list-item mdui-ripple\">";
+                // code += "<div><input style='position: relative;top: 0px;visibility: hidden;' class='jk-folder' type='checkbox' value='' id=''></div>";
+                // code += "<div class=\"\"></div>";
+                // code += "<div class=\"mdui-list-item-content mdui-col-xs-4\"><div style='margin-left: 56px'>名称</div></div>";
+                // code += "<div class=\"mdui-list-item-content mdui-col-xs-2\"><div style='margin-left: 40px'>大小</div></div>";
+                // code += "<div class=\"mdui-list-item-content mdui-col-xs-2\" style='text-align:left;'><div style='margin-left: 20px;'>创建时间</div></div>";
+                // code += "</li>";
+                for (var i = 0; i < data.rows.length; i++) {
+                    code += "<li class=\"mdui-list-item mdui-ripple\" style='margin-top: 8px' onclick='$(\"#" + data.rows[i].businessId + "\").click();$(\"#div" + data.rows[i].businessId + "\").click();' ondblclick='useFolder=\"" + data.rows[i].businessId + "\";loadFileList(\"" + data.rows[i].id + "\",\"" + data.rows[i].businessId + "\",\"" + data.rows[i].businessPid + "\",\"" + data.rows[i].name + "\")'>";
+                    code += "<div><input style='position: relative;top: 0px;visibility: hidden;' class='jk-folder' type='checkbox' value='" + data.rows[i].businessId + "' id='" + data.rows[i].businessId + "' onclick='myToggle(this)'></div>";
+                    code += "<div class=\"\"><img width='56px' src=\"../dependency/images/demo/ico/dir.png\"></div>";
+                    code += "<div class=\"mdui-list-item-content mdui-col-xs-4\">" + data.rows[i].name + "</div>";
+                    code += "<div class=\"mdui-list-item-content mdui-col-xs-2\">" + "" + "</div>";
+                    code += "<div class=\"mdui-list-item-content mdui-col-xs-2\" style='text-align:left;'>" + data.rows[i].createTime + "</div>";
+                    code += "</li>";
+                }
+                $.ajax({
+                    url: "/system/file/listTop",
+                    type: "POST",
+                    data: {},
+                    async: false,
+                    dataType: "json",
+                    contentType: "application/json",
+                    success: function (data) {
+                        if (data.total != 0) {
+                            $("#nullFolder").hide();
+                        }
+                        var row = null;
+                        var dataSize = data.rows.length;
+                        var fileSize = 0;
+                        for (var i = 0; i < dataSize; i++) {
+                            row = data.rows[i];
+                            code += "<li class=\"mdui-list-item mdui-ripple\" style='margin-top: 8px' onclick='$(\"#" + row.id + "\").click();' ondblclick='openInfo(" + row.id + ")' >";
+                            code += "<div><input class='jk-file' style='position: relative;top: 0px;visibility: hidden;' type='checkbox' value='" + row.id + "' id='" + row.id + "' onclick='myToggle(this)'></div>";
+
+                            if (row.fileClass === "document") {
+                                code += "<div class=\"\"><img width='56px' src=\"../dependency/images/demo/ico/" + row.fileSuffix + ".png\" ></div>";
+                            } else if (row.fileClass === "video") {
+                                code += "<div class=\"\"><img width='56px' src=\"../dependency/images/demo/ico/video.png\"></div>";
+                            } else if (row.fileClass === "img") {
+                                code += "<div class=\"\"><img class='center-son' style='width:56px;height:56px;' src=\"" + cusstr(location.href, "/", 3) + "/system/file/loadMinFile?id=" + row.id + "\" alt=''></div>";
+                            } else {
+                                code += "<div class=\"\"><img width='56px' src=\"../dependency/images/demo/ico/file.png\"></div>";
+                            }
+                            code += "<div class=\"mdui-list-item-content mdui-col-xs-4 \">" + row.name + "." + row.fileSuffix + "</div>";
+                            code += "<div class=\"mdui-list-item-content mdui-col-xs-2\">" + fileSizeFormatter(row.fileSize) + "</div>";
+                            code += "<div class=\"mdui-list-item-content mdui-col-xs-2\" style='text-align:left;'>" + row.createTime + "</div>";
+                            code += "</li>";
+                        }
+                        code += "</ul>";
+                        $("#tag").append(code);
+                        code = "";
+                        stopJKPropagation();
+                    },
+                    error: function (data) {
+                    }
+                });
+            },
+            error: function (data) {
+
+            }
+        });
+    }
+
+    //加载文件（列表）
+    function loadFileList(id, busId, pid, name) {
+        useFolder = busId;
+        sessionStorage.setItem("useFolders", useFolder);
+        $("#tag").empty();
+        $("#folderPath").append("<div class=\"top-url\" style='float: left;'><span style='float: left;'><input type='hidden' value='" + topUrlNum + "'>" +
+            "<a href=\'javascript:topUrlLoadController(\"" + busId + "\"," + topUrlNum++ + ");\' class='top-url-a'>" + name + "</a> </span>\n" +
+            "<span class=\"\">&nbsp;\/&nbsp;</span></div>");
+        loadFileListByPId(busId);
+        useFoledePath = $("#folderPath").text();
+        useFoledePath = useFoledePath.replace(/\s*/g, "");
+        useFoledePath = useFoledePath.substring(0, useFoledePath.length - 1);
+        sessionStorage.setItem("useFoledePaths", useFoledePath);
+    }
+
+    //管理当前路径（列表）
+    function topUrlLoadList(pid, num) {
+        if (num != null && num !== "") {
+            topUrlNum = ++num;
+            $(".top-url-a").each(function () {
+                if ($(this.parentNode.firstChild).val() >= num) {
+                    $(this.parentNode.parentNode).remove();
+                }
+            });
+        }
+        loadFileListByPId(pid);
+        useFoledePath = $("#folderPath").text();
+        useFoledePath = useFoledePath.replace(/\s*/g, "");
+        useFoledePath = useFoledePath.substring(0, useFoledePath.length - 1);
+        sessionStorage.setItem("useFoledePaths", useFoledePath);
+    }
+
+    //通过id加载文件（列表）
+    function loadFileListByPId(pid) {
+        $("#tag").empty();
+        $.ajax({
+            url: "/system/folder/listByBusinessPid",
+            type: "POST",
+            data: {businessPid: pid},
+            async: false,
+            dataType: "json",
+            success: function (data) {
+                if (data.total == 0) {
+                    $("#nullFolder").show();
+                } else {
+                    $("#nullFolder").hide();
+                }
+                if (data.code == 1) {
+                    logoutMsg(data.msg);
+                }
+                code += "<ul class=\"mdui-list\" style='width: 98%;margin-left: 20px'>";
+                // code += "<li class=\"mdui-list-item mdui-ripple\">";
+                // code += "<div><input style='position: relative;top: 0px;visibility: hidden;' class='jk-folder' type='checkbox' value='' id=''></div>";
+                // code += "<div class=\"\"></div>";
+                // code += "<div class=\"mdui-list-item-content mdui-col-xs-4\"><div style='margin-left: 56px'>名称</div></div>";
+                // code += "<div class=\"mdui-list-item-content mdui-col-xs-2\"><div style='margin-left: 40px'>大小</div></div>";
+                // code += "<div class=\"mdui-list-item-content mdui-col-xs-2\" style='text-align:left;'><div style='margin-left: 20px;'>创建时间</div></div>";
+                // code += "</li>";
+                for (var i = 0; i < data.rows.length; i++) {
+                    code += "<li class=\"mdui-list-item mdui-ripple\" style='margin-top: 8px' onclick='$(\"#" + data.rows[i].businessId + "\").click();$(\"#div" + data.rows[i].businessId + "\").click();' ondblclick='useFolder=\"" + data.rows[i].businessId + "\";loadFileList(\"" + data.rows[i].id + "\",\"" + data.rows[i].businessId + "\",\"" + data.rows[i].businessPid + "\",\"" + data.rows[i].name + "\")'>";
+                    code += "<div><input style='position: relative;top: 0px;visibility: hidden;' class='jk-folder' type='checkbox' value='" + data.rows[i].businessId + "' id='" + data.rows[i].businessId + "' onclick='myToggle(this)'></div>";
+                    code += "<div class=\"\"><img width='56px' src=\"../dependency/images/demo/ico/dir.png\"></div>";
+                    code += "<div class=\"mdui-list-item-content mdui-col-xs-4\">" + data.rows[i].name + "</div>";
+                    code += "<div class=\"mdui-list-item-content mdui-col-xs-2\">" + "" + "</div>";
+                    code += "<div class=\"mdui-list-item-content mdui-col-xs-2\" style='text-align:left;'>" + data.rows[i].createTime + "</div>";
+                    code += "</li>";
+                }
+                $.ajax({
+                    url: "/system/file/list",
+                    type: "POST",
+                    data: {"folderBusinessId": pid, "fileClass": getFileclass()},
+                    async: false,
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.total != 0) {
+                            $("#nullFolder").hide();
+                        }
+                        var row = null;
+                        var dataSize = data.rows.length;
+                        var fileSize = 0;
+                        for (var i = 0; i < dataSize; i++) {
+                            row = data.rows[i];
+                            code += "<li class=\"mdui-list-item mdui-ripple\" style='margin-top: 8px' onclick='$(\"#" + row.id + "\").click();' ondblclick='openInfo(" + row.id + ")' >";
+                            code += "<div><input class='jk-file' style='position: relative;top: 0px;visibility: hidden;' type='checkbox' value='" + row.id + "' id='" + row.id + "' onclick='myToggle(this)'></div>";
+
+                            if (row.fileClass === "document") {
+                                code += "<div class=\"\"><img width='56px'  src=\"../dependency/images/demo/ico/" + row.fileSuffix + ".png\" ></div>";
+                            } else if (row.fileClass === "video") {
+                                code += "<div class=\"\"><img width='56px'  src=\"../dependency/images/demo/ico/video.png\"></div>";
+                            } else if (row.fileClass === "img") {
+                                code += "<div class=\"\"><img class='center-son' style='width:56px;height:56px;' src=\"" + cusstr(location.href, "/", 3) + "/system/file/loadMinFile?id=" + row.id + "\" alt=''></div>";
+                            } else {
+                                code += "<div class=\"\"><img width='56px' src=\"../dependency/images/demo/ico/file.png\"></div>";
+                            }
+                            code += "<div class=\"mdui-list-item-content mdui-col-xs-4 \">" + row.name + "." + row.fileSuffix + "</div>";
+                            code += "<div class=\"mdui-list-item-content mdui-col-xs-2\">" + fileSizeFormatter(row.fileSize) + "</div>";
+                            code += "<div class=\"mdui-list-item-content mdui-col-xs-2\" style='text-align:left;'>" + row.createTime + "</div>";
+                            code += "</li>";
+                        }
+                        code += "</ul>";
+                        $("#tag").append(code);
+                        code = "";
+                        stopJKPropagation();
+                    },
+                    error: function (data) {
+                    }
+                });
+            },
+            error: function (data) {
+
+            }
+        });
+    }
+
+    function bindMenu() {
+        /*切换菜单css*/
+        $('.filelist-activi li').click(function () { //点击的时候给当前这个加上，其他的移除
+            $(this).addClass("mdui-list-item-active").siblings("li").removeClass("mdui-list-item-active");
+        });
+    }
+
+    //控制显示/隐藏
+    function myToggle(node) {
+        if ($(node).css('visibility') === 'hidden') {
+            $(node).css('visibility', 'visible');//元素显示
+        } else {
+            $(node).css('visibility', 'hidden');//元素隐藏
+        }
+    }
+
+    //下载选中文件
+    function downloadFiles() {
+        var data = "";
+        var folderData = "";
+        $(".jk-file:checkbox:checked").each(function () {
+            data += this.value + ",";
+        });
+        $(".jk-folder:checkbox:checked").each(function () {
+            folderData += this.value + ",";
+        });
+        data = data.substring(0, data.length - 1);
+        folderData = folderData.substring(0, folderData.length - 1);
+        if (data === "" && folderData === "") {
+            return;
+        }
+        if (data.indexOf(",") === -1 && folderData === "") {
+            window.open("/system/file/downloadFile?id=" + data);
+        } else {
+            if (data == "") {
+                window.open("/system/file/downAll?fileType=" + getFileclassForDownload() + "&folders=" + folderData + "&files=" + data);
+            } else {
+                window.open("/system/file/downAll?fileType=" + getFileclassForDownload() + "&files=" + data + "&folders=" + folderData);
+            }
+        }
+        //backup code 2019-11-18 👆
+        // if (data.indexOf(",") === -1 && folderData === "") {
+        //     window.location.href = "/system/file/downloadFile?id=" + data;
+        // } else {
+        //     if (data == "") {
+        //         window.open(location.href.substr(0, location.href.lastIndexOf("/")) + "/system/file/downAll?fileType=" + getFileclassForDownload() + "&folders=" + folderData + "&files=" + data);
+        //     } else {
+        //         window.open(location.href.substr(0, location.href.lastIndexOf("/")) + "/system/file/downAll?fileType=" + getFileclassForDownload() + "&files=" + data + "&folders=" + folderData);
+        //     }
+        // }
+        $("#clearCheck").click();
+    }
+
+    //删除文件方法
+    function deleteFiles() {
+        layer.load(1);
+        var data = "";
+        var folderData = new Array();
+        $(".jk-file:checkbox:checked").each(function () {
+            data += this.value + ",";
+        });
+        $(".jk-folder:checkbox:checked").each(function () {
+            folderData.push(this.value);
+        });
+        if (data === "" && folderData.length === 0) {
+            layer.alert("请选择要删除的文件夹或文件", {icon: 2}, function () {
+                layer.closeAll();
+            })
+        } else {
+            layer.confirm("您确认要删除所选文件吗？", {icon: 3}, function () {
+                layer.closeAll();
+                if (folderData.length !== 0) {
+                    for (var i = 0; i <= folderData.length; i++) {
+                        $.ajax({
+                            url: "/system/folder/deleteByFolderId?id=" + folderData[i],
+                            type: "POST",
+                            data: {},
+                            async: false,
+                            dataType: "json",
+                            contentType: "application/json",
+                            success: function (data) {
+                                layer.closeAll();
+                                if (data.code == "1" || data.code == "0") {
+                                    if (i === folderData.length - 1) {
+                                        if (listFlag) {
+                                            loadFileListByPId(useFolder);
+                                        } else {
+                                            loadFileByPId(useFolder);
+                                        }
+                                    }
+                                } else {
+                                    layer.alert("删除失败", {icon: 2}, function () {
+                                        location.reload();
+                                    });
+                                }
+                            }
+                        });
+                    }
+                }
+                if (data !== '') {
+                    data = data.substring(0, data.length - 1);
+                    $.ajax({
+                        url: "/system/file/deleteFiles?ids=" + data,
+                        type: "POST",
+                        data: {},
+                        async: false,
+                        dataType: "json",
+                        contentType: "application/json",
+                        success: function (data) {
+                            if (data.code == "0") {
+                                layer.closeAll();
+                                if (listFlag) {
+                                    loadFileListByPId(useFolder);
+                                } else {
+                                    loadFileByPId(useFolder);
+                                }
+                            } else {
+                                layer.alert("删除失败", {icon: 2}, function () {
+                                    location.reload();
+                                });
+                            }
+                        },
+                        error: function (data) {
+                            layer.alert("删除失败", {icon: 2}, function () {
+                                location.reload();
+                            });
+                        }
+                    });
+                }
+            }, function () {
+                layer.closeAll();
+            })
+        }
+    }
+
+    //回收站删除文件方法
+    function reallyRemove() {
+        var data = "";
+        var folderData = new Array()
+        $(".jk-file:checkbox:checked").each(function () {
+            data += this.value + ",";
+        });
+        $(".jk-folder:checkbox:checked").each(function () {
+            folderData.push(this.value);
+        });
+        if (data === "" && folderData.length === 0) {
+            layer.alert("请选择要删除的文件夹或文件", {icon: 2}, function () {
+                layer.closeAll();
+            })
+        } else {
+            layer.confirm("您确认要删除所选文件吗？", {icon: 3}, function () {
+                layer.closeAll();
+                if (folderData.length !== 0) {
+                    for (var i = 0; i < folderData.length; i++) {
+                        $.ajax({
+                            url: "/system/folder/deleteReallyFolderId?id=" + folderData[i],
+                            type: "POST",
+                            data: {},
+                            async: false,
+                            dataType: "json",
+                            contentType: "application/json",
+                            success: function (data) {
+                                if (data.code == "1" || data.code == "0") {
+                                    if (i === folderData.length - 1) {
+                                        layer.closeAll();
+                                        if (listFlag) {
+                                            deleteList();
+                                        } else {
+                                            deleteAllList(useFolder);
+                                        }
+                                    }
+                                } else {
+                                    layer.alert("删除失败", {icon: 2}, function () {
+                                        location.reload();
+                                    });
+                                }
+                            }
+                        });
+                    }
+                }
+                if (data !== '') {
+                    data = data.substring(0, data.length - 1);
+                    $.ajax({
+                        url: "/system/file/reallyRemove?ids=" + data,
+                        type: "POST",
+                        data: {},
+                        async: false,
+                        dataType: "json",
+                        contentType: "application/json",
+                        success: function (data) {
+                            if (data.code == "0") {
+                                layer.closeAll();
+                                if (listFlag) {
+                                    deleteList();
+                                } else {
+                                    deleteAllList(useFolder);
+                                }
+                            } else {
+                                layer.alert("删除失败", {icon: 2}, function () {
+                                    if (listFlag) {
+                                        deleteList();
+                                    } else {
+                                        deleteAllList(useFolder);
+                                    }
+                                });
+                            }
+                        },
+                        error: function (data) {
+                            layer.alert("删除失败", {icon: 2}, function () {
+                                location.reload();
+                            });
+                        }
+                    });
+                }
+            })
+        }
+    }
+
+    //传入KB值，返回格式化后的字符串
+    function fileSizeFormatter(fileSize) {
+        return fileLengthFormat(fileSize, 2);
+    }
+
+    /**
+     * [fileLengthFormat 格式化文件大小]
+     * @param  {[int]} total [文件大小]
+     * @param  {[int]} n     [total参数的原始单位如果为Byte，则n设为1，如果为kb，则n设为2，如果为mb，则n设为3]
+     * @return {[string]}       [带单位的文件大小的字符串]
+     */
+    function fileLengthFormat(total, n) {
+        var format;
+        var len = total / (1024.0);
+        if (len > 1000) {
+            return arguments.callee(len, ++n);
+        } else {
+            switch (n) {
+                case 1:
+                    format = len.toFixed(2) + "KB";
+                    break;
+                case 2:
+                    format = len.toFixed(2) + "MB";
+                    break;
+                case 3:
+                    format = len.toFixed(2) + "GB";
+                    break;
+                case 4:
+                    format = len.toFixed(2) + "TB";
+                    break;
+            }
+            return format;
+        }
+    }
+
+    //格式化显示文件名称（只显示部分名称）
+    function subName(name) {
+        if (name === null) {
+            return "";
+        }
+        if (name.length > 10) {
+            return name.substring(0, 4) + ".." + name.substring(name.length - 4, name.length);
+        } else {
+            return name;
+        }
+    }
+
+    //标签管理
+    function labelManage() {
+        layer.open({
+            type: 1,
+            title: '标签管理',
+            shadeClose: true,
+            shade: [0.8, '#393D49'],
+            maxmin: !isPhoneFlag, //开启最大化最小化按钮
+            area: [isPhoneFlag ? '98%' : '65%', isPhoneFlag ? '80%' : '65%'],
+            content: $("#labelDiv"),
+            success: function (layero, index) {
+                $(':focus').blur();
+            },
+            yes: function (index, layero) {
+                layer.close(index);
+                $("#labelSerach").empty();
+                loadLabelSelect();
+            }
+        });
+        initTable();
+    }
+
+    function initTable() {
+        var height = window.innerHeight
+            || document.documentElement.clientHeight
+            || document.body.clientHeight;
+        $('#labelTB').bootstrapTable({
+            url: 'system/fileLabel/list',       //请求后台的URL（*）
+            method: 'post',                     //请求方式（*）
+            toolbar: '#toolbar1',               //工具按钮用哪个容器
+            striped: true,                      //是否显示行间隔色
+            cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+            pagination: false,                   //是否显示分页（*）
+            sortable: false,                    //是否启用排序
+            sortOrder: "asc",                   //排序方式
+            sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+            pageNumber: 1,                       //初始化加载第一页，默认第一页
+            pageSize: 999,                       //每页的记录行数（*）
+            pageList: [10, 20, 200, 500],       	//可供选择的每页的行数（*）
+            search: false,                      //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+            strictSearch: true,
+            showColumns: false,                 //是否显示所有的列
+            showRefresh: false,                 //是否显示刷新按钮
+            singleSelect: true,                  //是否单选
+            minimumCountColumns: 2,             //最少允许的列数
+            clickToSelect: true,                //是否启用点击选中行
+            //height:, 			    //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+            uniqueId: "id",                     //每一行的唯一标识，一般为主键列
+            showToggle: false,                   //是否显示详细视图和列表视图的切换按钮
+            cardView: false,                    //是否显示详细视图
+            detailView: false,                  //是否显示父子表
+            paginationShowPageGo: true,
+            pageGo: function () {
+                return '跳转到';
+            },
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',//请求方式为post时，需定义成该数据编码类型
+            queryParams: function (params) {//传递参数（*）
+                //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
+                var pageInfo = {
+                    pageSize: params.limit,                         //页面大小
+                    pageNumber: (params.offset / params.limit) + 1   //页码
+                };
+                return pageInfo;
+            },
+            columns: [
+                {
+                    checkbox: true
+                },
+                {
+                    field: 'name',
+                    title: '标签',
+                    halign: 'center',
+                    align: 'center'
+                }
+            ]
+        });
+    }
+
+    function openAdd() {
+        layer.open({
+            type: 1,
+            title: '标签管理',
+            shadeClose: true,
+            shade: [0.8, '#393D49'],
+            maxmin: !isPhoneFlag, //开启最大化最小化按钮
+            area: [isPhoneFlag ? '90%' : '30%', isPhoneFlag ? '50%' : '30%'],
+            content: $("#AddlabelDiv"),
+            btn: ['保存', '取消'],
+            success: function (layero, index) {
+                this.enterConfirm = function (event) {
+                    if (event.keyCode === 13) {
+                        return false; //阻止系统默认回车事件
+                    }
+                };
+                $(document).on('keydown', this.enterConfirm); //监听键盘事件
+
+                // 点击确定按钮回调事件
+                $(".layui-layer-btn0").on("click", function () {
+                    if ($("#Labelname").val().length === 0) {
+                        toastr.warning("请输入标签名");
+                    } else {
+                        $.ajax({
+                            url: "/system/fileLabel/add",
+                            type: "POST",
+                            data: {
+                                name: $("#Labelname").val()
+                            },
+                            async: false,
+                            dataType: "json",
+                            success: function (data) {
+                                if (data.code == 1) {
+                                    logoutMsg(data.msg);
+                                }
+                                if (data.code === 0) {
+                                    $("#labelTB").bootstrapTable('refresh');//刷新表格
+                                    $("#Labelname").val("");
+                                    loadLabelSelect();
+                                } else {
+                                    layer.alert(data.msg, {
+                                        icon: 2,
+                                        title: "提示"
+                                    });
+                                    $("#Labelname").val("");
+                                }
+                            }
+                        });
+                    }
+                    layer.close(index);
+                })
+            },
+            end: function () {
+                $(document).off('keydown', this.enterConfirm); //解除键盘事件
+            }
+        });
+    }
+
+    //删除标签
+    function openRemove() {
+        var checkids = $("#labelTB").bootstrapTable('getSelections');
+        if (checkids.length !== 1) {
+            layer.alert('请选一列进行操作', {
+                icon: 5,
+                title: "提示"
+            });
+        } else {
+            var id = checkids[0].id;
+            $.ajax({
+                url: "/system/fileLabel/deleteLabel",
+                type: "POST",
+                data: {id: id},
+                dataType: "json",
+                success: function (data) {
+                    if (data.code == 1) {
+                        logoutMsg(data.msg);
+                    }
+                    if (data.code == "0") {
+                        $("#labelTB").bootstrapTable('refresh');//刷新表格
+                        loadLabelSelect();
+                    } else {
+                        layer.alert('删除失败', {
+                            icon: 2
+                        });
+                    }
+                }
+            });
+        }
+    }
+
+    function AddFolder() {
+        layer.open({
+            type: 1,
+            title: '新建文件夹',
+            shadeClose: true,
+            shade: [0.8, '#393D49'],
+            maxmin: !isPhoneFlag, //开启最大化最小化按钮
+            area: [isPhoneFlag ? '98%' : '30%', isPhoneFlag ? '60%' : '30%'],
+            content: $("#FolderDiv"),
+            btn: ['保存', '取消'],
+            success: function (layero, index) {
+                this.enterConfirm = function (event) {
+                    if (event.keyCode === 13) {
+                        $(".layui-layer-btn0").click();
+                        return false; //阻止系统默认回车事件
+                    }
+                };
+                $(document).on('keydown', this.enterConfirm); //监听键盘事件
+
+                // 点击确定按钮回调事件
+                $(".layui-layer-btn0").on("click", function () {
+                    adFolderWay();
+                })
+            },
+            end: function () {
+                $(document).off('keydown', this.enterConfirm); //解除键盘事件
+            }
+        });
+        $("#FolderName").focus();
+    }
+
+    //新增文件夹方法
+    function adFolderWay() {
+        if ($("#FolderName").val().length < 1) {
+            toastr.warning("请输入文件夹名字");
+        } else {
+            var name = $("#FolderName").val();
+            if (!name.match("^[a-zA-Z0-9_()--+\u4e00-\u9fa5]+$")) {
+                layer.msg("请不要输入特殊字符", {
+                    icon: 2
+                });
+                $("#FolderName").val("");
+                return;
+            }
+            $.ajax({
+                url: "/system/folder/add",
+                type: "POST",
+                data: {
+                    name: $("#FolderName").val(),
+                    businessPid: useFolder
+                },
+                async: false,
+                dataType: "json",
+                success: function (data) {
+                    if (data.code == 0) {
+                        toastr.success("新增成功");
+                        if (listFlag) {
+                            loadFileListByPId(useFolder);
+                        } else {
+                            loadFileByPId(useFolder);
+                        }
+                    } else {
+                        layer.alert(data.msg, {
+                            icon: 2,
+                            title: "提示"
+                        }, function () {
+                            layer.closeAll();
+                            AddFolder();
+                        });
+                    }
+                    $("#FolderName").val("");
+                }
+            });
+        }
+
+    }
+
+    //加载删除全部（列表）
+    function deleteList() {
+        $("#tag").empty();
+        $.ajax({
+            url: "/system/folder/listBackTop",
+            type: "POST",
+            data: {},
+            async: false,
+            dataType: "json",
+            contentType: "application/json",
+            success: function (data) {
+                backtotal = data.total;
+                if (data.total == 0) {
+                    $("#nullFolder").show();
+                } else {
+                    $("#nullFolder").hide();
+                }
+                if (data.total != 0) {
+                    $("#nullFolder").hide();
+                }
+                code += "<ul class=\"mdui-list\" style='width: 98%;margin-left: 20px'>";
+                // code += "<li class=\"mdui-list-item mdui-ripple\">";
+                // code += "<div><input style='position: relative;top: 0px;visibility: hidden;' class='jk-folder' type='checkbox' value='' id=''></div>";
+                // code += "<div class=\"\"></div>";
+                // code += "<div class=\"mdui-list-item-content mdui-col-xs-4\"><div style='margin-left: 56px'>名称</div></div>";
+                // code += "<div class=\"mdui-list-item-content mdui-col-xs-2\"><div style='margin-left: 40px'>大小</div></div>";
+                // code += "<div class=\"mdui-list-item-content mdui-col-xs-2\" style='text-align:left;'><div style='margin-left: 20px;'>创建时间</div></div>";
+                // code += "</li>";
+                for (var i = 0; i < data.rows.length; i++) {
+                    code += "<li class=\"mdui-list-item mdui-ripple\"  onclick='$(\"#" + data.rows[i].businessId + "\").click();$(\"#div" + data.rows[i].businessId + "\").click();' ondblclick=''>";
+                    code += "<div><input style='position: relative;top: 0px;visibility: hidden;' class='jk-folder' type='checkbox' value='" + data.rows[i].businessId + "' id='" + data.rows[i].businessId + "' onclick='myToggle(this)'></div>";
+                    code += "<div class=\"\"><img width='56px' src=\"../dependency/images/demo/ico/dir.png\"></div>";
+                    code += "<div class=\"mdui-list-item-content mdui-col-xs-4\">" + data.rows[i].name + "</div>";
+                    code += "<div class=\"mdui-list-item-content mdui-col-xs-2\">" + "" + "</div>";
+                    code += "<div class=\"mdui-list-item-content mdui-col-xs-2\" style='text-align:left;'>" + data.rows[i].createTime + "</div>";
+                    code += "</li>";
+                }
+                $.ajax({
+                    url: "/system/file/selectFileDelete",
+                    type: "POST",
+                    data: {},
+                    async: false,
+                    dataType: "json",
+                    contentType: "application/json",
+                    success: function (data) {
+                        if (data.total != 0) {
+                            $("#nullFolder").hide();
+                        }
+                        if (backtotal != 0) {
+                            backtotal = 1;
+                        } else {
+                            backtotal = data.total;
+                        }
+                        var row = null;
+                        var dataSize = data.rows.length;
+                        for (var i = 0; i < dataSize; i++) {
+                            row = data.rows[i];
+                            code += "<li class=\"mdui-list-item mdui-ripple\" style='margin-top: 8px;' onclick='$(\"#" + row.id + "\").click();' ondblclick='openInfo(" + row.id + ")' >";
+                            code += "<div><input class='jk-file' style='position: relative;top: 0px;visibility: hidden;' type='checkbox' value='" + row.id + "' id='" + row.id + "' onclick='myToggle(this)'></div>";
+                            if (row.fileClass === "document") {
+                                code += "<div class=\"\"><img width='56px' src=\"../dependency/images/demo/ico/" + row.fileSuffix + ".png\" ></div>";
+                            } else if (row.fileClass === "video") {
+                                code += "<div class=\"\"><img width='56px' src=\"../dependency/images/demo/ico/video.png\"></div>";
+                            } else if (row.fileClass === "img") {
+                                code += "<div class=\"\"><img class='center-son' style='width:56px;height:56px;' src=\"" + cusstr(location.href, "/", 3) + "/system/file/loadMinFile?id=" + row.id + "\" alt=''></div>";
+                            } else {
+                                code += "<div class=\"\"><img width='56px' src=\"../dependency/images/demo/ico/file.png\"></div>";
+                            }
+                            code += "<div class=\"mdui-list-item-content mdui-col-xs-4 \">" + row.name + "." + row.fileSuffix + "</div>";
+                            code += "<div class=\"mdui-list-item-content mdui-col-xs-2\">" + fileSizeFormatter(row.fileSize) + "</div>";
+                            code += "<div class=\"mdui-list-item-content mdui-col-xs-2\" style='text-align:left;'>" + row.createTime + "</div>";
+                            code += "</li>";
+                        }
+                        code += "</ul>";
+                        $("#tag").append(code);
+                        code = "";
+                        stopJKPropagation();
+                    },
+                    error: function (data) {
+                    }
+                });
+            },
+            error: function (data) {
+
+            }
+        });
+    }
+
+    //加载删除主目录文件
+    function deleteAllList() {
+        $("#tag").empty();
+        $.ajax({
+            url: "/system/folder/listBackTop",
+            type: "POST",
+            data: {},
+            async: false,
+            dataType: "json",
+            contentType: "application/json",
+            success: function (data) {
+                backtotal = data.total;
+                if (data.code == 1) {
+                    logoutMsg(data.msg);
+                }
+                if (data.total == 0) {
+                    $("#nullFolder").show();
+                } else {
+                    $("#nullFolder").hide();
+                }
+                var flag = 0;
+                code += "<div class=\"mdui-col-md-12 mdui-col-xs-12 \" style=\"text-align: center;\">";
+                code += "<div class=\"mdui-container-fluid tag\" style=\"padding-top:15px ;\">";
+                for (var i = 0; i < data.rows.length; i++) {
+                    flag++;
+                    if (i % 12 === 0) {
+                        code += "</div>";
+                        code += "</div>";
+                        code += "<div class=\"mdui-col-md-12 mdui-col-xs-12 \" style=\"text-align: center;\">";
+                        code += "<div class=\"mdui-container-fluid tag\" style=\"padding-top:15px ;\">";
+                    }
+                    code += "<div class=\"mdui-col-xs-4 mdui-col-xl-1 mdui-col-lg-1 mdui-col-md-2\" onclick='$(\"#" + data.rows[i].businessId + "\").click();$(\"#div" + data.rows[i].businessId + "\").click();' ondblclick=''>";
+                    code += "<img width='56px' src=\"../dependency/images/demo/ico/dir.png\" />";
+                    code += "<input style='position: absolute;top: 0px;visibility: hidden;' class='jk-folder' type='checkbox' value='" + data.rows[i].businessId + "' id='" + data.rows[i].businessId + "' onclick='myToggle(this)'>";
+                    code += "<p style=\"margin-left: -2px;\">" + subName(data.rows[i].name) + "</p>";
+                    code += "</div>";
+                }
+                $.ajax({
+                    url: "/system/file/selectFileDelete",
+                    type: "POST",
+                    data: {},
+                    async: false,
+                    dataType: "json",
+                    contentType: "application/json",
+                    success: function (data) {
+                        if (data.total != 0) {
+                            $("#nullFolder").hide();
+                        }
+                        if (backtotal != 0) {
+                            backtotal = 1;
+                        } else {
+                            backtotal = data.total;
+                        }
+                        var row = null;
+                        var dataSize = flag + data.rows.length;
+                        for (var i = flag; i < dataSize; i++) {
+                            row = data.rows[i - flag];
+                            if (i % 12 === 0) {
+                                code += "</div>";
+                                code += "</div>";
+                                code += "<div class=\"mdui-col-md-12 mdui-col-xs-12 \" style=\"text-align: center;\">";
+                                code += "<div class=\"mdui-container-fluid tag\" style=\"padding-top:15px ;\">";
+                            }
+                            code += "<div class=\"mdui-col-xs-4 mdui-col-xl-1 mdui-col-lg-1 mdui-col-md-2\" onclick='$(\"#" + row.id + "\").click();$(\"#div" + row.id + "\").click();' ondblclick='openInfo(" + row.id + ")' >";
+                            if (row.fileClass === "document") {
+                                code += "<img width='56px' src=\"../dependency/images/demo/ico/" + row.fileSuffix + ".png\" alt=''/>";
+                            } else if (row.fileClass === "video") {
+                                code += "<img width='56px' src=\"../dependency/images/demo/ico/video.png\" alt=''/>";
+                            } else if (row.fileClass === "img") {
+                                code += "<img class='center-son' style='width:56px;height:56px;' src=\"" + cusstr(location.href, "/", 3) + "/system/file/loadMinFile?id=" + row.id + "\" alt=''>";
+                            } else {
+                                code += "<img width='56px' src=\"../dependency/images/demo/ico/file.png\" alt=''/>";
+                            }
+                            code += "<input style='position: absolute;top: 0px;visibility: hidden;' class='jk-file' type='checkbox' value='" + row.id + "' id='" + row.id + "' onclick='myToggle(this)'>";
+                            code += "<p style=\"margin-left: -2px;\">" + subName(row.name) + "</p>";
+                            code += "</div>";
+                        }
+                        code += "</div>";
+                        code += "</div>";
+                        $("#tag").append(code);
+                        code = "";
+                        bg();
+                        stopJKPropagation();
+                    },
+                    error: function (data) {
+                    }
+                });
+            },
+            error: function (data) {
+
+            }
+        });
+    }
+
+    //提示找回
+    function tipsBlak() {
+        layer.alert("请还原文件", {icon: 3}, function () {
+            layer.closeAll();
+        });
+    }
+
+    /*文件找回*/
+    function returnFiles() {
+        var data = "";
+        var folderData = new Array();
+        //$("input:checkbox:checked [class='jk-file']").each(function () {
+        $(".jk-file:checkbox:checked").each(function () {
+            data += this.value + ",";
+        });
+        $(".jk-folder:checkbox:checked").each(function () {
+            folderData.push(this.value);
+        });
+        if (data === "" && folderData.length === 0) {
+            layer.alert("请选择要找回的文件夹或文件", {icon: 2}, function () {
+                layer.closeAll();
+            })
+        } else {
+            layer.confirm("您确认要找回所选文件吗？", {icon: 3}, function () {
+                layer.closeAll();
+                if (folderData.length !== 0) {
+                    for (var i = 0; i < folderData.length; i++) {
+                        $.ajax({
+                            url: "/system/folder/returnFolder?id=" + folderData[i],
+                            type: "POST",
+                            data: {},
+                            async: false,
+                            dataType: "json",
+                            contentType: "application/json",
+                            success: function (data) {
+                                if (data.code == "1" || data.code == "0") {
+                                    if (i === folderData.length - 1) {
+                                        layer.closeAll();
+                                        if (listFlag) {
+                                            deleteList();
+                                        } else {
+                                            deleteAllList(useFolder);
+                                        }
+                                    }
+                                } else {
+                                    layer.alert("找回失败", {icon: 2}, function () {
+                                        if (listFlag) {
+                                            deleteList();
+                                        } else {
+                                            deleteAllList(useFolder);
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    }
+                }
+                if (data !== '') {
+                    data = data.substring(0, data.length - 1);
+                    $.ajax({
+                        url: "/system/file/returnFile?ids=" + data,
+                        type: "POST",
+                        data: {},
+                        async: false,
+                        dataType: "json",
+                        contentType: "application/json",
+                        success: function (data) {
+                            if (data.code == "0") {
+                                layer.closeAll();
+                                if (listFlag) {
+                                    deleteList();
+                                } else {
+                                    deleteAllList(useFolder);
+                                }
+                            }
+                        },
+                        error: function (data) {
+                        }
+                    });
+                }
+            })
+        }
+    }
+
+    function cusstr(str, findStr, num) {
+        var idx = str.indexOf(findStr);
+        var count = 1;
+        while (idx >= 0 && count < num) {
+            idx = str.indexOf(findStr, idx + 1);
+            count++;
+        }
+        if (idx < 0) {
+            return '';
+        }
+        return str.substring(0, idx);
+    }
+
+    function videoCode(id) {
+        return "<video class='inner' controls  >\n" +
+            "        <source src=\"" + cusstr(location.href, "/", 3) + "/system/file/loadFile?id=" + id + "\" type=\"video/mp4\">\n您的浏览器不支持 HTML5 video\n" +
+            "    </video>";
+    }
+
+    function imgCode(id) {
+        return "<img class='center-son' onmousewheel='return bigimg(this);' style='max-width:100%;max-height:100%;' src=\"" + cusstr(location.href, "/", 3) + "/system/file/loadFile?id=" + id + "\" alt=''>";
+    }
+
+    function mp3Code(id) {
+        return "<audio class='center-son' controls>\n" +
+            "<source src=\"" + cusstr(location.href, "/", 3) + "/system/file/loadFile?id=" + id + "\" type=\"audio/mpeg\">\n" +
+            "</audio>";
+    }
+
+    function wavCode(id) {
+        return "<audio class='center-son' controls>\n" +
+            "<source src=\"" + cusstr(location.href, "/", 3) + "/system/file/loadFile?id=" + id + "\" type=\"audio/wav\">\n" +
+            "</audio>";
+    }
+
+    function oggCode(id) {
+        return "<video class='center-son' controls style='max-width:100%;max-height:100%;'>\n" +
+            "<source src=\"" + cusstr(location.href, "/", 3) + "/system/file/loadFile?id=" + id + "\" type=\"video/ogg\">\n您的浏览器不支持 HTML5 video\n" +
+            "</video>";
+    }
+
+    /*管理文件夹*/
+    function FolderManages() {
+        var setting = {
+            view: {
+                selectedMulti: true
+            },
+            check: {
+                enable: false
+            },
+            data: {
+                simpleData: {
+                    enable: true,//是否采用简单数据模式
+                    idKey: "businessId",//树节点ID名称
+                    pIdKey: "businessPid",//父节点ID名称
+                    rootPId: -1//根节点ID
+                }
+            }
+        };
+        $.ajax({
+            url: '/system/folder/list',
+            type: 'post',
+            dataType: "json",
+            success: function (data) {
+                $.fn.zTree.init($("#tree"), setting, data.rows);//初始化树节点时，添加同步获取的数据
+            }
+        });
+        layer.open({
+            type: 1,
+            title: '文件夹选择',
+            shadeClose: true,
+            shade: [0.8, '#393D49'],
+            maxmin: !isPhoneFlag, //开启最大化最小化按钮
+            area: [isPhoneFlag ? '98%' : '30%', isPhoneFlag ? '80%' : '40%'],
+            content: $("#folderManageDiv"),
+            btn: ['删除', '取消'],
+            success: function (layero, index) {
+                $(':focus').blur();
+            },
+            yes: function (index, layero) {
+                var zTreeOjb = $.fn.zTree.getZTreeObj("tree");
+                var selectedNode = zTreeOjb.getSelectedNodes();
+                var id = selectedNode[0].id;
+                layer.confirm("您确认要删除该文件夹吗？", {icon: 3}, function () {
+                    layer.closeAll();
+                    $.ajax({
+                        url: "/system/folder/deleteFolder?id=" + id,
+                        type: "POST",
+                        data: {},
+                        dataType: "json",
+                        contentType: "application/json",
+                        success: function (data) {
+                            if (data.code == "0") {
+                                layer.closeAll();
+                                if (listFlag) {
+                                    deleteList();
+                                } else {
+                                    deleteAllList(useFolder);
+                                }
+                            } else if (data.code == "501") {
+                                layer.alert(data.msg, {icon: 2}, function () {
+                                    layer.closeAll();
+                                });
+                            }
+                        },
+                        error: function (data) {
+                        }
+                    });
+                })
+            }
+        })
+    }
+
+    function shareFile() {
+        $("#shareFileId").text("");
+        $("#fileLinkDiv").hide();
+        $("#fileLinkDiv").val("");
+        $("#shujuDiv").show();
+        $("#fileLink").val("");
+        var data = "";
+        var folderData = "";
+        $(".jk-file:checkbox:checked").each(function () {
+            data += this.value + ",";
+        });
+        $(".jk-folder:checkbox:checked").each(function () {
+            folderData += this.value + ",";
+        });
+        if (data === "" && folderData === "") {
+            layer.alert("请选择分享的文件", {icon: 2}, function () {
+                layer.closeAll();
+            });
+            return;
+        }
+        var dataId = data.substring(0, data.length - 1);
+        var folderData = folderData.substring(0, folderData.length - 1);
+        layer.open({
+            type: 1,
+            title: '链接分享',
+            shadeClose: true,
+            shade: [0.8, '#393D49'],
+            maxmin: !isPhoneFlag, //开启最大化最小化按钮
+            area: [isPhoneFlag ? '90%' : '40%', isPhoneFlag ? '90%' : '70%'],
+            content: $("#shareDiv"),
+            btn: ['创建链接', '取消'],
+            yes: function (index, layero) {
+                if ($("#fileLink").val() == null || $("#fileLink").val() === '') {
+                    var linkId = "/customer/sharefiles?rfgdwsfsd=" + dataId + "&wesafwf=" + folderData;
+                    $.ajax({
+                        url: "/system/shareFile/add",
+                        type: "POST",
+                        data: {
+                            linkId: linkId, objectTime: $("#validTime").val()
+                        },
+                        async: false,
+                        dataType: "text",
+                        success: function (data) {
+                            if (data != null) {
+                                $("#shujuDiv").hide();
+                                $("#fileLinkDiv").show();
+                                $("#fileLink").val(data + "/customer/sharefiles?rfgdwsfsd=" + dataId + "&wesafwf=" + folderData);
+                                $("#qrcode").empty();
+                                var qrcode = new QRCode('qrcode', {
+                                    text: data + "/customer/sharefiles?rfgdwsfsd=" + dataId + "&wesafwf=" + folderData,
+                                    width: 200,
+                                    height: 200,
+                                    colorDark: '#000000',
+                                    colorLight: '#ffffff',
+                                    correctLevel: QRCode.CorrectLevel.H
+                                });
+                            }
+                        }
+                    });
+                } else {
+                    layer.msg("该链接已创建");
+                }
+            }
+        });
+    }
+
+    //根据当前类型选择加载方式顶部路径
+    function topUrlLoadController(pid, num) {
+        if (listFlag) {
+            topUrlLoadList(pid, num);
+        } else {
+            topUrlLoad(pid, num);
+        }
+    }
+
+    //根据当前类型选择加载方式
+    function reloadController() {
+        if (listFlag) {
+            loadFileListByPId(useFolder);
+        } else {
+            loadFileByPId(useFolder);
+        }
+    }
+
+    //移除顶部url
+    function removeTopUrl() {
+        $(".top-url-a").each(function () {
+            $(this.parentNode.parentNode).remove();
+        });
+    }
+
+    //根据当前选中的页面类型，返回对应的文件类型
+    function getFileclass() {
+        if (lastClick == "btn-all") {
+            return "all";
+        } else if (lastClick == "btn-Img") {
+            return "img";
+        } else if (lastClick == "btn-doc") {
+            return "document";
+        } else if (lastClick == "btn-video") {
+            return "video";
+        } else if (lastClick == "btn-other") {
+            return "other";
+        } else {
+            return "all";
+        }
+    }
+
+    //根据当前选中的页面类型，返回对应的文件类型 下载时使用
+    function getFileclassForDownload() {
+        if (lastClick == "btn-all") {
+            return "";
+        } else if (lastClick == "btn-Img") {
+            return "img";
+        } else if (lastClick == "btn-doc") {
+            return "document";
+        } else if (lastClick == "btn-video") {
+            return "video";
+        } else if (lastClick == "btn-other") {
+            return "other";
+        } else {
+            return "";
+        }
+    }
+
+    //阻止冒泡
+    function stopJKPropagation() {
+        $(".jk-folder ").each(function () {
+            $(this).click(function (evt) {
+                stopBubble(evt);
+            })
+        });
+        $(".jk-file ").each(function () {
+            $(this).click(function (evt) {
+                stopBubble(evt);
+            })
+        });
+    }
+
+    //浏览器兼容
+    function stopBubble(e) {
+        if (e && e.stopPropagation) {
+            e.stopPropagation();//w3c
+        } else {
+            window.event.cancelBubble = true;//ie
+        }
+    }
+
+    //用于ajax请求登出
+    function logoutMsg(msg) {
+        layer.msg(msg, function () {
+            location.href = "logout";
+        });
+    }
+
+    function bigimg(obj) {
+        var zoom = parseInt(obj.style.zoom, 10) || 100;
+        zoom += event.wheelDelta / 12;
+        if (zoom > 0) {
+            obj.style.zoom = zoom + '%';
+        }
+    }
+
+    function titleController() {
+        if (listFlag) {
+            $("#titleInfo").show();
+        } else {
+            $("#titleInfo").hide();
+        }
+    }
+
+    //修改文件夹或者文件名称方法
+    function rename() {
+        if ($(".jk-file:checkbox:checked").length + $(".jk-folder:checkbox:checked").length == 0) {
+            layer.msg("请选择后进行操作");
+            return;
+        }
+        if ($(".jk-file:checkbox:checked").length + $(".jk-folder:checkbox:checked").length > 1) {
+            layer.msg("请选择一个进行操作");
+            return;
+        }
+        if ($(".jk-file:checkbox:checked").length === 1) {
+            $.ajax({
+                url: "/system/file/selectNameByBusId",
+                type: "POST",
+                data: {
+                    id: $(".jk-file:checkbox:checked")[0].value
+                },
+                async: false,
+                success: function (data) {
+                    $("#renameInput").val(data);
+                    $("#renameData").val($(".jk-file:checkbox:checked")[0].value);
+                    layer.open({
+                        type: 1,
+                        title: ' ',
+                        shadeClose: true,
+                        shade: [0.8, '#393D49'],
+                        maxmin: !isPhoneFlag, //开启最大化最小化按钮
+                        area: [isPhoneFlag ? '98%' : '30%', isPhoneFlag ? '60%' : '30%'],
+                        content: $("#renameDiv"),
+                        btn: ['确定', '取消'],
+                        success: function (layero, index) {
+                            $("#renameInput").focus();
+                            this.enterConfirm = function (event) {
+                                if (event.keyCode === 13) {
+                                    $(".layui-layer-btn0").click();
+                                    return false; //阻止系统默认回车事件
+                                }
+                            };
+                            $(document).on('keydown', this.enterConfirm); //监听键盘事件
+                            // 点击确定按钮回调事件
+                            $(".layui-layer-btn0").on("click", function () {
+                                var name = $("#renameInput").val();
+                                if (!name.match("^[a-zA-Z0-9_()---\u4e00-\u9fa5]+$")) {
+                                    layer.msg("请不要输入特殊字符", {
+                                        icon: 2
+                                    });
+                                    $("#renameInput").val("");
+                                    return;
+                                }
+                                $.ajax({
+                                    url: "/system/file/updateNameById",
+                                    type: "POST",
+                                    data: {
+                                        id: $("#renameData").val(),
+                                        name: $("#renameInput").val()
+                                    },
+                                    async: false,
+                                    success: function (data) {
+                                        if (data.code != "0") {
+                                            layer.alert(data.msg, {icon: 0});
+                                        }
+                                        if (data.code == "0") {
+                                            layer.closeAll();
+                                            reloadController();
+                                        }
+                                    }
+                                });
+                                layer.close(index);
+                            })
+                        },
+                        end: function () {
+                            $(document).off('keydown', this.enterConfirm); //解除键盘事件
+                        }
+                    });
+                }
+            });
+        }
+        if ($(".jk-folder:checkbox:checked").length === 1) {
+            $.ajax({
+                url: "/system/folder/selectNameByBusId",
+                type: "POST",
+                data: {
+                    busId: $(".jk-folder:checkbox:checked")[0].value
+                },
+                async: false,
+                success: function (data) {
+                    $("#renameInput").val(data);
+                    $("#renameData").val($(".jk-folder:checkbox:checked")[0].value);
+                    layer.open({
+                        type: 1,
+                        title: ' ',
+                        shadeClose: true,
+                        shade: [0.8, '#393D49'],
+                        maxmin: !isPhoneFlag, //开启最大化最小化按钮
+                        area: [isPhoneFlag ? '98%' : '30%', isPhoneFlag ? '60%' : '30%'],
+                        content: $("#renameDiv"),
+                        btn: ['确定', '取消'],
+                        success: function (layero, index) {
+                            //$(':focus').blur();
+                            $("#renameInput").focus();
+                            this.enterConfirm = function (event) {
+                                if (event.keyCode === 13) {
+                                    $(".layui-layer-btn0").click();
+                                    return false; //阻止系统默认回车事件
+                                }
+                            };
+                            $(document).on('keydown', this.enterConfirm); //监听键盘事件
+                            // 点击确定按钮回调事件
+                            $(".layui-layer-btn0").on("click", function () {
+                                var name = $("#renameInput").val();
+                                if (!name.match("^[a-zA-Z0-9_()---\u4e00-\u9fa5]+$")) {
+                                    layer.msg("请不要输入特殊字符", {
+                                        icon: 2
+                                    });
+                                    $("#renameInput").val("");
+                                    return;
+                                }
+                                $.ajax({
+                                    url: "/system/folder/updateNameByBusId",
+                                    type: "POST",
+                                    data: {
+                                        businessId: $("#renameData").val(),
+                                        name: $("#renameInput").val()
+                                    },
+                                    async: false,
+                                    success: function (data) {
+                                        if (data.code != "0") {
+                                            layer.alert(data.msg, {icon: 0});
+                                        }
+                                        if (data.code == "0") {
+                                            layer.closeAll();
+                                            reloadController();
+                                        }
+                                    }
+                                });
+                            });
+                        },
+                    });
+                }
+            });
+        }
+    }
+
+    //修改名称检查
+    function checkName() {
+        var renameTo = $("#renameInput").val();
+        if (renameTo.length == 0 || renameTo.indexOf(".") != -1 || renameTo.indexOf(" ") != -1 || renameTo.indexOf(" ") != -1) {
+            return false;
+        }
+        return true;
+    }
+
+    //二维码上传
+    $("#scanupload-btn").click(function () {
+        /*var ScanlinkId = "/customer/scanUpload?wjj=" + useFolder + "&name=" + useFoledePath;*/
+        var ScanlinkId = "/customer/qrupload";
+        $("#pathName").text("/" + useFoledePath);
+        $.ajax({
+            url: "/system/scanUpload/add",
+            type: "POST",
+            data: {
+                sanLink: ScanlinkId,
+                folderId: useFolder,
+                folderPath: useFoledePath
+            },
+            async: false,
+            dataType: "JSON",
+            success: function (data) {
+                if (data != null) {
+                    $("#scanQrcode").empty();
+                    $("#fileLinkScan").val(data.host + ScanlinkId + "?u=" + data.uuid);
+                    var scanUrl = data.host + ScanlinkId + "?u=" + data.uuid;
+                    var qrcode = new QRCode('scanQrcode', {
+                        text: scanUrl,
+                        width: 260,
+                        height: 260,
+                        colorDark: '#000000',
+                        colorLight: '#ffffff',
+                        correctLevel: QRCode.CorrectLevel.H
+                    });
+                }
+            }
+        });
+        layer.open({
+            type: 1,
+            title: '二维码上传',
+            shadeClose: true,
+            shade: [0.8, '#393D49'],
+            maxmin: !isPhoneFlag, //开启最大化最小化按钮
+            area: [isPhoneFlag ? '90%' : '40%', isPhoneFlag ? '90%' : '80%'],
+            content: $("#scanUploadDiv"),
+            success: function (layero, index) {
+                $(':focus').blur();
+            }
+        })
+    });
+
+    //复制
+    function copyText() {
+        var input = document.getElementById("fileLinkScan");
+        input.select(); // 选中文本
+        document.execCommand("copy"); // 执行浏览器复制命令
+        layer.msg("复制成功");
+    }
+
+    function copyshareText() {
+        var input = document.getElementById("fileLink");
+        input.select(); // 选中文本
+        document.execCommand("copy"); // 执行浏览器复制命令
+        layer.msg("复制成功");
+    }
+
+    function moveFiles() {
+        moveFile = "";
+        moveFolder = "";
+        $(".jk-file:checkbox:checked").each(function () {
+            moveFile += this.value + ",";
+        });
+        $(".jk-folder:checkbox:checked").each(function () {
+            moveFolder += this.value + ",";
+        });
+        if (moveFile.length > 0 || moveFolder.length > 0) {
+            if (moveFile.length > 0) {
+                moveFile = moveFile.substr(0, moveFile.length - 1);
+            }
+            if (moveFolder.length > 0) {
+                moveFolder = moveFolder.substr(0, moveFolder.length - 1);
+            }
+            moveFileTree(moveFile, moveFolder);
+        } else {
+            layer.msg("请选择要移动的文件夹或文件");
+        }
+    }
+
+    /*移动文件*/
+    function moveFileTree(files, folders) {
+        var setting = {
+            view: {
+                selectedMulti: true
+            },
+            check: {
+                enable: false
+            },
+            data: {
+                simpleData: {
+                    enable: true,//是否采用简单数据模式
+                    idKey: "businessId",//树节点ID名称
+                    pIdKey: "businessPid",//父节点ID名称
+                    rootPId: -1//根节点ID
+                }
+            }
+        };
+        $.ajax({
+            url: '/system/folder/list',
+            type: 'post',
+            dataType: "json",
+            success: function (data) {
+                $.fn.zTree.init($("#tree"), setting, data.rows);//初始化树节点时，添加同步获取的数据
+            }
+        });
+        layer.open({
+            type: 1,
+            title: '文件夹选择',
+            shadeClose: true,
+            shade: [0.8, '#393D49'],
+            maxmin: !isPhoneFlag, //开启最大化最小化按钮
+            area: [isPhoneFlag ? '98%' : '30%', isPhoneFlag ? '80%' : '40%'],
+            content: $("#folderManageDiv"),
+            btn: ['移动', '移动到根目录', '取消'],
+            yes: function (index, layero) {
+                if ($.fn.zTree.getZTreeObj("tree").getSelectedNodes().length == 0) {
+                    layer.msg("您选择了根目录");
+                }
+                layer.load(1);
+                var id = "";
+                if ($.fn.zTree.getZTreeObj("tree").getSelectedNodes().length > 0) {
+                    id = $.fn.zTree.getZTreeObj("tree").getSelectedNodes()[0].id;
+                }
+                var data = "{"
+                    + "\"pid\":\"" + id
+                    + "\",\"files\":\"" + files
+                    + "\",\"folders\":\"" + folders
+                    + "\"}";
+                $.ajax({
+                    url: "/system/file/moveFilsAndFolders",
+                    type: "POST",
+                    dataType: "json",
+                    contentType: "application/json",
+                    data: data,
+                    success: function (data) {
+                        if (data == "1") {
+                            layer.closeAll();
+                            layer.msg("移动成功");
+                            reloadController();
+                        } else if (data == "0") {
+                            layer.closeAll();
+                            layer.alert("选择的目标位置处于要移动的文件夹子级，无法移动");
+                        } else if (data == "2") {
+                            layer.closeAll();
+                            layer.confirm("选择的目标位置有同名文件夹，是否需要合并移动", {icon: 3}, function () {
+                                layer.load(1);
+                                $.ajax({
+                                    url: "/system/file/moveAndMerger",
+                                    type: "POST",
+                                    dataType: "json",
+                                    contentType: "application/json",
+                                    data: "{"
+                                        + "\"pid\":\"" + id
+                                        + "\",\"files\":\"" + files
+                                        + "\",\"folders\":\"" + folders
+                                        + "\"}",
+                                    success: function (data) {
+                                        if (data == "501") {
+                                            layer.closeAll();
+                                            layer.msg("请登录");
+                                            location.href = "/logout";
+                                        }
+                                        if (data == "1") {
+                                            layer.closeAll();
+                                            layer.msg("移动成功");
+                                            reloadController();
+                                        } else {
+                                            layer.closeAll();
+                                            layer.msg("移动失败");
+                                            reloadController();
+                                        }
+                                    }
+                                })
+                            });
+                        } else if (data == "501") {
+                            layer.closeAll();
+                            layer.msg("请登录");
+                            location.href = "/logout";
+                        }
+                    },
+                    error: function (data) {
+                    }
+                });
+            },
+            btn2: function () {
+                layer.load(1);
+                var id = "";
+                var data = "{"
+                    + "\"pid\":\"" + id
+                    + "\",\"files\":\"" + files
+                    + "\",\"folders\":\"" + folders
+                    + "\"}";
+                $.ajax({
+                    url: "/system/file/moveFilsAndFolders",
+                    type: "POST",
+                    dataType: "json",
+                    contentType: "application/json",
+                    data: data,
+                    success: function (data) {
+                        if (data == "1") {
+                            layer.closeAll();
+                            layer.msg("移动成功");
+                            reloadController();
+                        } else if (data == "0") {
+                            layer.closeAll();
+                            layer.alert("选择的目标位置处于要移动的文件夹子级，无法移动");
+                        } else if (data == "2") {
+                            layer.closeAll();
+                            layer.confirm("选择的目标位置有同名文件夹，是否需要合并移动", {icon: 3}, function () {
+                                $.ajax({
+                                    url: "/system/file/moveAndMerger",
+                                    type: "POST",
+                                    dataType: "json",
+                                    contentType: "application/json",
+                                    data: "{"
+                                        + "\"pid\":\"" + id
+                                        + "\",\"files\":\"" + files
+                                        + "\",\"folders\":\"" + folders
+                                        + "\"}",
+                                    success: function (data) {
+                                        if (data == "501") {
+                                            layer.closeAll();
+                                            layer.msg("请登录");
+                                            location.href = "/logout";
+                                        }
+                                        if (data == "1") {
+                                            layer.closeAll();
+                                            layer.msg("移动成功");
+                                            reloadController();
+                                        } else {
+                                            layer.closeAll();
+                                            layer.msg("移动失败");
+                                            reloadController();
+                                        }
+                                    }
+                                })
+                            });
+                        } else if (data == "501") {
+                            layer.closeAll();
+                            layer.msg("请登录");
+                            location.href = "/logout";
+                        } else if (data.code == 1) {
+                            layer.closeAll();
+                            layer.msg(data.msg);
+                            location.href = "/logout";
+                        }
+                    },
+                    error: function (data) {
+                    }
+                });
+            }
+        })
+    }
+
+    //清空回收站
+    $("#cleanAll").click(function () {
+        if (backtotal === 0) {
+            layer.msg("未发现文件");
+            return;
+        }
+
+        layer.confirm("您确认要永久删除吗？", {icon: 3}, function () {
+            $.ajax({
+                url: "/system/folder/cleanAll",
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json",
+                success: function (data) {
+                    if (data.code == "0") {
+                        layer.closeAll();
+                        if (listFlag) {
+                            deleteList();
+                        } else {
+                            deleteAllList(useFolder);
+                        }
+                    } else {
+                        layer.alert("删除失败", {icon: 2}, function () {
+                            if (listFlag) {
+                                deleteList();
+                            } else {
+                                deleteAllList(useFolder);
+                            }
+                        });
+                    }
+                }
+            })
+        });
+    });
+</script>
+
+

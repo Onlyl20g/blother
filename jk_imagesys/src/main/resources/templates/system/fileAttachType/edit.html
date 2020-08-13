@@ -1,0 +1,49 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-fileAttachType-edit" th:object="${fileAttachType}">
+        <input id="id" name="id" th:field="*{id}" type="hidden">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">系统类别：</label>
+            <div class="col-sm-8">
+                <input id="sysType" name="sysType" th:field="*{sysType}" class="form-control" type="text" readonly
+                       required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">编号：</label>
+            <div class="col-sm-8">
+                <input id="code" name="code" th:field="*{code}" class="form-control" type="text" readonly required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">类别名称：</label>
+            <div class="col-sm-8">
+                <input id="infoName" name="infoName" th:field="*{infoName}" class="form-control" type="text" required>
+            </div>
+        </div>
+    </form>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript">
+    var prefix = ctx + "system/fileAttachType";
+    $("#form-fileAttachType-edit").validate({
+        rules: {
+            xxxx: {
+                required: true,
+            },
+        },
+        focusCleanup: true
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/edit", $('#form-fileAttachType-edit').serialize());
+        }
+    }
+</script>
+</body>
+</html>

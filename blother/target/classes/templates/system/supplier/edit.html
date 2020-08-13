@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('供应商信息')"/>
+    <th:block th:include="include :: select2-css"/>
+    <!--<link href="/extra/css/supplier_edit.css">-->
+    <link rel="stylesheet" href="/vendor/layui/css/layui.css" />
+    <style>.style_border {
+        /*border: 0;*/
+        /*background: white !important;*/
+    }</style>
+</head>
+<body>
+<div class="form-content">
+    <input th:value="${supplier.salt}" hidden id="salt">
+    <form class="form-horizontal" id="form-supplier-edit" th:object="${supplier}">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5>企业信息</h5>
+                    </div>
+                    <div class="ibox-content" id="enterprise">
+                        <input type="text" class="form-control style_border" name="supplierId" id="supplier-id" style="display: none;"
+                               th:field="*{id}">
+                        <input type="text" class="form-control style_border" name="enterpriseCode" id="enterprise-id" style="display: none;"
+                               th:field="*{enterprise.id}">
+                        <input type="text" class="form-control style_border" name="supplierIdcardinfoId" id="supplierIdcardinfo-id" style="display: none;"
+                               th:field="*{supplierIdcardinfo.id}">
+                        <div class="form-group">
+                            <label for="corprName" class="col-sm-2 control-label"><span style="color: red;">*</span>企业名称：</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control style_border" id="corprName" name="corprName"
+                                       onblur="checkValueLow(this);" th:field="*{corprName}">
+                            </div>
+                            <label for="corprType" class="col-sm-2 control-label"><span style="color: red;">*</span>企业类型：</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control style_border" id="corprType" name="corprType"
+                                       onblur="checkValueLow(this);" th:field="*{corprType}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="businessLicenseCode" class="col-sm-2 control-label">营业执照编号：</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control style_border" id="businessLicenseCode"  name="businessLicenseCode" readonly
+                                       th:field="*{businessLicenseCode}">
+                            </div>
+                            <label for="enterpriseUniversalCreditIdAgencyCode"
+                                   class="col-sm-2 control-label">企业组织机构代码号：</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control style_border"
+                                       id="enterpriseUniversalCreditIdAgencyCode" name="enterpriseUniversalCreditIdAgencyCode"
+                                       onblur="checkValueLow(this);" th:field="*{enterprise.enterpriseUniversalCreditIdAgencyCode}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="registeredCapital" class="col-sm-2 control-label"><span style="color: red;">*</span>注册资本：</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control style_border" id="registeredCapital" name="registeredCapital"
+                                       onblur="checkValueLow(this);" th:field="*{enterprise.enterpriseCapital}">
+                            </div>
+                            <label class="col-sm-2 control-label"><span style="color: red;">*</span>成立日期：</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control style_border" id="establishDate" name="establishDate"
+                                       th:field="*{establishDate}">
+                                <input type="text" class="form-control style_border" id="establishDateRd" style="display: none;"  name="establishDate"
+                                       th:field="*{establishDate}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="corprAddres" class="col-sm-2 control-label"><span style="color: red;">*</span>企业通讯地址：</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control style_border" id="corprAddres" name="corprAddres"
+                                       onblur="checkValueLow(this);" th:field="*{corprAddres}">
+                            </div>
+                            <label for="enterpriseCountryId" class="col-sm-2 control-label">企业所在地国家行政编码：</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control style_border" id="enterpriseCountryId" name="enterpriseCountryId"
+                                       onblur="checkValueLow(this);" th:field="*{enterprise.enterpriseCountryId}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="enterpriseBankCity" class="col-sm-2 control-label">企业开户行所在城市：</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control style_border" id="enterpriseBankCity" name="enterpriseBankCity"
+                                       onblur="checkValueLow(this);" th:field="*{enterprise.enterpriseBankCity}">
+                            </div>
+                            <label for="enterpriseBankDistrict" class="col-sm-2 control-label">企业开户行所在区域：</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control style_border" id="enterpriseBankDistrict" name="enterpriseBankDistrict"
+                                       onblur="checkValueLow(this);" th:field="*{enterprise.enterpriseBankDistrict}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="enterpriseBankProvince" class="col-sm-2 control-label">企业开户行所在省份：</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control style_border" id="enterpriseBankProvince" name="enterpriseBankProvince"
+                                       onblur="checkValueLow(this);" th:field="*{enterprise.enterpriseBankProvince}">
+                            </div>
+                            <label for="enterpriseCity" class="col-sm-2 control-label">企业所在城市：</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control style_border" id="enterpriseCity" name="enterpriseCity"
+                                       onblur="checkValueLow(this);" th:field="*{enterprise.enterpriseCity}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="enterpriseDistrict" class="col-sm-2 control-label">企业所在区域：</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control style_border" id="enterpriseDistrict" name="enterpriseDistrict"
+                                       onblur="checkValueLow(this);" th:field="*{enterprise.enterpriseDistrict}">
+                            </div>
+                            <label for="enterpriseId" class="col-sm-2 control-label">企业统一社会信用编码：</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control style_border" id="enterpriseId" name="enterpriseId" readonly
+                                       onblur="checkValueLow(this);" th:field="*{enterprise.enterpriseId}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="enterpriseRegisterAddressFormatAddress" class="col-sm-2 control-label">企业注册地址格式标准化：</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control style_border"
+                                       id="enterpriseRegisterAddressFormatAddress"  name="enterpriseRegisterAddressFormatAddress"
+                                       onblur="checkValueLow(this);" th:field="*{enterprise.enterpriseRegisterAddressFormatAddress}">
+                            </div>
+                            <label for="enterpriseRegisterAddress" class="col-sm-2 control-label">企业注册地址：</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control style_border" id="enterpriseRegisterAddress" name="enterpriseRegisterAddress"
+                                       onblur="checkValueLow(this);" th:field="*{enterprise.enterpriseRegisterAddress}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="enterpriseRegisterAddressGps" class="col-sm-2 control-label">企业注册地址gps：</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control style_border" id="enterpriseRegisterAddressGps" name="enterpriseRegisterAddressGps"
+                                       onblur="checkValueLow(this);" th:field="*{enterprise.enterpriseRegisterAddressGps}">
+                            </div>
+                            <label for="enterpriseRegisterAddressProvince"
+                                   class="col-sm-2 control-label">企业注册地址所在省份：</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control style_border"
+                                       id="enterpriseRegisterAddressProvince" name="enterpriseRegisterAddressProvince"
+                                       onblur="checkValueLow(this);" th:field="*{enterprise.enterpriseRegisterAddressProvince}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">企业注册时间：</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control style_border" id="enterpriseTime" name="enterpriseTime"
+                                       th:field="*{enterprise.enterpriseTime}">
+                                <input type="text" class="form-control style_border" id="enterpriseTimeRd" style="display: none;" name="enterpriseTime"
+                                       th:field="*{enterprise.enterpriseTime}">
+                            </div>
+                            <label for="enterpriseTaxpayerRegisterId" class="col-sm-2 control-label">企业税务登记号：</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control style_border" id="enterpriseTaxpayerRegisterId" name="enterpriseTaxpayerRegisterId"
+                                       onblur="checkValueLow(this);" th:field="*{enterprise.enterpriseTaxpayerRegisterId}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"><span style="color: red;">*</span>企业营业期限开始时间：</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control style_border" id="enterpriseValidDateStart" name="enterpriseValidDateStart"
+                                       th:field="*{enterprise.enterpriseValidDateStart}">
+                                <input type="text" class="form-control style_border" id="enterpriseValidDateStartRd" style="display: none;" name="enterpriseValidDateStart"
+                                       th:field="*{enterprise.enterpriseValidDateStart}">
+                            </div>
+                            <label class="col-sm-2 control-label"><span style="color: red;">*</span>企业营业期限结束时间：</label>
+                            <div class="col-sm-2" id="operationPeriodDiv">
+                                <input type="text" class="form-control style_border" id="operationPeriod" name="operationPeriod"
+                                       th:field="*{enterprise.enterpriseValidDateend}">
+                                <input type="text" class="form-control style_border" id="operationPeriodRd" style="display: none;" name="operationPeriod"
+                                       th:field="*{enterprise.enterpriseValidDateend}">
+                            </div>
+                            <div class="col-sm-2">
+                                <div id="controlDiv" class="form-inline">
+                                    <label style="">是否永久</label>
+                                        <input type="checkbox" id="toggle-date" name="toggle-date" class="checkbox" onclick="forevery();">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="businessLicenseFilepathId" class="col-sm-2 control-label">营业执照照片：</label>
+                            <div class="col-sm-4">
+                                <img id="businessLicenseFilepathIdImg" width="20%" src=""/>
+                                <input type="text" class="form-control style_border" id="businessLicenseFilepathId" name="businessLicenseFilepathId"
+                                       style="display: none" th:field="*{businessLicenseFilepathId}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5>法人信息</h5>
+                    </div>
+                    <div class="ibox-content" id="suppier">
+                        <div class="form-group">
+                            <label for="id" class="col-sm-2 control-label sr-only">供应商编号：</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control style_border" id="id" style="display: none"
+                                       th:field="*{id}">
+                            </div>
+                            <label for="status" class="col-sm-2 control-label sr-only">供应商状态：</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control style_border" id="status" style="display: none"
+                                       th:field="*{status}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="legalPersonName" class="col-sm-2 control-label"><span style="color: red;">*</span>法人姓名：</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control style_border" id="legalPersonName" name="legalPersonName"
+                                       onblur="checkValueLow(this);" th:field="*{legalPersonName}">
+                            </div>
+                            <label for="legalPersonIdno" class="col-sm-2 control-label"><span style="color: red;">*</span>身份证号：</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control style_border" id="legalPersonIdno" name="legalPersonIdno"
+                                       onblur="checkValueLow(this);" th:field="*{legalPersonIdno}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="legalPersonPhone" class="col-sm-2 control-label"><span style="color: red;">*</span>手机号：</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="style_border form-control " id="legalPersonPhone" name="legalPersonPhone"
+                                       onblur="checkValueLow(this);" th:field="*{legalPersonPhone}" maxlength="11">
+                            </div>
+                            <label class="col-sm-2 control-label">住址：</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="style_border form-control " id="address" name="address"
+                                       onblur="checkValueLow(this);" th:field="*{supplierIdcardinfo.address}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="sex" class="col-sm-2 control-label">性别：</label>
+                            <div class="col-sm-4">
+<!--                                <input type="text" class="style_border form-control " id="sex" name="sex"-->
+<!--                                       th:field="*{supplierIdcardinfo.sex}">-->
+                                <select class="style_border form-control"  id="sex" name="sex">
+                                    <option th:selected="*{supplierIdcardinfo.sex == '男'}" value="男">男</option>
+                                    <option th:selected="*{supplierIdcardinfo.sex == '女'}" value="女">女</option>
+                                </select>
+                            </div>
+                            <label  class="col-sm-2 control-label">生日：</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="style_border form-control " id="birth" name="birth"
+                                       th:field="*{supplierIdcardinfo.birth}">
+                                <input type="text" class="style_border form-control " id="birthRd" style="display: none;" name="birth"
+                                       th:field="*{supplierIdcardinfo.birth}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nationality" class="col-sm-2 control-label">民族：</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="style_border form-control " id="nationality" name="nationality"
+                                       onblur="checkValueLow(this);" th:field="*{supplierIdcardinfo.nationality}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="coedId" class="col-sm-2 control-label">法定代表人身份证头像：</label>
+                            <div class="col-sm-4">
+                                <img id="coedIdImg" width="20%" src=""/>
+                                <input type="text" class="form-control style_border" id="coedId"
+                                       style="display: none" th:field="*{idcardBackFilepathId}">
+                            </div>
+                            <label for="idcardBackFilepathId" class="col-sm-2 control-label">法定代表人身份证国徽面：</label>
+                            <div class="col-sm-4">
+                                <img id="idback" width="20%" src=""/>
+                                <input type="text" class="form-control style_border" id="idcardBackFilepathId"
+                                       style="display: none" th:field="*{idcardFrontFilepathId}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="row">
+    <div class="col-sm-offset-5 col-sm-10">
+        <button type="button" id="save" class="btn btn-sm btn-primary" onclick="saveHandler()">保 存
+        </button>&nbsp;&nbsp;
+        <button type="button" id="open" class="btn btn-sm btn-primary" onclick="saveOpen()"></i>启 用
+        </button>
+        <button type="button" id="stop" class="btn btn-sm btn-danger" style="display: none;" onclick="submitStatus()">停 用
+        </button>&nbsp;
+        <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()">关 闭
+        </button>
+    </div>
+</div>
+
+<div class="modal fade" id="show_img" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width: 60%">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #a7b1c2">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    营业执照照片
+                </h4>
+            </div>
+            <div class="modal-body">
+                <img id="businessLicenseFilepathIdshow" width="100%" src=""/>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--<th:block th:include="include :: footer"/>-->
+<!--<th:block th:include="include :: select2-js"/>-->
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<!-- bootstrap-table 表格插件 -->
+<script src="/ajax/libs/bootstrap-table/bootstrap-table.min.js"></script>
+<script src="/ajax/libs/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+<script src="/ajax/libs/bootstrap-table/extensions/mobile/bootstrap-table-mobile.js"></script>
+<script src="/ajax/libs/bootstrap-table/extensions/toolbar/bootstrap-table-toolbar.min.js"></script>
+<script src="/ajax/libs/bootstrap-table/extensions/columns/bootstrap-table-fixed-columns.js"></script>
+<!-- jquery-validate 表单验证插件 -->
+<script src="/ajax/libs/validate/jquery.validate.min.js"></script>
+<script src="/ajax/libs/validate/messages_zh.min.js"></script>
+<script src="/ajax/libs/validate/jquery.validate.extend.js"></script>
+<!-- jquery-validate 表单树插件 -->
+<script src="/ajax/libs/bootstrap-treetable/bootstrap-treetable.js"></script>
+<!-- jquery-export 表格导出插件 -->
+<script src="/ajax/libs/bootstrap-table/extensions/export/bootstrap-table-export.js"></script>
+<script src="/ajax/libs/bootstrap-table/extensions/export/tableExport.js"></script>
+<!-- 遮罩层 -->
+<script src="/ajax/libs/blockUI/jquery.blockUI.js"></script>
+<script src="/ajax/libs/iCheck/icheck.min.js"></script>
+<script src="/ajax/libs/layer/layer.min.js"></script>
+<script src="/vendor/layui/layui.js"></script>
+<script src="/ruoyi/js/common.js?v=3.4.0"></script>
+<script src="/extra/js/model.js"></script>
+<!--<script src="/ruoyi/js/ry-ui.js?v=3.4.0"></script>-->
+<script src="/extra/js/supplier_edit.js"></script>
+<script src="/extra/js/tools.js"></script>
+
+<script type="text/javascript">
+</script>
+</body>
+</html>

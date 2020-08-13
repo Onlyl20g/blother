@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>金科控股-影像系统</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../dependency/bootstrap4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../dependency/mdui/css/mdui.min.css"/>
+    <link rel="stylesheet" href="../dependency/easyupload/easy-upload.css"/>
+    <link rel="stylesheet" href="dependency/zTree_v3/css/zTreeStyle/zTreeStyle.css"/>
+    <link rel="sylesheet" href="dependency/layui/css/layui.css"/>
+    <link rel="sttylesheet" href="dependency/bootstrap-table/locale/bootstrap-table.min.css"/>
+    <link rel="stylesheet" href="dependency/toastr/toastr.min.css"/>
+</head>
+<body class="mdui-drawer-body-left" style="">
+<!-- 导航栏 -->
+<div class="mdui-appbar mdui-appbar-inset mdui-appbar-fixed">
+    <div class="mdui-toolbar mdui-color-grey-50">
+        <a href="javascript:;" id="toggle" class="mdui-btn mdui-btn-icon"><i
+                class="mdui-icon material-icons">menu</i></a>
+        <a href="javascript:;" class="mdui-typo-title">影像系统</a>
+        <div class="mdui-toolbar-spacer"></div>
+        <!--        <a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">search</i></a>-->
+        <!--        <a href="javascript:location.reload();" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">refresh</i></a>-->
+        <!--        <a href="javascript:;" class="mdui-btn mdui-btn-icon" onclick="loginOut();"><i class="mdui-icon material-icons">more_vert</i></a>-->
+        <div class="image" style="margin-right: -10px;"><img src="../img/profile.jpg" height="40px" width="40px"
+                                                             alt="jinke" style="border-radius:20px"/></div>
+        <a class="mdui-btn" style="font-size: 14px;" href="#" id="userName"></a>
+        <a class="mdui-btn" style="font-size: 14px;" href="logout">退出登录</a>
+    </div>
+    <!--    <div id="more" style="position: fixed; right: 0px;top: 64px;z-index: 10;background-color: #eee;display: none;">-->
+    <!--        <ul class="mdui-list">-->
+    <!--            <li class="mdui-list-item mdui-ripple" onclick="checkChild(this);">-->
+    <!--                &lt;!&ndash;<i class="mdui-list-item-icon mdui-icon material-icons">move_to_inbox</i>&ndash;&gt;-->
+    <!--                &lt;!&ndash;<i class="mdui-icon material-icons" style="margin-right: 20px;">&#xe5d9;</i>&ndash;&gt;-->
+    <!--                <a class="mdui-list-item-content" style="font-size: 14px;"  href="logout"> 退出登录</a>-->
+    <!--            </li>-->
+    <!--        </ul>-->
+    <!--    </div>-->
+</div>
+
+<!-- 侧边栏 -->
+<div class="mdui-drawer mdui-drawer-full-height mdui-shadow-4" id="drawer">
+    <div class="mdui-appbar">
+        <div class="mdui-toolbar mdui-color-indigo">
+            <img src="../dependency/images/demo/jinke_logo_light.png" width="100%"/>
+        </div>
+    </div>
+    <ul class="mdui-list menu-activi">
+        <li class="mdui-list-item mdui-ripple mdui-list-item-active" id="menu1"
+            onclick="locationhref('customer/pages/myfiles','menu1')">
+            <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-blue">folder_special</i>
+            <div class="mdui-list-item-content">我的文件</div>
+        </li>
+        <li class="mdui-list-item mdui-ripple " id="menu2"
+            onclick="locationhref('customer/pages/ocrdistinguish','menu2')">
+            <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-deep-orange">movie</i>
+            <div class="mdui-list-item-content ">OCR识别</div>
+        </li>
+       <!-- <li class="mdui-list-item mdui-ripple" id="menu3"
+            onclick="locationhref('customer/pages/viewdataupload','menu3')">
+            <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-green">file_upload</i>
+            <div class="mdui-list-item-content ">影像上传</div>
+        </li>-->
+        <!--<li class="mdui-list-item mdui-ripple" id="menu4" onclick="locationhref('customer/pages/viewdatascan','menu4')">
+            <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-brown">local_see</i>
+            <div class="mdui-list-item-content">影像扫描</div>
+        </li>-->
+        <!--        <li class="mdui-list-item mdui-ripple" id="menu5"
+                   onclick="locationhref('customer/pages/viewdatamatching','menu5')">
+                   <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-purple">gps_fixed</i>
+                    <div class="mdui-list-item-content ">影像匹配</div>
+               </li>-->
+        <!--<li class="mdui-list-item mdui-ripple" id="menu6"
+            onclick="locationhref('customer/pages/hkapplicationfile','menu6')">
+            <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-purple">gps_fixed</i>
+            <div class="mdui-list-item-content ">申请查看</div>
+        </li>-->
+    </ul>
+</div>
+
+<!-- 内容 -->
+<div id="content" style="width: 100% ;padding-top: 20px;margin-top: 60px;">
+
+</div>
+
+<!-- 底部 -->
+<nav class="navbar navbar-expand-sm bg-light navbar-dark fixed-bottom"
+     style="text-align: center;vertical-align: middle;height: 40px">
+    <p class="text-muted text-center " style="margin: 0 auto;">&copy;2019 重庆市金科投资控股（集团）有限责任公司</p>
+</nav>
+</div>
+
+<!-- JavaScript -->
+<!-- <script src="js/jquery-3.2.1.min.js"></script> -->
+<script src="../dependency/js/jquery-2.1.1.min.js"></script>
+<script src="../dependency/bootstrap4/js/bootstrap.min.js"></script>
+<script src="../dependency/mdui/js/mdui.min.js"></script>
+<script src="../dependency/js/main.js"></script>
+<script src="../dependency/easyupload/easyUpload.js"></script>
+<script src="../dependency/easyupload/vendor/jquery.cookie-1.4.1.min.js"></script>
+<script src="dependency/layui/layui.all.js"></script>
+<script src="dependency/layui/layui.js"></script>
+<script src="dependency/layui/lay/modules/layer.js"></script>
+<!--ztree-->
+<script src="dependency/zTree_v3/js/jquery.ztree.all.js"></script>
+<script src="dependency/zTree_v3/js/jquery.ztree.all.min.js"></script>
+<!--bootstrap table-->
+<script src="dependency/bootstrap-table/bootstrap-table.min.js"></script>
+<script src="dependency/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+<script src="dependency/bootstrapvalidator/bootstrapValidator.min.js"></script>
+<script src="dependency/bootstrap-table/bootstrap-editable.js"></script>
+<script src="dependency/bootstrap-table/bootstrap-table-editable.js"></script>
+<script src="dependency/toastr/toastr.min.js"></script>
+<script src="dependency/js/qrcode.js"></script>
+<script type="application/javascript">
+    var $$ = mdui.JQ;
+    var storage = window.localStorage;
+    $(function () {
+        stopBack();
+        $.ajax({
+            url: "system/user/getName",
+            type: "post",
+            dataType: "json",
+            success: function (data) {
+                $("#userName").text(data.msg);
+            },
+            error: function (data) {
+
+            }
+        });
+    });
+
+    function stopBack() {
+        locationhref(storage.getItem("url"), storage.getItem("menuid"));
+    }
+
+    /* 切换菜单 */
+    function locationhref(a, b) {
+        if (a == null || a == "" || a == "null") {
+            storage.setItem("url", "customer/pages/myfiles");
+            storage.setItem("menuid", "menu1");
+        } else {
+            storage.setItem("url", a);
+            storage.setItem("menuid", b);
+        }
+        $("#content").load(storage.getItem("url"));
+        $("#" + storage.getItem("menuid")).addClass("mdui-list-item-active").siblings("li").removeClass("mdui-list-item-active");
+    }
+
+    //
+    // function loginOut() {
+    //     $("#more").toggle();
+    // }
+
+    function checkChild(btn) {
+        btn.children[1].click();
+    }
+</script>
+</body>
+</html>

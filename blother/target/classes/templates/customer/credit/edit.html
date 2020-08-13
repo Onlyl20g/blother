@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Start your development with a Design System for Bootstrap 4.">
+    <meta name="author" content="Creative Tim">
+    <title>资料补交</title>
+    <link th:href="@{/css/nucleo.css}" rel="stylesheet"/>
+    <link th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
+    <link type="text/css" href="/vendor/layui/css/layui.css" th:href="@{/vendor/layui/css/layui.css}" rel="stylesheet">
+
+    <link th:href="@{/css/toastr.min.css}" rel="stylesheet"/>
+    <!-- Argon CSS -->
+    <link type="text/css" href="/css/argon.css?v=1.0.0" th:href="@{/css/argon.css}" rel="stylesheet">
+
+    <!--  bootstrap-fileinput-css  -->
+    <th:block th:include="include :: bootstrap-fileinput-css"/>
+
+    <style>
+        .font-noraml {
+            margin-bottom: 15px;
+            margin-top: 15px;
+            font-size: large;
+        }
+
+        .guaranteeModesCheckbox {
+            margin: 10px;
+        }
+
+        .row {
+            margin-top: 20px;
+        }
+
+        .btn {
+            line-height: 1.7;
+        	!important;
+        }
+    </style>
+    <!-- Core -->
+    <script src="/js/jquery.min.js" th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <!--JQueryVali-->
+    <script src="/ajax/libs/validate/jquery.validate.min.js"
+            th:src="@{/ajax/libs/validate/jquery.validate.min.js}"></script>
+    <script src="/ajax/libs/validate/messages_zh.min.js"
+            th:src="@{/ajax/libs/validate/messages_zh.min.js}"></script>
+    <script src="/ajax/libs/validate/jquery.validate.extend.js"
+            th:src="@{/ajax/libs/validate/jquery.validate.extend.js}"></script>
+    <script src="/vendor/popper/popper.min.js" th:src="@{/vendor/popper/popper.min.js}"></script>
+    <script src="/vendor/headroom/headroom.min.js" th:src="@{/vendor/headroom/headroom.min.js}"></script>
+    <!-- Argon JS -->
+    <script src="/js/argon.js?v=1.0.0" th:src="@{/js/argon.js}"></script>
+    <script src="/js/piexif.js" th:src="@{/js/piexif.js}"></script>
+    <script src="/js/toastr.min.js" th:src="@{/js/toastr.min.js}"></script>
+    <script src="/vendor/layui/layui.js" th:src="@{/vendor/layui/layui.js}"></script>
+    <script src="/extra/js/creditEdit.js" th:src="@{/extra/js/creditEdit.js}"></script>
+    <script src="/extra/js/register.js" th:src="@{/extra/js/tools.js}"></script>
+    <th:block th:include="include :: bootstrap-fileinput-js"/>
+</head>
+
+<body>
+<form id="addForm">
+    <div class="container mb-5">
+        <!-- Inputs -->
+        <h3 class="h4 text-success font-weight-bold text-center mb-4">资料补交</h3>
+        <div class="mb-3">
+            <big class="text-uppercase font-weight-bold">请准确填写资料</big>
+            <input type="hidden" id="file1" name="file1" value="">
+            <input type="hidden" id="file2" name="file2" value="">
+            <input type="hidden" id="file3" name="file3" value="">
+            <input type="hidden" id="file4" name="file4" value="">
+            <input type="hidden" id="file5" name="file5" value="">
+            <input type="hidden" id="file6" name="file6" value="">
+            <input type="hidden" id="file7" name="file7" value="">
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <label class="font-noraml">申请额度（元）</label>
+                    <input type="text" id="appCreditAmount" class="form-control" readonly/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <label class="font-noraml">申请额度期限（月）</label>
+                    <input type="text" id="appCreditLife" class="form-control" readonly/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <label class="font-noraml">卖方企业名称</label>
+                    <input type="text" id="sellerCorporationName" class="form-control" readonly/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <label class="font-noraml">卖方联系人</label>
+                    <input type="text" id="sellerPerson" class="form-control" readonly/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <label class="font-noraml">卖方联系人电话</label>
+                    <input type="text" id="sellerPersonTel" class="form-control" readonly/>
+                </div>
+            </div>
+            <div class="row" style="margin-top: 10px;background-color: rgba(163,156,169,0.12)">
+                <div class="col-lg-12">
+                    <label class="font-noraml">买方联系人</label>
+                    <table id="buy" name="buy" class="table">
+                        <thead>
+                        <tr>
+                            <td>买方企业名称</td>
+                            <td>买方联系人</td>
+                            <td>电话</td>
+                        </tr>
+                        </thead>
+                        <tbody id="buyBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <label class="font-noraml">保理类型：</label>
+                    <input type="text" id="factorType" name="factorType" class="form-control" readonly>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12" th:with="type=${@dict.getType('guarantee_mode')}">
+                    <label class="font-noraml">担保方式</label>
+                    <div class="checkbox">
+                        <input class="ml-2" type="checkbox" th:each="dict : ${type}"
+                               th:text="${dict.dictLabel}"
+                               th:value="${dict.dictValue}"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <label class="font-noraml">业务申请书<span style="color:red;margin:5px;">*</span></label><a
+                        href="/system/file/downloadDemo?flag=业务申请书">（模板）</a>
+                    <blockquote class="layui-elem-quote layui-quote-nm"
+                                style="margin-top: 10px;">
+                        预览：
+                        <div class="layui-upload-list" id="businessAppFormView"></div>
+                    </blockquote>
+                    <div class="row">
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="businessAppForm" readonly
+                                   style="background-color: white;" placeholder="请上传"
+                                   multiple>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-primary" id="businessAppFormUpload"
+                                    style="margin-left: -5px;">上传
+                            </button>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-primary" id="businessAppFormDelete"
+                                    onclick="removeBusinessAppForm();"
+                                    style="margin-left: -2px;">移除
+                            </button>
+                        </div>
+                    </div>
+                    <div class="layui-progress layui-progress-big layui-bg-gray" style="display: none"
+                         lay-showPercent="yes"
+                         lay-filter="businessAppForm">
+                        <div class="layui-progress-bar layui-bg-green" lay-percent="0%"></div>
+                    </div>
+                    <div>
+                        <table class="table">
+                            <tbody id="businessAppFormList">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <label class="font-noraml">企业基本情况介绍<span style="color:red;margin:5px;">*</span></label>
+                    <blockquote class="layui-elem-quote layui-quote-nm"
+                                style="margin-top: 10px;">
+                        预览：
+                        <div class="layui-upload-list" id="fundamentalStateView"></div>
+                    </blockquote>
+                    <div class="row">
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="fundamentalStateForm" readonly
+                                   style="background-color: white;"
+                                   placeholder="请上传企业基本情况介绍" multiple>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-primary" id="fundamentalStateFormUpload"
+                                    style="margin-left: -5px;">上传
+                            </button>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-primary" id="fundamentalStateFormDelete"
+                                    onclick="removeFundamentalStateForm();"
+                                    style="margin-left: -2px;">移除
+                            </button>
+                        </div>
+                    </div>
+                    <div class="layui-progress layui-progress-big layui-bg-gray" style="display: none"
+                         lay-showPercent="yes"
+                         lay-filter="fundamentalStateForm">
+                        <div class="layui-progress-bar layui-bg-green" lay-percent="0%"></div>
+                    </div>
+                    <div>
+                        <table class="table">
+                            <tbody id="fundamentalStateFormList">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <label class="font-noraml">公司章程或合伙、联营协议复印件<span style="color:red;margin:5px;">*</span></label>
+                    <blockquote class="layui-elem-quote layui-quote-nm"
+                                style="margin-top: 10px;">
+                        预览：
+                        <div class="layui-upload-list" id="bylawView"></div>
+                    </blockquote>
+                    <div class="row">
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="bylawForm" readonly
+                                   style="background-color: white;"
+                                   placeholder="请上传公司章程或合伙、联营协议复印件"
+                                   multiple>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-primary" id="bylawFormUpload"
+                                    style="margin-left: -5px;">上传
+                            </button>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-primary" id="bylawFormDelete"
+                                    onclick="removeBylawForm();"
+                                    style="margin-left: -2px;">移除
+                            </button>
+                        </div>
+                    </div>
+                    <div class="layui-progress layui-progress-big layui-bg-gray" style="display: none"
+                         lay-showPercent="yes"
+                         lay-filter="bylawForm">
+                        <div class="layui-progress-bar layui-bg-green" lay-percent="0%"></div>
+                    </div>
+                    <div>
+                        <table class="table">
+                            <tbody id="bylawFormList">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <label class="font-noraml">法定代表人：身份证复印件、履历<span style="color:red;margin:5px;">*</span></label>
+                    <blockquote class="layui-elem-quote layui-quote-nm"
+                                style="margin-top: 10px;">
+                        预览：
+                        <div class="layui-upload-list" id="corporationView"></div>
+                    </blockquote>
+                    <div class="row">
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="corporationForm" readonly
+                                   style="background-color: white;"
+                                   placeholder="请上传法定代表人：身份证复印件、履历"
+                                   multiple>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-primary" id="corporationFormUpload"
+                                    style="margin-left: -5px;">上传
+                            </button>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-primary" id="corporationFormDelete"
+                                    onclick="removeCorporationForm();"
+                                    style="margin-left: -2px;">移除
+                            </button>
+                        </div>
+                    </div>
+                    <div class="layui-progress layui-progress-big layui-bg-gray" style="display: none"
+                         lay-showPercent="yes"
+                         lay-filter="corporationForm">
+                        <div class="layui-progress-bar layui-bg-green" lay-percent="0%"></div>
+                    </div>
+                    <div>
+                        <table class="table">
+                            <tbody id="corporationFormList">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <label class="font-noraml">财务负责人：身份证复印件、履历<span style="color:red;margin:5px;">*</span></label>
+                    <blockquote class="layui-elem-quote layui-quote-nm"
+                                style="margin-top: 10px;">
+                        预览：
+                        <div class="layui-upload-list" id="financePrincipalView"></div>
+                    </blockquote>
+                    <div class="row">
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="financePrincipalForm" readonly
+                                   style="background-color: white;"
+                                   placeholder="请上传财务负责人：身份证复印件、履历" multiple>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-primary" id="financePrincipalFormUpload"
+                                    style="margin-left: -5px;">上传
+                            </button>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-primary" id="financePrincipalFormDelete"
+                                    onclick="removeFinancePrincipalForm();"
+                                    style="margin-left: -2px;">移除
+                            </button>
+                        </div>
+                    </div>
+                    <div class="layui-progress layui-progress-big layui-bg-gray" style="display: none"
+                         lay-showPercent="yes"
+                         lay-filter="financePrincipalForm">
+                        <div class="layui-progress-bar layui-bg-green" lay-percent="0%"></div>
+                    </div>
+                    <div>
+                        <table class="table">
+                            <tbody id="financePrincipalFormList">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <label class="font-noraml">实际控制人（结婚证、本人及配偶身份证复印件、本人履历）<span
+                            style="color:red;margin:5px;">*</span></label>
+                    <blockquote class="layui-elem-quote layui-quote-nm"
+                                style="margin-top: 10px;">
+                        预览：
+                        <div class="layui-upload-list" id="actualControllerView"></div>
+                    </blockquote>
+                    <div class="row">
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="actualControllerForm" readonly
+                                   style="background-color: white;"
+                                   placeholder="请上传实际控制人（结婚证、本人及配偶身份证复印件、本人履历）" multiple>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-primary" id="actualControllerFormUpload"
+                                    style="margin-left: -5px;">上传
+                            </button>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-primary" id="actualControllerFormDelete"
+                                    onclick="removeActualControllerForm();"
+                                    style="margin-left: -2px;">移除
+                            </button>
+                        </div>
+                    </div>
+                    <div class="layui-progress layui-progress-big layui-bg-gray" style="display: none"
+                         lay-showPercent="yes"
+                         lay-filter="actualControllerForm">
+                        <div class="layui-progress-bar layui-bg-green" lay-percent="0%"></div>
+                    </div>
+                    <div>
+                        <table class="table">
+                            <tbody id="actualControllerFormList">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <label class="font-noraml">其他补充资料</label>
+                    <blockquote class="layui-elem-quote layui-quote-nm"
+                                style="margin-top: 10px;">
+                        预览：
+                        <div class="layui-upload-list" id="otherView"></div>
+                    </blockquote>
+                    <div class="row">
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="otherForm" readonly
+                                   style="background-color: white;"
+                                   placeholder="请上传其他补充资料" multiple>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-primary" id="otherFormUpload"
+                                    style="margin-left: -5px;">上传
+                            </button>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-primary" id="otherFormDelete"
+                                    onclick="removeOtherForm();"
+                                    style="margin-left: -2px;">移除
+                            </button>
+                        </div>
+                    </div>
+                    <div class="layui-progress layui-progress-big layui-bg-gray" style="display: none"
+                         lay-showPercent="yes"
+                         lay-filter="otherForm">
+                        <div class="layui-progress-bar layui-bg-green" lay-percent="0%"></div>
+                    </div>
+                    <div>
+                        <table class="table">
+                            <tbody id="otherFormList">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center">
+                <button type="button" id="commit" name="commit" class="btn btn-primary mt-4 btn-block">提交申请</button>
+            </div>
+        </div>
+    </div>
+</form>
+<div id="showImgDiv" style="display: none;">
+    <img id="showImg" src="" width="100%">
+</div>
+</body>
+</html>

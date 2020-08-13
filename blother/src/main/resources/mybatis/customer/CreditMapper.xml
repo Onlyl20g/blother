@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinke.project.customer.mapper.CreditMapper">
+
+    <resultMap type="Credit" id="CreditResult">
+        <result property="id" column="id"/>
+        <result property="billId" column="bill_id"/>
+        <result property="supplierBillId" column="supplier_bill_id"/>
+        <result property="custManagerName" column="cust_manager_name"/>
+        <result property="custManagerId" column="cust_manager_id"/>
+        <result property="appCreditAmount" column="app_credit_amount"/>
+        <result property="creditAmount" column="credit_amount"/>
+        <result property="creditType" column="credit_type"/>
+        <result property="currentAmount" column="current_amount"/>
+        <result property="creditPeriod" column="credit_period"/>
+        <result property="appCreditPeriod" column="app_credit_period"/>
+        <result property="sellerCorprName" column="seller_corpr_name"/>
+        <result property="sellerContactName" column="seller_contact_name"/>
+        <result property="sellerContactTel" column="seller_contact_tel"/>
+        <result property="factorType" column="factor_type"/>
+        <result property="guaranteeMode" column="guarantee_mode"/>
+        <result property="creditStatus" column="credit_status"/>
+        <result property="businessAppPath" column="business_app_path"/>
+        <result property="fundamentalStatePath" column="fundamental_state_path"/>
+        <result property="bylawPath" column="bylaw_path"/>
+        <result property="corprPath" column="corpr_path"/>
+        <result property="financePrincipalPath" column="finance_principal_path"/>
+        <result property="actualControllerPath" column="actual_controller_path"/>
+        <result property="additionFilePath" column="addition_file_path"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="approveTime" column="approve_time"/>
+        <result property="str1" column="str1"/>
+        <result property="str2" column="str2"/>
+        <result property="str3" column="str3"/>
+        <result property="str4" column="str4"/>
+        <result property="str5" column="str5"/>
+    </resultMap>
+
+    <sql id="selectCreditVo">
+        select id, bill_id, supplier_bill_id, cust_manager_name, cust_manager_id, app_credit_amount, credit_amount, credit_type, current_amount, credit_period, app_credit_period, seller_corpr_name, seller_contact_name, seller_contact_tel, factor_type, guarantee_mode, credit_status, business_app_path, fundamental_state_path, bylaw_path, corpr_path, finance_principal_path, actual_controller_path, addition_file_path, create_time, update_time, approve_time, str1, str2, str3, str4, str5 from sys_credit
+    </sql>
+
+    <select id="selectCreditList" parameterType="Credit" resultMap="CreditResult">
+        <include refid="selectCreditVo"/>
+        <where>
+            credit_status <![CDATA[!= ]]> "5"
+            <if test="id != null ">and id = #{id}
+            </if>
+            <if test="billId != null  and billId != '' ">and bill_id = #{billId}
+            </if>
+            <if test="supplierBillId != null  and supplierBillId != '' ">and supplier_bill_id = #{supplierBillId}
+            </if>
+            <if test="custManagerName != null  and custManagerName != '' ">and cust_manager_name = #{custManagerName}
+            </if>
+            <if test="custManagerId != null  and custManagerId != '' ">and cust_manager_id = #{custManagerId}
+            </if>
+            <if test="appCreditAmount != null ">and app_credit_amount = #{appCreditAmount}
+            </if>
+            <if test="creditAmount != null ">and credit_amount = #{creditAmount}
+            </if>
+            <if test="creditType != null  and creditType != '' ">and credit_type = #{creditType}
+            </if>
+            <if test="currentAmount != null ">and current_amount = #{currentAmount}
+            </if>
+            <if test="creditPeriod != null ">and credit_period = #{creditPeriod}
+            </if>
+            <if test="appCreditPeriod != null ">and app_credit_period = #{appCreditPeriod}
+            </if>
+            <if test="sellerCorprName != null  and sellerCorprName != '' ">and seller_corpr_name = #{sellerCorprName}
+            </if>
+            <if test="sellerContactName != null  and sellerContactName != '' ">and seller_contact_name =
+                #{sellerContactName}
+            </if>
+            <if test="sellerContactTel != null  and sellerContactTel != '' ">and seller_contact_tel =
+                #{sellerContactTel}
+            </if>
+            <if test="factorType != null  and factorType != '' ">and factor_type = #{factorType}
+            </if>
+            <if test="guaranteeMode != null  and guaranteeMode != '' ">and guarantee_mode = #{guaranteeMode}
+            </if>
+            <if test="creditStatus != null  and creditStatus != '' ">and credit_status = #{creditStatus}
+            </if>
+            <if test="businessAppPath != null  and businessAppPath != '' ">and business_app_path = #{businessAppPath}
+            </if>
+            <if test="fundamentalStatePath != null  and fundamentalStatePath != '' ">and fundamental_state_path =
+                #{fundamentalStatePath}
+            </if>
+            <if test="bylawPath != null  and bylawPath != '' ">and bylaw_path = #{bylawPath}
+            </if>
+            <if test="corprPath != null  and corprPath != '' ">and corpr_path = #{corprPath}
+            </if>
+            <if test="financePrincipalPath != null  and financePrincipalPath != '' ">and finance_principal_path =
+                #{financePrincipalPath}
+            </if>
+            <if test="actualControllerPath != null  and actualControllerPath != '' ">and actual_controller_path =
+                #{actualControllerPath}
+            </if>
+            <if test="additionFilePath != null  and additionFilePath != '' ">and addition_file_path =
+                #{additionFilePath}
+            </if>
+            <if test="createTime != null ">and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null ">and update_time = #{updateTime}
+            </if>
+            <if test="approveTime != null ">and approve_time = #{approveTime}
+            </if>
+            <if test="str1 != null  and str1 != '' ">and str1 = #{str1}
+            </if>
+            <if test="str2 != null  and str2 != '' ">and str2 = #{str2}
+            </if>
+            <if test="str3 != null  and str3 != '' ">and str3 = #{str3}
+            </if>
+            <if test="str4 != null  and str4 != '' ">and str4 = #{str4}
+            </if>
+            <if test="str5 != null  and str5 != '' ">and str5 = #{str5}
+            </if>
+            order by create_time desc <!-- 设置为按时间倒序排序-->
+        </where>
+    </select>
+
+    <select id="selectCreditById" parameterType="Long" resultMap="CreditResult">
+        <include refid="selectCreditVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertCredit" parameterType="Credit" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_credit
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="billId != null  and billId != ''  ">bill_id,
+            </if>
+            <if test="supplierBillId != null  and supplierBillId != ''  ">supplier_bill_id,
+            </if>
+            <if test="custManagerName != null  and custManagerName != ''  ">cust_manager_name,
+            </if>
+            <if test="custManagerId != null  and custManagerId != ''  ">cust_manager_id,
+            </if>
+            <if test="appCreditAmount != null  ">app_credit_amount,
+            </if>
+            <if test="creditAmount != null  ">credit_amount,
+            </if>
+            <if test="creditType != null  and creditType != ''  ">credit_type,
+            </if>
+            <if test="currentAmount != null  ">current_amount,
+            </if>
+            <if test="creditPeriod != null  ">credit_period,
+            </if>
+            <if test="appCreditPeriod != null  ">app_credit_period,
+            </if>
+            <if test="sellerCorprName != null  and sellerCorprName != ''  ">seller_corpr_name,
+            </if>
+            <if test="sellerContactName != null  and sellerContactName != ''  ">seller_contact_name,
+            </if>
+            <if test="sellerContactTel != null  and sellerContactTel != ''  ">seller_contact_tel,
+            </if>
+            <if test="factorType != null  and factorType != ''  ">factor_type,
+            </if>
+            <if test="guaranteeMode != null  and guaranteeMode != ''  ">guarantee_mode,
+            </if>
+            <if test="creditStatus != null  and creditStatus != ''  ">credit_status,
+            </if>
+            <if test="businessAppPath != null  and businessAppPath != ''  ">business_app_path,
+            </if>
+            <if test="fundamentalStatePath != null  and fundamentalStatePath != ''  ">fundamental_state_path,
+            </if>
+            <if test="bylawPath != null  and bylawPath != ''  ">bylaw_path,
+            </if>
+            <if test="corprPath != null  and corprPath != ''  ">corpr_path,
+            </if>
+            <if test="financePrincipalPath != null  and financePrincipalPath != ''  ">finance_principal_path,
+            </if>
+            <if test="actualControllerPath != null  and actualControllerPath != ''  ">actual_controller_path,
+            </if>
+            <if test="additionFilePath != null  and additionFilePath != ''  ">addition_file_path,
+            </if>
+            <if test="createTime != null  ">create_time,
+            </if>
+            <if test="updateTime != null  ">update_time,
+            </if>
+            <if test="approveTime != null  ">approve_time,
+            </if>
+            <if test="str1 != null  and str1 != ''  ">str1,
+            </if>
+            <if test="str2 != null  and str2 != ''  ">str2,
+            </if>
+            <if test="str3 != null  and str3 != ''  ">str3,
+            </if>
+            <if test="str4 != null  and str4 != ''  ">str4,
+            </if>
+            <if test="str5 != null  and str5 != ''  ">str5,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="billId != null  and billId != ''  ">#{billId},
+            </if>
+            <if test="supplierBillId != null  and supplierBillId != ''  ">#{supplierBillId},
+            </if>
+            <if test="custManagerName != null  and custManagerName != ''  ">#{custManagerName},
+            </if>
+            <if test="custManagerId != null  and custManagerId != ''  ">#{custManagerId},
+            </if>
+            <if test="appCreditAmount != null  ">#{appCreditAmount},
+            </if>
+            <if test="creditAmount != null  ">#{creditAmount},
+            </if>
+            <if test="creditType != null  and creditType != ''  ">#{creditType},
+            </if>
+            <if test="currentAmount != null  ">#{currentAmount},
+            </if>
+            <if test="creditPeriod != null  ">#{creditPeriod},
+            </if>
+            <if test="appCreditPeriod != null  ">#{appCreditPeriod},
+            </if>
+            <if test="sellerCorprName != null  and sellerCorprName != ''  ">#{sellerCorprName},
+            </if>
+            <if test="sellerContactName != null  and sellerContactName != ''  ">#{sellerContactName},
+            </if>
+            <if test="sellerContactTel != null  and sellerContactTel != ''  ">#{sellerContactTel},
+            </if>
+            <if test="factorType != null  and factorType != ''  ">#{factorType},
+            </if>
+            <if test="guaranteeMode != null  and guaranteeMode != ''  ">#{guaranteeMode},
+            </if>
+            <if test="creditStatus != null  and creditStatus != ''  ">#{creditStatus},
+            </if>
+            <if test="businessAppPath != null  and businessAppPath != ''  ">#{businessAppPath},
+            </if>
+            <if test="fundamentalStatePath != null  and fundamentalStatePath != ''  ">#{fundamentalStatePath},
+            </if>
+            <if test="bylawPath != null  and bylawPath != ''  ">#{bylawPath},
+            </if>
+            <if test="corprPath != null  and corprPath != ''  ">#{corprPath},
+            </if>
+            <if test="financePrincipalPath != null  and financePrincipalPath != ''  ">#{financePrincipalPath},
+            </if>
+            <if test="actualControllerPath != null  and actualControllerPath != ''  ">#{actualControllerPath},
+            </if>
+            <if test="additionFilePath != null  and additionFilePath != ''  ">#{additionFilePath},
+            </if>
+            <if test="createTime != null  ">#{createTime},
+            </if>
+            <if test="updateTime != null  ">#{updateTime},
+            </if>
+            <if test="approveTime != null  ">#{approveTime},
+            </if>
+            <if test="str1 != null  and str1 != ''  ">#{str1},
+            </if>
+            <if test="str2 != null  and str2 != ''  ">#{str2},
+            </if>
+            <if test="str3 != null  and str3 != ''  ">#{str3},
+            </if>
+            <if test="str4 != null  and str4 != ''  ">#{str4},
+            </if>
+            <if test="str5 != null  and str5 != ''  ">#{str5},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateCreditByBillId" parameterType="Credit">
+        update sys_credit
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="appCreditAmount != null  ">app_credit_amount = #{appCreditAmount},</if>
+            <if test="creditAmount != null  ">credit_amount = #{creditAmount},</if>
+            <if test="creditType != null  and creditType != ''  ">credit_type = #{creditType},</if>
+            <if test="currentAmount != null  ">current_amount = #{currentAmount},</if>
+            <if test="creditPeriod != null  ">credit_period = #{creditPeriod},</if>
+            <if test="appCreditPeriod != null  ">app_credit_period = #{appCreditPeriod},</if>
+            <if test="sellerCorprName != null  and sellerCorprName != ''  ">seller_corpr_name = #{sellerCorprName},</if>
+            <if test="sellerContactName != null  and sellerContactName != ''  ">seller_contact_name =
+                #{sellerContactName},
+            </if>
+            <if test="sellerContactTel != null  and sellerContactTel != ''  ">seller_contact_tel =
+                #{sellerContactTel},
+            </if>
+            <if test="factorType != null  and factorType != ''  ">factor_type = #{factorType},</if>
+            <if test="guaranteeMode != null  and guaranteeMode != ''  ">guarantee_mode = #{guaranteeMode},</if>
+            <if test="creditStatus != null  and creditStatus != ''  ">credit_status = #{creditStatus},</if>
+            <if test="businessAppPath != null  and businessAppPath != ''  ">business_app_path = #{businessAppPath},</if>
+            <if test="fundamentalStatePath != null  and fundamentalStatePath != ''  ">fundamental_state_path =
+                #{fundamentalStatePath},
+            </if>
+            <if test="bylawPath != null  and bylawPath != ''  ">bylaw_path = #{bylawPath},</if>
+            <if test="corprPath != null  and corprPath != ''  ">corpr_path = #{corprPath},</if>
+            <if test="financePrincipalPath != null  and financePrincipalPath != ''  ">finance_principal_path =
+                #{financePrincipalPath},
+            </if>
+            <if test="actualControllerPath != null  and actualControllerPath != ''  ">actual_controller_path =
+                #{actualControllerPath},
+            </if>
+            <if test="additionFilePath != null  and additionFilePath != ''  ">addition_file_path =
+                #{additionFilePath},
+            </if>
+            <if test="str1 != null  and str1 != ''  ">str1 = #{str1},</if>
+            <if test="str2 != null  and str2 != ''  ">str2 = #{str2},</if>
+            <if test="str3 != null  and str3 != ''  ">str3 = #{str3},</if>
+            <if test="str4 != null  and str4 != ''  ">str4 = #{str4},</if>
+            <if test="str5 != null  and str5 != ''  ">str5 = #{str5},</if>
+        </trim>
+        where bill_id = #{billId}
+    </update>
+
+    <update id="updateCredit" parameterType="Credit">
+        update sys_credit
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="billId != null  and billId != ''  ">bill_id = #{billId},
+            </if>
+            <if test="supplierBillId != null  and supplierBillId != ''  ">supplier_bill_id = #{supplierBillId},
+            </if>
+            <if test="custManagerName != null  and custManagerName != ''  ">cust_manager_name = #{custManagerName},
+            </if>
+            <if test="custManagerId != null  and custManagerId != ''  ">cust_manager_id = #{custManagerId},
+            </if>
+            <if test="appCreditAmount != null  ">app_credit_amount = #{appCreditAmount},
+            </if>
+            <if test="creditAmount != null  ">credit_amount = #{creditAmount},
+            </if>
+            <if test="creditType != null  and creditType != ''  ">credit_type = #{creditType},
+            </if>
+            <if test="currentAmount != null  ">current_amount = #{currentAmount},
+            </if>
+            <if test="creditPeriod != null  ">credit_period = #{creditPeriod},
+            </if>
+            <if test="appCreditPeriod != null  ">app_credit_period = #{appCreditPeriod},
+            </if>
+            <if test="sellerCorprName != null  and sellerCorprName != ''  ">seller_corpr_name = #{sellerCorprName},
+            </if>
+            <if test="sellerContactName != null  and sellerContactName != ''  ">seller_contact_name =
+                #{sellerContactName},
+            </if>
+            <if test="sellerContactTel != null  and sellerContactTel != ''  ">seller_contact_tel = #{sellerContactTel},
+            </if>
+            <if test="factorType != null  and factorType != ''  ">factor_type = #{factorType},
+            </if>
+            <if test="guaranteeMode != null  and guaranteeMode != ''  ">guarantee_mode = #{guaranteeMode},
+            </if>
+            <if test="creditStatus != null  and creditStatus != ''  ">credit_status = #{creditStatus},
+            </if>
+            <if test="businessAppPath != null  and businessAppPath != ''  ">business_app_path = #{businessAppPath},
+            </if>
+            <if test="fundamentalStatePath != null  and fundamentalStatePath != ''  ">fundamental_state_path =
+                #{fundamentalStatePath},
+            </if>
+            <if test="bylawPath != null  and bylawPath != ''  ">bylaw_path = #{bylawPath},
+            </if>
+            <if test="corprPath != null  and corprPath != ''  ">corpr_path = #{corprPath},
+            </if>
+            <if test="financePrincipalPath != null  and financePrincipalPath != ''  ">finance_principal_path =
+                #{financePrincipalPath},
+            </if>
+            <if test="actualControllerPath != null  and actualControllerPath != ''  ">actual_controller_path =
+                #{actualControllerPath},
+            </if>
+            <if test="additionFilePath != null  and additionFilePath != ''  ">addition_file_path = #{additionFilePath},
+            </if>
+            <if test="createTime != null  ">create_time = #{createTime},
+            </if>
+            <if test="updateTime != null  ">update_time = #{updateTime},
+            </if>
+            <if test="approveTime != null  ">approve_time = #{approveTime},
+            </if>
+            <if test="str1 != null  and str1 != ''  ">str1 = #{str1},
+            </if>
+            <if test="str2 != null  and str2 != ''  ">str2 = #{str2},
+            </if>
+            <if test="str3 != null  and str3 != ''  ">str3 = #{str3},
+            </if>
+            <if test="str4 != null  and str4 != ''  ">str4 = #{str4},
+            </if>
+            <if test="str5 != null  and str5 != ''  ">str5 = #{str5},
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="updateCreditList" parameterType="java.util.List">
+        <!-- 接收list参数，循环着组装sql语句，注意for循环的写法
+             separator=";" 代表着每次循环完，在sql后面放一个分号
+             item="Credit" 循环List的每条的结果集
+             collection="list" list 即为 map传过来的参数keyl -->
+        <foreach collection="list" separator=";" item="credit">
+            update sys_credit set
+            <if test="credit.creditAmount != null  ">credit_amount = #{credit.creditAmount},</if>
+            <if test="credit.creditPeriod != null  ">credit_period = #{credit.creditPeriod},</if>
+            <if test="credit.factorType != null  and factorType != ''  ">factor_type = #{credit.factorType},</if>
+            <if test="credit.creditStatus != null  and creditStatus != ''  ">credit_status = #{credit.creditStatus},
+            </if>
+            where id = #{credit.id}
+        </foreach>
+    </update>
+    <delete id="deleteCreditById" parameterType="Long">
+        delete from sys_credit where id = #{id}
+    </delete>
+
+    <delete id="deleteCreditByIds" parameterType="String">
+        delete from sys_credit where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta content="yes" name="apple-mobile-web-app-capable"/>
+    <meta content="black" name="apple-mobile-web-app-status-bar-style"/>
+    <meta content="telephone=no" name="format-detection"/>
+    <meta content="email=no" name="format-detection"/>
+    <title>文件上传</title>
+    <meta name="description" content="">
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
+    <link rel="stylesheet" href="/dependency/bootstrap4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/dependency/mdui/css/mdui.min.css"/>
+    <link rel="stylesheet" href="/dependency/easyupload/easy-upload.css"/>
+    <link rel="stylesheet" href="/dependency/zTree_v3/css/zTreeStyle/zTreeStyle.css"/>
+    <link rel="sylesheet" href="/dependency/layui/css/layui.css"/>
+    <link rel="sttylesheet" href="/dependency/bootstrap-table/locale/bootstrap-table.min.css"/>
+    <link rel="stylesheet" href="/dependency/toastr/toastr.min.css"/>
+    <script type="text/javascript">
+
+    </script>
+</head>
+<body class="mdui-drawer-body-left">
+<style>
+    #faildFile {
+        margin: 0 auto;
+        width: 300px;
+        height: 100px
+    }
+
+    .mdui-drawer-body-left {
+        padding-left: 2% !important;
+    }
+
+    .phoneCss {
+        width: 100px !important;
+    }
+
+    .easy_upload-container {
+        width: 350px !important;
+    }
+</style>
+
+<div id="successFile" style="display: none">
+    <div class="mdui-row" style="margin-top: 40px;width: 360px">
+        <div class="mdui-col-xs-6 mdui-col-offset-xs-2" style="margin-left: 0px">
+            <div id="easyContainer"></div>
+        </div>
+        <div id="folderDiv" style="display: none;">
+            <div class="zTreeDemoBackground">
+                <ul id="tree" class="ztree"></ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--链接过期错误显示-->
+<div style="display: none;text-align: center;margin-top: 150px" id="faildFile">
+    <img style="width: 50px;height: 50px" src="../dependency/images/demo/ico/28573d3d7011a20.jpg" alt=''/>
+    <h1 style="color: red">链接已失效或链接错误</h1></div>
+
+<!--隐藏域 单据id-->
+<input style="display: none;" class="billId" id="billId" type="text"/>
+
+<!--新增文件夹-->
+<div id="lookImgDiv" style="display: none;width: 100%;height: 100%;text-align: center">
+    <img id="showImg" src="" style="max-width:100%;max-height:100%;">
+</div>
+
+<!-- JavaScript -->
+<!-- <script src="js/jquery-3.2.1.min.js"></script> -->
+<script src="/dependency/js/jquery-2.1.1.min.js"></script>
+<script src="/dependency/bootstrap4/js/bootstrap.min.js"></script>
+<script src="/dependency/mdui/js/mdui.min.js"></script>
+<!--<script src="/dependency/js/main.js"></script>-->
+<script src="/dependency/easyupload/scanUpload.js"></script>
+<script src="/dependency/easyupload/vendor/jquery.cookie-1.4.1.min.js"></script>
+<script src="/dependency/layui/layui.all.js"></script>
+<script src="/dependency/layui/layui.js"></script>
+<script src="/dependency/layui/lay/modules/layer.js"></script>
+<!--ztree-->
+<script src="/dependency/zTree_v3/js/jquery.ztree.all.js"></script>
+<script src="/dependency/zTree_v3/js/jquery.ztree.all.min.js"></script>
+<!--bootstrap table-->
+<script src="/dependency/bootstrap-table/bootstrap-table.min.js"></script>
+<script src="/dependency/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+<script src="/dependency/bootstrapvalidator/bootstrapValidator.min.js"></script>
+<script src="/dependency/bootstrap-table/bootstrap-editable.js"></script>
+<script src="/dependency/bootstrap-table/bootstrap-table-editable.js"></script>
+<script src="/dependency/toastr/toastr.min.js"></script>
+<script src="/dependency/js/qrcode.min.js"></script>
+<script type="application/javascript">
+    function getQueryString(name) {
+        //正则表达式，获取地址中的参数
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return decodeURI(r[2]);
+        return null;
+    }
+
+    var businessId
+    var selectId;
+    var selectLabel1 = 0;
+    var businessId;//文件夹id
+    var folderName;//文件夹名字
+    var temp;//文件大小
+    var uploadNum = 0;//记录加载次数
+    var fileuploadflag = true;
+    var LabelFlag = 0;
+    var LabelHtml;
+    var userBusinessId = "";//用户的id
+    /*var useFolderBid = getQueryString("wjj");
+    var useFodlderBname =encodeURI(getQueryString("name"));
+    useFodlderBname = decodeURI(useFodlderBname);*/
+    var buuid = getQueryString("u");
+    var useFolderBid = '';
+    var useFodlderBname = '';
+
+    /*if (typeof useFolder !== "undefined") {
+        if (useFolder === "" || useFolder === null) {
+            useFoledePath = '根目录';
+        }
+    } else {
+        useFolder = '';
+        useFoledePath = '根目录';
+    }*/
+
+
+    $(function () {
+        var linkUrl = window.location.href.toString();
+        linkUrl = decodeURI(linkUrl);
+        $.ajax({
+            url: "/system/scanUpload/list",
+            type: "POST",
+            data: {
+                businessId: buuid,
+                sanLink: linkUrl
+            },
+            async: false,
+            dataType: "json",
+            success: function (data) {
+                if (data.total == 0) {
+                    $("#faildFile").show();
+                    return;
+                } else {
+                    userBusinessId = data.rows[0].userBusinessId;
+                    useFolderBid = data.rows[0].folderId;
+                    useFodlderBname = data.rows[0].folderPath;
+                    sessionStorage.setItem("useFolders", useFolderBid);
+                    sessionStorage.setItem("useFoledePaths", useFodlderBname);
+                    $("#successFile").show();
+                }
+            }
+        })
+
+    })
+
+    $('#easyContainer').easyUpload({
+        allowFileTypes: '*.jpg;*.doc;*.pdf;*.mp4;*.txt;*.ppt;*.xlsx;*.mp3;*.png;*.xls;*.docx;*.pptx;*.java;*.zip;*.sql;*.exe;*.data;*.gif;*.*',//允许上传文件类型，格式';*.doc;*.pdf'
+        allowFileSize: 20540,//允许上传文件大小(KB)
+        selectText: '选择文件',//选择文件按钮文案
+        multi: true,//是否允许多文件上传
+        multiNum: 20,//多文件上传时允许的文件数
+        showNote: true,//是否展示文件上传说明
+        note: '提示:最多上传20个文件，支持doc、jpg、mp4等',//文件上传说明
+        showPreview: true,//是否显示文件预览
+        url: '/system/file/upload',//上传文件地址
+        fileName: 'file',//文件filename配置参数
+        formParam: {
+            fileLabel: $($(".fileLabel")[uploadNum]).val()
+        },//文件filename以外的配置参数，格式：{key1:value1,key2:value2}
+        timeout: 1800000,//请求超时时间
+        okCode: 200,
+        successFunc: function (res) {
+            var fileSize = 0;
+            //console.log('成功回调', res);
+            var res1 = eval(res);
+            var success = res1.success[uploadNum];
+            var success1 = jQuery.parseJSON(success);
+            var path = success1.path;
+            var sice = $('.easy_upload_fiesize').text();
+            var namelength = sice.length;//取到文件名长度
+            var filesuffix = sice.substring(0, namelength - 2);
+            var upFileName = $($(".easy_upload_filename")[uploadNum]).text();
+            var index1 = upFileName.indexOf(".");
+            var name1 = success1.fileName;
+            fileSize = success1.fileSize;
+            var fileLabel = $($(".fileLabel")[uploadNum]).val();
+            /*if (sice.indexOf("MB") > 0) {
+                temp = sice.split("MB");
+                //fileSize = Math.ceil(temp[uploadNum++] * 1024);
+                if (uploadNum >= temp.length - 1) {
+                    uploadNum = 0;
+                }
+            } else {
+                temp = sice.split("KB");
+                //fileSize = Math.ceil(temp[uploadNum++]);
+                if (uploadNum >= temp.length - 1) {
+                    uploadNum = 0;
+                    layer.alert("操作成功", {icon: 1}, function () {
+                        location.reload();
+                    });
+                }
+            }*/
+            var siceType = sice.substring(namelength - 2);
+            var index = path.lastIndexOf(".");
+            var suffix = path.substr(index + 1);
+            var fileNode = $(".folderId");
+            var folderBusinessId = $(fileNode[uploadNum]).val()
+            if (uploadNum === $(".easy_upload_queue_item").length - 1) {
+                /* uploadNum=0;*/
+                /*setTimeout(function () {layer.msg('上传成功',{icon: 1},function () {
+                    /!*uploadNum=1;*!/
+                    //location.reload();
+                }) },1000)*/
+            }
+
+            uploadNum++;
+            $.ajax({
+                url: "/system/file/addScan",
+                data: {
+                    path: path,
+                    name: name1,
+                    folderBusinessId: sessionStorage.getItem("useFolders"),
+                    fileSuffix: suffix,
+                    fileSize: fileSize,
+                    billId: $("#billId").val(),
+                    fileLabel: fileLabel,
+                    userBusinessId: userBusinessId
+                },
+                type: "POST",
+                dataType: "json",
+                cache: false,//false是不缓存，true为缓存
+                async: false,//true为异步，false为同步
+                success: function (data) {
+                    if (fileuploadflag == true) {
+                        var data1 = eval(data);
+                        $("#billId").val(data1.msg);
+                        $.ajax({
+                            url: "/system/viewdataUpload/addScan",
+                            data: {
+                                fileBillId: $("#billId").val(),
+                                userBusinessId: userBusinessId
+                            },
+                            type: "POST",
+                            dataType: "json",
+                            cache: false,
+                            anync: false,
+                            success: function (data) {
+                            }
+                        });
+                        fileuploadflag = false;
+                    }
+                }
+            });
+        },//上传成功回调函数
+        errorFunc: function (res) {
+            //console.log('失败回调', res);
+        },//上传失败回调函数
+        deleteFunc: function (res) {
+
+        }//删除文件回调函数
+    });
+
+    //生成树
+    function upFile(thisNode) {
+        var setting = {
+            view: {
+                selectedMulti: true
+            },
+            check: {
+                enable: false
+            },
+            data: {
+                simpleData: {
+                    enable: true,//是否采用简单数据模式
+                    idKey: "businessId",//树节点ID名称
+                    pIdKey: "businessPid",//父节点ID名称
+                    rootPId: -1//根节点ID
+                }
+            }
+        };
+        $.ajax({
+            url: '/system/folder/list',
+            type: 'post',
+            dataType: "json",
+            success: function (data) {
+                $.fn.zTree.init($("#tree"), setting, data.rows);//初始化树节点时，添加同步获取的数据
+            }
+        });
+        layer.open({
+            type: 1,
+            title: '文件夹选择',
+            shadeClose: true,
+            shade: [0.8, '#393D49'],
+            maxmin: true, //开启最大化最小化按钮
+            area: ['30%', '40%'],
+            content: $("#folderDiv"),
+            btn: ['确定', '取消'],
+            yes: function (index, layero) {
+                var zTreeOjb = $.fn.zTree.getZTreeObj("tree");
+                var selectedNodes = zTreeOjb.getSelectedNodes();
+                businessId = selectedNodes[0].businessId;
+                var nodeval = "";
+                var pNode = selectedNodes[0];
+                var selectedNode = pNode;
+                while (pNode != null) {
+                    pNode = pNode.getParentNode();
+                    if (pNode != null) {
+                        var pNodeName = pNode.name;
+                        nodeval = pNodeName + '/' + nodeval;
+                    }
+                }
+                nodeval = nodeval + selectedNode.name;
+                var folderName = nodeval;
+                $(thisNode.parentNode.firstChild.lastChild).val(businessId);//hidden
+                $(thisNode.parentNode.firstChild.firstChild).val(folderName);//url
+                sessionStorage.setItem("useFoledePaths", "根目录");
+                sessionStorage.setItem("useFolders", "");
+                layer.close(index);
+            }
+        });
+    }
+
+    //标签查询
+    $(function () {
+        selectId = (Math.random() * 10000000).toString(16).substr(0, 3) + (new Date()).getTime() + Math.random().toString().substr(2, 5);
+        //var SelectHtml = '<select  class="fileLabel"  onfocus="selectLabel(this)" id="a'+selectId+'" name="fileLabel" style="width:100px;"></select>';
+        $.ajax({
+            url: "/system/fileLabel/list",
+            type: "post",
+            data: {},
+            dataType: "json",
+            success: function (data) {
+                $.each(data.rows, function (i, n) {
+                    LabelHtml += "<option  class='' value='" + n.id + "'>" + n.name + "</option>";
+                })
+            }
+        });
+        LabelHtml = "";
+    });
+
+    /* 图片回显 */
+    function lookImg(imgstr) {
+        layer.open({
+            type: 1,
+            title: '图片查看',
+            shadeClose: true,
+            shade: [0.8, '#393D49'],
+            maxmin: true, //开启最大化最小化按钮
+            area: ['98%', '98%'],
+            content: $("#lookImgDiv")
+        });
+        $("#showImg").attr("src", imgstr);
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link th:href="@{/dependency/layui/css/layui.css}" rel="stylesheet"/>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-system-edit" th:object="${system}">
+        <input id="id" name="id" th:field="*{id}" type="hidden">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">系统名称：</label>
+            <div class="col-sm-8">
+                <input id="name" name="name" th:field="*{name}" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">密钥：</label>
+            <div class="col-sm-8">
+                <input id="keyCode" name="keyCode" th:field="*{keyCode}" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">失效时间：</label>
+            <div class="col-sm-8">
+                <input id="expiryTime" name="expiryTime" th:field="*{expiryTime}" class="form-control" type="text">
+            </div>
+        </div>
+    </form>
+</div>
+<div th:include="include::footer"></div>
+<script th:src="@{/dependency/layui/layui.js}"></script>
+<script type="text/javascript">
+    var laydate = "";
+    layui.use('laydate', function () {
+        laydate = layui.laydate;
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#expiryTime', //指定元素
+            type: "datetime"
+        });
+    });
+    $(function () {
+        $("#expiryTime").val(GMTToStr($("#expiryTime").val()));
+    });
+    var prefix = ctx + "system/system";
+    $("#form-system-edit").validate({
+        rules: {
+            xxxx: {
+                required: true
+            }
+        },
+        focusCleanup: true
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/edit", $('#form-system-edit').serialize());
+        }
+    }
+
+    function GMTToStr(time) {
+        var date = new Date(time);
+        return date.getFullYear() + '-' + ((date.getMonth() + 1) < 10 ? "0" + (date.getMonth() + 1) : (date.getMonth() + 1)) + '-' + (date.getDate() < 10 ? "0" + date.getDate() : date.getDate()) + ' ' + (date.getHours() < 10 ? "0" + date.getHours() : date.getHours()) + ':' + (date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()) + ':' + (date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds());
+    }
+</script>
+</body>
+</html>

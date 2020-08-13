@@ -1,0 +1,507 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinke.project.system.supplier.mapper.SupplierMapper">
+
+    <resultMap type="Supplier" id="SupplierResult">
+        <result property="id" column="id"/>
+        <result property="billId" column="bill_id"/>
+        <result property="businessLicenseFilepathId" column="business_license_filepath_id"/>
+        <result property="businessLicenseCode" column="business_license_code"/>
+        <result property="corprName" column="corpr_name"/>
+        <result property="corprType" column="corpr_type"/>
+        <result property="corprAddres" column="corpr_addres"/>
+        <result property="registeredCapital" column="registered_capital"/>
+        <result property="establishDate" column="establish_date"/>
+        <result property="operationPeriod" column="operation_period"/>
+        <result property="customerManagerId" column="customer_manager_id"/>
+        <result property="customerManagerName" column="customer_manager_name"/>
+        <result property="idcardFrontFilepathId" column="idcard_front_filepath_id"/>
+        <result property="idcardBackFilepathId" column="idcard_back_filepath_id"/>
+        <result property="legalPersonName" column="legal_person_name"/>
+        <result property="legalPersonIdno" column="legal_person_idno"/>
+        <result property="legalPersonPhone" column="legal_person_phone"/>
+        <result property="operatorName" column="operator_name"/>
+        <result property="operatorIdno" column="operator_idno"/>
+        <result property="operatorPhone" column="operator_phone"/>
+        <result property="auditOperatorName" column="audit_operator_name"/>
+        <result property="auditOperatorIdno" column="audit_operator_idno"/>
+        <result property="auditOpetatorPhone" column="audit_opetator_phone"/>
+        <result property="usbApplyPath" column="usb_apply_path"/>
+        <result property="usbKeyPath" column="usb_key_path"/>
+        <result property="agreementPath" column="agreement_path"/>
+        <result property="password" column="password"/>
+        <result property="salt" column="salt"/>
+        <result property="status" column="status"/>
+        <result property="avatar" column="avatar"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="str1" column="str1"/>
+        <result property="str2" column="str2"/>
+        <result property="str3" column="str3"/>
+        <result property="str4" column="str4"/>
+        <result property="str5" column="str5"/>
+        <result property="str6" column="str6"/>
+        <result property="str7" column="str7"/>
+        <result property="str8" column="str8"/>
+        <result property="str9" column="str9"/>
+    </resultMap>
+
+    <sql id="selectSupplierVo">
+        select id, bill_id, business_license_filepath_id, business_license_code, corpr_name, corpr_type, corpr_addres, registered_capital, establish_date, operation_period, customer_manager_id, customer_manager_name, idcard_front_filepath_id, idcard_back_filepath_id, legal_person_name, legal_person_idno, legal_person_phone, operator_name, operator_idno, operator_phone, audit_operator_name, audit_operator_idno, audit_opetator_phone, usb_apply_path, usb_key_path, agreement_path, password, salt, status, avatar, del_flag, create_time, update_time, update_by, str1, str2, str3, str4, str5, str6, str7, str8, str9 from sys_supplier
+    </sql>
+    <select id="selectSupplierList" parameterType="Supplier" resultMap="SupplierResult">
+        <include refid="selectSupplierVo"/>
+        <where>
+            del_flag = '0'
+            <if test="id != null ">and id = #{id}
+            </if>
+            <if test="billId != null  and billId != '' ">and bill_id = #{billId}
+            </if>
+            <if test="businessLicenseFilepathId != null  and businessLicenseFilepathId != '' ">and
+                business_license_filepath_id = #{businessLicenseFilepathId}
+            </if>
+            <if test="businessLicenseCode != null  and businessLicenseCode != '' ">and business_license_code =
+                #{businessLicenseCode}
+            </if>
+            <if test="corprName != null  and corprName != '' ">and corpr_name = #{corprName}
+            </if>
+            <if test="corprType != null  and corprType != '' ">and corpr_type = #{corprType}
+            </if>
+            <if test="corprAddres != null  and corprAddres != '' ">and corpr_addres = #{corprAddres}
+            </if>
+            <if test="registeredCapital != null  and registeredCapital != '' ">and registered_capital =
+                #{registeredCapital}
+            </if>
+            <if test="establishDate != null  and establishDate != '' ">and establish_date = #{establishDate}
+            </if>
+            <if test="operationPeriod != null  and operationPeriod != '' ">and operation_period = #{operationPeriod}
+            </if>
+            <if test="customerManagerId != null  and customerManagerId != '' ">and customer_manager_id =
+                #{customerManagerId}
+            </if>
+            <if test="customerManagerName != null  and customerManagerName != '' ">and customer_manager_name =
+                #{customerManagerName}
+            </if>
+            <if test="idcardFrontFilepathId != null  and idcardFrontFilepathId != '' ">and idcard_front_filepath_id =
+                #{idcardFrontFilepathId}
+            </if>
+            <if test="idcardBackFilepathId != null  and idcardBackFilepathId != '' ">and idcard_back_filepath_id =
+                #{idcardBackFilepathId}
+            </if>
+            <if test="legalPersonName != null  and legalPersonName != '' ">and legal_person_name = #{legalPersonName}
+            </if>
+            <if test="legalPersonIdno != null  and legalPersonIdno != '' ">and legal_person_idno = #{legalPersonIdno}
+            </if>
+            <if test="legalPersonPhone != null  and legalPersonPhone != '' ">and legal_person_phone =
+                #{legalPersonPhone}
+            </if>
+            <if test="operatorName != null  and operatorName != '' ">and operator_name = #{operatorName}
+            </if>
+            <if test="operatorIdno != null  and operatorIdno != '' ">and operator_idno = #{operatorIdno}
+            </if>
+            <if test="operatorPhone != null  and operatorPhone != '' ">and operator_phone = #{operatorPhone}
+            </if>
+            <if test="auditOperatorName != null  and auditOperatorName != '' ">and audit_operator_name =
+                #{auditOperatorName}
+            </if>
+            <if test="auditOperatorIdno != null  and auditOperatorIdno != '' ">and audit_operator_idno =
+                #{auditOperatorIdno}
+            </if>
+            <if test="auditOpetatorPhone != null  and auditOpetatorPhone != '' ">and audit_opetator_phone =
+                #{auditOpetatorPhone}
+            </if>
+            <if test="usbApplyPath != null  and usbApplyPath != '' ">and usb_apply_path = #{usbApplyPath}
+            </if>
+            <if test="usbKeyPath != null  and usbKeyPath != '' ">and usb_key_path = #{usbKeyPath}
+            </if>
+            <if test="agreementPath != null  and agreementPath != '' ">and agreement_path = #{agreementPath}
+            </if>
+            <!--<if test="password != null  and password != '' ">and password = #{password}
+            </if>-->
+            <if test="salt != null  and salt != '' ">and salt = #{salt}
+            </if>
+            <if test="status != null  and status != '' ">and status = #{status}
+            </if>
+            <if test="avatar != null  and avatar != '' ">and avatar = #{avatar}
+            </if>
+            <if test="delFlag != null  and delFlag != '' ">and del_flag = #{delFlag}
+            </if>
+            <if test="createTime != null ">and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null ">and update_time = #{updateTime}
+            </if>
+            <if test="updateBy != null  and updateBy != '' ">and update_by = #{updateBy}
+            </if>
+            <if test="str1 != null  and str1 != '' ">and str1 = #{str1}
+            </if>
+            <if test="str2 != null  and str2 != '' ">and str2 = #{str2}
+            </if>
+            <if test="str3 != null  and str3 != '' ">and str3 = #{str3}
+            </if>
+            <if test="str4 != null  and str4 != '' ">and str4 = #{str4}
+            </if>
+            <if test="str5 != null  and str5 != '' ">and str5 = #{str5}
+            </if>
+            <if test="str6 != null  and str6 != '' ">and str6 = #{str6}
+            </if>
+            <if test="str7 != null  and str7 != '' ">and str7 = #{str7}
+            </if>
+            <if test="str8 != null  and str8 != '' ">and str8 = #{str8}
+            </if>
+            <if test="str9 != null  and str9 != '' ">and str9 = #{str9}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectSupplierListInfo" parameterType="Supplier" resultMap="SupplierResult">
+        <include refid="selectSupplierVo"/>
+        <where>del_flag = '0'
+            <if test="customerManagerId != null and customerManagerId != ''">
+                AND customer_manager_id = #{customerManagerId}
+            </if>
+            <if test="businessLicenseCode != null and businessLicenseCode != ''">
+                AND business_license_code like concat('%', #{businessLicenseCode}, '%')
+            </if>
+            <if test="status != null and status != ''">
+                AND status = #{status}
+            </if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                AND date_format(create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                AND date_format(create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+            <!-- 数据范围过滤 -->
+            ${params.dataScope}
+        </where>
+    </select>
+
+    <select id="selectSupplierById" parameterType="Long" resultMap="SupplierResult">
+        <include refid="selectSupplierVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertSupplier" parameterType="Supplier" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_supplier
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="billId != null  and billId != ''  ">bill_id,
+            </if>
+            <if test="businessLicenseFilepathId != null  and businessLicenseFilepathId != ''  ">
+                business_license_filepath_id,
+            </if>
+            <if test="businessLicenseCode != null  and businessLicenseCode != ''  ">business_license_code,
+            </if>
+            <if test="corprName != null  and corprName != ''  ">corpr_name,
+            </if>
+            <if test="corprType != null  and corprType != ''  ">corpr_type,
+            </if>
+            <if test="corprAddres != null  and corprAddres != ''  ">corpr_addres,
+            </if>
+            <if test="registeredCapital != null  and registeredCapital != ''  ">registered_capital,
+            </if>
+            <if test="establishDate != null  and establishDate != ''  ">establish_date,
+            </if>
+            <if test="operationPeriod != null  and operationPeriod != ''  ">operation_period,
+            </if>
+            <if test="customerManagerId != null  and customerManagerId != ''  ">customer_manager_id,
+            </if>
+            <if test="customerManagerName != null  and customerManagerName != ''  ">customer_manager_name,
+            </if>
+            <if test="idcardFrontFilepathId != null  and idcardFrontFilepathId != ''  ">idcard_front_filepath_id,
+            </if>
+            <if test="idcardBackFilepathId != null  and idcardBackFilepathId != ''  ">idcard_back_filepath_id,
+            </if>
+            <if test="legalPersonName != null  and legalPersonName != ''  ">legal_person_name,
+            </if>
+            <if test="legalPersonIdno != null  and legalPersonIdno != ''  ">legal_person_idno,
+            </if>
+            <if test="legalPersonPhone != null  and legalPersonPhone != ''  ">legal_person_phone,
+            </if>
+            <if test="operatorName != null  and operatorName != ''  ">operator_name,
+            </if>
+            <if test="operatorIdno != null  and operatorIdno != ''  ">operator_idno,
+            </if>
+            <if test="operatorPhone != null  and operatorPhone != ''  ">operator_phone,
+            </if>
+            <if test="auditOperatorName != null  and auditOperatorName != ''  ">audit_operator_name,
+            </if>
+            <if test="auditOperatorIdno != null  and auditOperatorIdno != ''  ">audit_operator_idno,
+            </if>
+            <if test="auditOpetatorPhone != null  and auditOpetatorPhone != ''  ">audit_opetator_phone,
+            </if>
+            <if test="usbApplyPath != null  and usbApplyPath != ''  ">usb_apply_path,
+            </if>
+            <if test="usbKeyPath != null  and usbKeyPath != ''  ">usb_key_path,
+            </if>
+            <if test="agreementPath != null  and agreementPath != ''  ">agreement_path,
+            </if>
+            <if test="password != null  and password != ''  ">password,
+            </if>
+            <if test="salt != null  and salt != ''  ">salt,
+            </if>
+            <if test="status != null  and status != ''  ">status,
+            </if>
+            <if test="avatar != null  and avatar != ''  ">avatar,
+            </if>
+            <if test="delFlag != null  and delFlag != ''  ">del_flag,
+            </if>
+            <if test="createTime != null  ">create_time,
+            </if>
+            <if test="updateTime != null  ">update_time,
+            </if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by,
+            </if>
+            <if test="str1 != null  and str1 != ''  ">str1,
+            </if>
+            <if test="str2 != null  and str2 != ''  ">str2,
+            </if>
+            <if test="str3 != null  and str3 != ''  ">str3,
+            </if>
+            <if test="str4 != null  and str4 != ''  ">str4,
+            </if>
+            <if test="str5 != null  and str5 != ''  ">str5,
+            </if>
+            <if test="str6 != null  and str6 != ''  ">str6,
+            </if>
+            <if test="str7 != null  and str7 != ''  ">str7,
+            </if>
+            <if test="str8 != null  and str8 != ''  ">str8,
+            </if>
+            <if test="str9 != null  and str9 != ''  ">str9,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="billId != null  and billId != ''  ">#{billId},
+            </if>
+            <if test="businessLicenseFilepathId != null  and businessLicenseFilepathId != ''  ">
+                #{businessLicenseFilepathId},
+            </if>
+            <if test="businessLicenseCode != null  and businessLicenseCode != ''  ">#{businessLicenseCode},
+            </if>
+            <if test="corprName != null  and corprName != ''  ">#{corprName},
+            </if>
+            <if test="corprType != null  and corprType != ''  ">#{corprType},
+            </if>
+            <if test="corprAddres != null  and corprAddres != ''  ">#{corprAddres},
+            </if>
+            <if test="registeredCapital != null  and registeredCapital != ''  ">#{registeredCapital},
+            </if>
+            <if test="establishDate != null  and establishDate != ''  ">#{establishDate},
+            </if>
+            <if test="operationPeriod != null  and operationPeriod != ''  ">#{operationPeriod},
+            </if>
+            <if test="customerManagerId != null  and customerManagerId != ''  ">#{customerManagerId},
+            </if>
+            <if test="customerManagerName != null  and customerManagerName != ''  ">#{customerManagerName},
+            </if>
+            <if test="idcardFrontFilepathId != null  and idcardFrontFilepathId != ''  ">#{idcardFrontFilepathId},
+            </if>
+            <if test="idcardBackFilepathId != null  and idcardBackFilepathId != ''  ">#{idcardBackFilepathId},
+            </if>
+            <if test="legalPersonName != null  and legalPersonName != ''  ">#{legalPersonName},
+            </if>
+            <if test="legalPersonIdno != null  and legalPersonIdno != ''  ">#{legalPersonIdno},
+            </if>
+            <if test="legalPersonPhone != null  and legalPersonPhone != ''  ">#{legalPersonPhone},
+            </if>
+            <if test="operatorName != null  and operatorName != ''  ">#{operatorName},
+            </if>
+            <if test="operatorIdno != null  and operatorIdno != ''  ">#{operatorIdno},
+            </if>
+            <if test="operatorPhone != null  and operatorPhone != ''  ">#{operatorPhone},
+            </if>
+            <if test="auditOperatorName != null  and auditOperatorName != ''  ">#{auditOperatorName},
+            </if>
+            <if test="auditOperatorIdno != null  and auditOperatorIdno != ''  ">#{auditOperatorIdno},
+            </if>
+            <if test="auditOpetatorPhone != null  and auditOpetatorPhone != ''  ">#{auditOpetatorPhone},
+            </if>
+            <if test="usbApplyPath != null  and usbApplyPath != ''  ">#{usbApplyPath},
+            </if>
+            <if test="usbKeyPath != null  and usbKeyPath != ''  ">#{usbKeyPath},
+            </if>
+            <if test="agreementPath != null  and agreementPath != ''  ">#{agreementPath},
+            </if>
+            <if test="password != null  and password != ''  ">#{password},
+            </if>
+            <if test="salt != null  and salt != ''  ">#{salt},
+            </if>
+            <if test="status != null  and status != ''  ">#{status},
+            </if>
+            <if test="avatar != null  and avatar != ''  ">#{avatar},
+            </if>
+            <if test="delFlag != null  and delFlag != ''  ">#{delFlag},
+            </if>
+            <if test="createTime != null  ">#{createTime},
+            </if>
+            <if test="updateTime != null  ">#{updateTime},
+            </if>
+            <if test="updateBy != null  and updateBy != ''  ">#{updateBy},
+            </if>
+            <if test="str1 != null  and str1 != ''  ">#{str1},
+            </if>
+            <if test="str2 != null  and str2 != ''  ">#{str2},
+            </if>
+            <if test="str3 != null  and str3 != ''  ">#{str3},
+            </if>
+            <if test="str4 != null  and str4 != ''  ">#{str4},
+            </if>
+            <if test="str5 != null  and str5 != ''  ">#{str5},
+            </if>
+            <if test="str6 != null  and str6 != ''  ">#{str6},
+            </if>
+            <if test="str7 != null  and str7 != ''  ">#{str7},
+            </if>
+            <if test="str8 != null  and str8 != ''  ">#{str8},
+            </if>
+            <if test="str9 != null  and str9 != ''  ">#{str9},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateSupplier" parameterType="Supplier">
+        update sys_supplier
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="billId != null  and billId != ''  ">bill_id = #{billId},
+            </if>
+            <if test="businessLicenseFilepathId != null  and businessLicenseFilepathId != ''  ">
+                business_license_filepath_id = #{businessLicenseFilepathId},
+            </if>
+            <if test="businessLicenseCode != null  and businessLicenseCode != ''  ">business_license_code =
+                #{businessLicenseCode},
+            </if>
+            <if test="corprName != null  and corprName != ''  ">corpr_name = #{corprName},
+            </if>
+            <if test="corprType != null  and corprType != ''  ">corpr_type = #{corprType},
+            </if>
+            <if test="corprAddres != null  and corprAddres != ''  ">corpr_addres = #{corprAddres},
+            </if>
+            <if test="registeredCapital != null  and registeredCapital != ''  ">registered_capital =
+                #{registeredCapital},
+            </if>
+            <if test="establishDate != null  and establishDate != ''  ">establish_date = #{establishDate},
+            </if>
+            <if test="operationPeriod != null  and operationPeriod != ''  ">operation_period = #{operationPeriod},
+            </if>
+            <if test="customerManagerId != null  and customerManagerId != ''  ">customer_manager_id =
+                #{customerManagerId},
+            </if>
+            <if test="customerManagerName != null  and customerManagerName != ''  ">customer_manager_name =
+                #{customerManagerName},
+            </if>
+            <if test="idcardFrontFilepathId != null  and idcardFrontFilepathId != ''  ">idcard_front_filepath_id =
+                #{idcardFrontFilepathId},
+            </if>
+            <if test="idcardBackFilepathId != null  and idcardBackFilepathId != ''  ">idcard_back_filepath_id =
+                #{idcardBackFilepathId},
+            </if>
+            <if test="legalPersonName != null  and legalPersonName != ''  ">legal_person_name = #{legalPersonName},
+            </if>
+            <if test="legalPersonIdno != null  and legalPersonIdno != ''  ">legal_person_idno = #{legalPersonIdno},
+            </if>
+            <if test="legalPersonPhone != null  and legalPersonPhone != ''  ">legal_person_phone = #{legalPersonPhone},
+            </if>
+            <if test="operatorName != null  and operatorName != ''  ">operator_name = #{operatorName},
+            </if>
+            <if test="operatorIdno != null  and operatorIdno != ''  ">operator_idno = #{operatorIdno},
+            </if>
+            <if test="operatorPhone != null  and operatorPhone != ''  ">operator_phone = #{operatorPhone},
+            </if>
+            <if test="auditOperatorName != null  and auditOperatorName != ''  ">audit_operator_name =
+                #{auditOperatorName},
+            </if>
+            <if test="auditOperatorIdno != null  and auditOperatorIdno != ''  ">audit_operator_idno =
+                #{auditOperatorIdno},
+            </if>
+            <if test="auditOpetatorPhone != null  and auditOpetatorPhone != ''  ">audit_opetator_phone =
+                #{auditOpetatorPhone},
+            </if>
+            <if test="usbApplyPath != null  and usbApplyPath != ''  ">usb_apply_path = #{usbApplyPath},
+            </if>
+            <if test="usbKeyPath != null  and usbKeyPath != ''  ">usb_key_path = #{usbKeyPath},
+            </if>
+            <if test="agreementPath != null  and agreementPath != ''  ">agreement_path = #{agreementPath},
+            </if>
+            <if test="password != null  and password != ''  ">password = #{password},
+            </if>
+            <if test="salt != null  and salt != ''  ">salt = #{salt},
+            </if>
+            <if test="status != null  and status != ''  ">status = #{status},
+            </if>
+            <if test="avatar != null  and avatar != ''  ">avatar = #{avatar},
+            </if>
+            <if test="delFlag != null  and delFlag != ''  ">del_flag = #{delFlag},
+            </if>
+            <if test="createTime != null  ">create_time = #{createTime},
+            </if>
+            <if test="updateTime != null  ">update_time = #{updateTime},
+            </if>
+            <if test="updateBy != null  and updateBy != ''  ">update_by = #{updateBy},
+            </if>
+            <if test="str1 != null  and str1 != ''  ">str1 = #{str1},
+            </if>
+            <if test="str2 != null  and str2 != ''  ">str2 = #{str2},
+            </if>
+            <if test="str3 != null  and str3 != ''  ">str3 = #{str3},
+            </if>
+            <if test="str4 != null  and str4 != ''  ">str4 = #{str4},
+            </if>
+            <if test="str5 != null  and str5 != ''  ">str5 = #{str5},
+            </if>
+            <if test="str6 != null  and str6 != ''  ">str6 = #{str6},
+            </if>
+            <if test="str7 != null  and str7 != ''  ">str7 = #{str7},
+            </if>
+            <if test="str8 != null  and str8 != ''  ">str8 = #{str8},
+            </if>
+            <if test="str9 != null  and str9 != ''  ">str9 = #{str9},
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="updateSupplierEdit" parameterType="Supplier">
+        update sys_supplier
+        SET
+            corpr_addres = #{corprAddres},
+            registered_capital = #{registeredCapital},
+            establish_date = #{establishDate},
+            corpr_name = #{corprName},
+            corpr_type = #{corprType},
+            operation_period = #{operationPeriod},
+            legal_person_name = #{legalPersonName},
+            legal_person_idno = #{legalPersonIdno},
+            legal_person_phone = #{legalPersonPhone}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSupplierById" parameterType="Long">
+        delete from sys_supplier where id = #{id}
+    </delete>
+
+    <delete id="updateSupplierByIds" parameterType="String">
+        update sys_supplier set del_flag = '1' where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteSupplierByIds" parameterType="String">
+        delete from sys_supplier where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="checkLoginNameFirst" parameterType="String" resultMap="SupplierResult">
+		select update_by from sys_supplier where business_license_code=#{loginName}
+	</select>
+
+    <select id="selectSupplierByUserName" parameterType="String" resultMap="SupplierResult">
+		select * from sys_supplier where business_license_code=#{userName}
+	</select>
+</mapper>

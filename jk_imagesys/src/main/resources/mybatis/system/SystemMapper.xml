@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinke.project.system.system.mapper.SystemMapper">
+
+    <resultMap type="System" id="SystemResult">
+        <result property="id" column="id"/>
+        <result property="code" column="code"/>
+        <result property="name" column="name"/>
+        <result property="keyCode" column="key_code"/>
+        <result property="expiryTime" column="expiry_time"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+    <sql id="selectSystemVo">
+        select id, code, name, key_code, expiry_time, del_flag, create_time, update_time, status from sys_system
+    </sql>
+
+    <select id="selectSystemList" parameterType="System" resultMap="SystemResult">
+        <include refid="selectSystemVo"/>
+        <where>
+            <if test="id != null ">and id = #{id}</if>
+            <if test="code != null  and code != '' ">and code = #{code}</if>
+            <if test="name != null  and name != '' ">and name like concat('%',#{name},'%')</if>
+            <if test="keyCode != null  and keyCode != '' ">and key_code like concat('%',#{keyCode},'%')</if>
+            <if test="expiryTime != null ">and expiry_time = #{expiryTime}</if>
+            <if test="delFlag != null  and delFlag != '' ">and del_flag = #{delFlag}</if>
+            <if test="createTime != null ">and create_time = #{createTime}</if>
+            <if test="updateTime != null ">and update_time = #{updateTime}</if>
+            <if test="status != null  and status != '' ">and status = #{status}</if>
+        </where>
+    </select>
+
+    <select id="selectSystemById" parameterType="Integer" resultMap="SystemResult">
+        <include refid="selectSystemVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertSystem" parameterType="System" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_system
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="code != null  and code != ''  ">code,</if>
+            <if test="name != null  and name != ''  ">name,</if>
+            <if test="keyCode != null  and keyCode != ''  ">key_code,</if>
+            <if test="expiryTime != null  ">expiry_time,</if>
+            <if test="delFlag != null  and delFlag != ''  ">del_flag,</if>
+            <if test="createTime != null  ">create_time,</if>
+            <if test="updateTime != null  ">update_time,</if>
+            <if test="status != null  and status != ''  ">status,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="code != null  and code != ''  ">#{code},</if>
+            <if test="name != null  and name != ''  ">#{name},</if>
+            <if test="keyCode != null  and keyCode != ''  ">#{keyCode},</if>
+            <if test="expiryTime != null  ">#{expiryTime},</if>
+            <if test="delFlag != null  and delFlag != ''  ">#{delFlag},</if>
+            <if test="createTime != null  ">#{createTime},</if>
+            <if test="updateTime != null  ">#{updateTime},</if>
+            <if test="status != null  and status != ''  ">#{status},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSystem" parameterType="System">
+        update sys_system
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="code != null  and code != ''  ">code = #{code},</if>
+            <if test="name != null  and name != ''  ">name = #{name},</if>
+            <if test="keyCode != null  and keyCode != ''  ">key_code = #{keyCode},</if>
+            <if test="expiryTime != null  ">expiry_time = #{expiryTime},</if>
+            <if test="delFlag != null  and delFlag != ''  ">del_flag = #{delFlag},</if>
+            <if test="createTime != null  ">create_time = #{createTime},</if>
+            <if test="updateTime != null  ">update_time = #{updateTime},</if>
+            <if test="status != null  and status != ''  ">status = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSystemById" parameterType="Integer">
+        delete from sys_system where id = #{id}
+    </delete>
+
+    <delete id="deleteSystemByIds" parameterType="String">
+        delete from sys_system where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

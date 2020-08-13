@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinke.project.system.enterprise.mapper.EnterpriseMapper">
+
+    <resultMap type="Enterprise" id="EnterpriseResult">
+        <result property="id" column="id"/>
+        <result property="enterpriseNameCh" column="enterprise_name_ch"/>
+        <result property="enterpriseId" column="enterprise_id"/>
+        <result property="enterpriseRegisterAddress" column="enterprise_register_address"/>
+        <result property="enterpriseCountryId" column="enterprise_country_id"/>
+        <result property="enterprisePovince" column="enterprise_povince"/>
+        <result property="enterpriseCity" column="enterprise_city"/>
+        <result property="enterpriseDistrict" column="enterprise_district"/>
+        <result property="enterpriseBankAddress" column="enterprise_bank_address"/>
+        <result property="enterpriseTel" column="enterprise_tel"/>
+        <result property="enterpriseBankName" column="enterprise_bank_name"/>
+        <result property="enterpriseBankCountryId" column="enterprise_bank_country_id"/>
+        <result property="enterpriseBankProvince" column="enterprise_bank_province"/>
+        <result property="enterpriseBankCity" column="enterprise_bank_city"/>
+        <result property="enterpriseBankDistrict" column="enterprise_bank_district"/>
+        <result property="enterpriseBankId" column="enterprise_bank_id"/>
+        <result property="enterpriseOwner" column="enterprise_owner"/>
+        <result property="enterpriseCapital" column="enterprise_capital"/>
+        <result property="enterpriseTime" column="enterprise_time"/>
+        <result property="enterpriseType" column="enterprise_type"/>
+        <result property="enterpriseIndustry" column="enterprise_industry"/>
+        <result property="enterpriseOirganization" column="enterprise_oirganization"/>
+        <result property="enterpriseRegisterAddressCity" column="enterprise_register_address_city"/>
+        <result property="enterpriseUsedName" column="enterprise_used_name"/>
+        <result property="enterpriseNameEn" column="enterprise_name_en"/>
+        <result property="enterpriseInsured" column="enterprise_insured"/>
+        <result property="enterprisePeople" column="enterprise_people"/>
+        <result property="enterpriseScope" column="enterprise_scope"/>
+        <result property="enterpriseValidDateStart" column="enterprise_valid_date_start"/>
+        <result property="enterpriseValidDateend" column="enterprise_valid_dateEnd"/>
+        <result property="enterpriseEgisterAddressCity" column="enterprise_egister_address_city"/>
+        <result property="enterpriseRegisterAddressDistrict" column="enterprise_register_address_district"/>
+        <result property="enterpriseRegisterAddressFormatAddress" column="enterprise_register_address_format_address"/>
+        <result property="enterpriseRegisterAddressGps" column="enterprise_register_address_gps"/>
+        <result property="enterpriseRegisterAddressProvince" column="enterprise_register_address_province"/>
+        <result property="enterpriseTaxpayerRegisterId" column="enterprise_taxpayer_register_id"/>
+        <result property="enterpriseUniversalCreditIdAgencyCode" column="enterprise_universal_credit_id_agency_code"/>
+    </resultMap>
+
+    <sql id="selectEnterpriseVo">
+        select id, enterprise_name_ch, enterprise_id, enterprise_register_address, enterprise_country_id, enterprise_povince, enterprise_city, enterprise_district, enterprise_bank_address, enterprise_tel, enterprise_bank_name, enterprise_bank_country_id, enterprise_bank_province, enterprise_bank_city, enterprise_bank_district, enterprise_bank_id, enterprise_owner, enterprise_capital, enterprise_time, enterprise_type, enterprise_industry, enterprise_oirganization, enterprise_register_address_city, enterprise_used_name, enterprise_name_en, enterprise_insured, enterprise_people, enterprise_scope, enterprise_valid_date_start, enterprise_valid_dateEnd, enterprise_egister_address_city, enterprise_register_address_district, enterprise_register_address_format_address, enterprise_register_address_gps, enterprise_register_address_province, enterprise_taxpayer_register_id, enterprise_universal_credit_id_agency_code from sys_enterprise
+    </sql>
+
+    <select id="selectEnterpriseList" parameterType="Enterprise" resultMap="EnterpriseResult">
+        <include refid="selectEnterpriseVo"/>
+        <where>
+            <if test="id != null ">and id = #{id}
+            </if>
+            <if test="enterpriseNameCh != null  and enterpriseNameCh != '' ">and enterprise_name_ch = #{enterpriseNameCh}
+            </if>
+            <if test="enterpriseId != null  and enterpriseId != '' ">and enterprise_id = #{enterpriseId}
+            </if>
+            <if test="enterpriseRegisterAddress != null  and enterpriseRegisterAddress != '' ">and enterprise_register_address = #{enterpriseRegisterAddress}
+            </if>
+            <if test="enterpriseCountryId != null  and enterpriseCountryId != '' ">and enterprise_country_id = #{enterpriseCountryId}
+            </if>
+            <if test="enterprisePovince != null  and enterprisePovince != '' ">and enterprise_povince = #{enterprisePovince}
+            </if>
+            <if test="enterpriseCity != null  and enterpriseCity != '' ">and enterprise_city = #{enterpriseCity}
+            </if>
+            <if test="enterpriseDistrict != null  and enterpriseDistrict != '' ">and enterprise_district = #{enterpriseDistrict}
+            </if>
+            <if test="enterpriseBankAddress != null  and enterpriseBankAddress != '' ">and enterprise_bank_address = #{enterpriseBankAddress}
+            </if>
+            <if test="enterpriseTel != null  and enterpriseTel != '' ">and enterprise_tel = #{enterpriseTel}
+            </if>
+            <if test="enterpriseBankName != null  and enterpriseBankName != '' ">and enterprise_bank_name = #{enterpriseBankName}
+            </if>
+            <if test="enterpriseBankCountryId != null  and enterpriseBankCountryId != '' ">and enterprise_bank_country_id = #{enterpriseBankCountryId}
+            </if>
+            <if test="enterpriseBankProvince != null  and enterpriseBankProvince != '' ">and enterprise_bank_province = #{enterpriseBankProvince}
+            </if>
+            <if test="enterpriseBankCity != null  and enterpriseBankCity != '' ">and enterprise_bank_city = #{enterpriseBankCity}
+            </if>
+            <if test="enterpriseBankDistrict != null  and enterpriseBankDistrict != '' ">and enterprise_bank_district = #{enterpriseBankDistrict}
+            </if>
+            <if test="enterpriseBankId != null  and enterpriseBankId != '' ">and enterprise_bank_id = #{enterpriseBankId}
+            </if>
+            <if test="enterpriseOwner != null  and enterpriseOwner != '' ">and enterprise_owner = #{enterpriseOwner}
+            </if>
+            <if test="enterpriseCapital != null  and enterpriseCapital != '' ">and enterprise_capital = #{enterpriseCapital}
+            </if>
+            <if test="enterpriseTime != null  and enterpriseTime != '' ">and enterprise_time = #{enterpriseTime}
+            </if>
+            <if test="enterpriseType != null  and enterpriseType != '' ">and enterprise_type = #{enterpriseType}
+            </if>
+            <if test="enterpriseIndustry != null  and enterpriseIndustry != '' ">and enterprise_industry = #{enterpriseIndustry}
+            </if>
+            <if test="enterpriseOirganization != null  and enterpriseOirganization != '' ">and enterprise_oirganization = #{enterpriseOirganization}
+            </if>
+            <if test="enterpriseRegisterAddressCity != null  and enterpriseRegisterAddressCity != '' ">and enterprise_register_address_city = #{enterpriseRegisterAddressCity}
+            </if>
+            <if test="enterpriseUsedName != null  and enterpriseUsedName != '' ">and enterprise_used_name = #{enterpriseUsedName}
+            </if>
+            <if test="enterpriseNameEn != null  and enterpriseNameEn != '' ">and enterprise_name_en = #{enterpriseNameEn}
+            </if>
+            <if test="enterpriseInsured != null  and enterpriseInsured != '' ">and enterprise_insured = #{enterpriseInsured}
+            </if>
+            <if test="enterprisePeople != null  and enterprisePeople != '' ">and enterprise_people = #{enterprisePeople}
+            </if>
+            <if test="enterpriseScope != null  and enterpriseScope != '' ">and enterprise_scope = #{enterpriseScope}
+            </if>
+            <if test="enterpriseValidDateStart != null  and enterpriseValidDateStart != '' ">and enterprise_valid_date_start = #{enterpriseValidDateStart}
+            </if>
+            <if test="enterpriseValidDateend != null  and enterpriseValidDateend != '' ">and enterprise_valid_dateEnd = #{enterpriseValidDateend}
+            </if>
+            <if test="enterpriseEgisterAddressCity != null  and enterpriseEgisterAddressCity != '' ">and enterprise_egister_address_city = #{enterpriseEgisterAddressCity}
+            </if>
+            <if test="enterpriseRegisterAddressDistrict != null  and enterpriseRegisterAddressDistrict != '' ">and enterprise_register_address_district = #{enterpriseRegisterAddressDistrict}
+            </if>
+            <if test="enterpriseRegisterAddressFormatAddress != null  and enterpriseRegisterAddressFormatAddress != '' ">and enterprise_register_address_format_address = #{enterpriseRegisterAddressFormatAddress}
+            </if>
+            <if test="enterpriseRegisterAddressGps != null  and enterpriseRegisterAddressGps != '' ">and enterprise_register_address_gps = #{enterpriseRegisterAddressGps}
+            </if>
+            <if test="enterpriseRegisterAddressProvince != null  and enterpriseRegisterAddressProvince != '' ">and enterprise_register_address_province = #{enterpriseRegisterAddressProvince}
+            </if>
+            <if test="enterpriseTaxpayerRegisterId != null  and enterpriseTaxpayerRegisterId != '' ">and enterprise_taxpayer_register_id = #{enterpriseTaxpayerRegisterId}
+            </if>
+            <if test="enterpriseUniversalCreditIdAgencyCode != null  and enterpriseUniversalCreditIdAgencyCode != '' ">and enterprise_universal_credit_id_agency_code = #{enterpriseUniversalCreditIdAgencyCode}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectEnterpriseById" parameterType="Long" resultMap="EnterpriseResult">
+        <include refid="selectEnterpriseVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectEnterpriseByEId" parameterType="String" resultMap="EnterpriseResult">
+        <include refid="selectEnterpriseVo"/>
+        where enterprise_id = #{enterpriseId}
+    </select>
+
+    <insert id="insertEnterprise" parameterType="Enterprise">
+        insert into sys_enterprise
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null  ">id,
+            </if>
+            <if test="enterpriseNameCh != null  and enterpriseNameCh != ''  ">enterprise_name_ch,
+            </if>
+            <if test="enterpriseId != null  and enterpriseId != ''  ">enterprise_id,
+            </if>
+            <if test="enterpriseRegisterAddress != null  and enterpriseRegisterAddress != ''  ">enterprise_register_address,
+            </if>
+            <if test="enterpriseCountryId != null  and enterpriseCountryId != ''  ">enterprise_country_id,
+            </if>
+            <if test="enterprisePovince != null  and enterprisePovince != ''  ">enterprise_povince,
+            </if>
+            <if test="enterpriseCity != null  and enterpriseCity != ''  ">enterprise_city,
+            </if>
+            <if test="enterpriseDistrict != null  and enterpriseDistrict != ''  ">enterprise_district,
+            </if>
+            <if test="enterpriseBankAddress != null  and enterpriseBankAddress != ''  ">enterprise_bank_address,
+            </if>
+            <if test="enterpriseTel != null  and enterpriseTel != ''  ">enterprise_tel,
+            </if>
+            <if test="enterpriseBankName != null  and enterpriseBankName != ''  ">enterprise_bank_name,
+            </if>
+            <if test="enterpriseBankCountryId != null  and enterpriseBankCountryId != ''  ">enterprise_bank_country_id,
+            </if>
+            <if test="enterpriseBankProvince != null  and enterpriseBankProvince != ''  ">enterprise_bank_province,
+            </if>
+            <if test="enterpriseBankCity != null  and enterpriseBankCity != ''  ">enterprise_bank_city,
+            </if>
+            <if test="enterpriseBankDistrict != null  and enterpriseBankDistrict != ''  ">enterprise_bank_district,
+            </if>
+            <if test="enterpriseBankId != null  and enterpriseBankId != ''  ">enterprise_bank_id,
+            </if>
+            <if test="enterpriseOwner != null  and enterpriseOwner != ''  ">enterprise_owner,
+            </if>
+            <if test="enterpriseCapital != null  and enterpriseCapital != ''  ">enterprise_capital,
+            </if>
+            <if test="enterpriseTime != null  and enterpriseTime != ''  ">enterprise_time,
+            </if>
+            <if test="enterpriseType != null  and enterpriseType != ''  ">enterprise_type,
+            </if>
+            <if test="enterpriseIndustry != null  and enterpriseIndustry != ''  ">enterprise_industry,
+            </if>
+            <if test="enterpriseOirganization != null  and enterpriseOirganization != ''  ">enterprise_oirganization,
+            </if>
+            <if test="enterpriseRegisterAddressCity != null  and enterpriseRegisterAddressCity != ''  ">enterprise_register_address_city,
+            </if>
+            <if test="enterpriseUsedName != null  and enterpriseUsedName != ''  ">enterprise_used_name,
+            </if>
+            <if test="enterpriseNameEn != null  and enterpriseNameEn != ''  ">enterprise_name_en,
+            </if>
+            <if test="enterpriseInsured != null  and enterpriseInsured != ''  ">enterprise_insured,
+            </if>
+            <if test="enterprisePeople != null  and enterprisePeople != ''  ">enterprise_people,
+            </if>
+            <if test="enterpriseScope != null  and enterpriseScope != ''  ">enterprise_scope,
+            </if>
+            <if test="enterpriseValidDateStart != null  and enterpriseValidDateStart != ''  ">enterprise_valid_date_start,
+            </if>
+            <if test="enterpriseValidDateend != null  and enterpriseValidDateend != ''  ">enterprise_valid_dateEnd,
+            </if>
+            <if test="enterpriseEgisterAddressCity != null  and enterpriseEgisterAddressCity != ''  ">enterprise_egister_address_city,
+            </if>
+            <if test="enterpriseRegisterAddressDistrict != null  and enterpriseRegisterAddressDistrict != ''  ">enterprise_register_address_district,
+            </if>
+            <if test="enterpriseRegisterAddressFormatAddress != null  and enterpriseRegisterAddressFormatAddress != ''  ">enterprise_register_address_format_address,
+            </if>
+            <if test="enterpriseRegisterAddressGps != null  and enterpriseRegisterAddressGps != ''  ">enterprise_register_address_gps,
+            </if>
+            <if test="enterpriseRegisterAddressProvince != null  and enterpriseRegisterAddressProvince != ''  ">enterprise_register_address_province,
+            </if>
+            <if test="enterpriseTaxpayerRegisterId != null  and enterpriseTaxpayerRegisterId != ''  ">enterprise_taxpayer_register_id,
+            </if>
+            <if test="enterpriseUniversalCreditIdAgencyCode != null  and enterpriseUniversalCreditIdAgencyCode != ''  ">enterprise_universal_credit_id_agency_code,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null  ">#{id},
+            </if>
+            <if test="enterpriseNameCh != null  and enterpriseNameCh != ''  ">#{enterpriseNameCh},
+            </if>
+            <if test="enterpriseId != null  and enterpriseId != ''  ">#{enterpriseId},
+            </if>
+            <if test="enterpriseRegisterAddress != null  and enterpriseRegisterAddress != ''  ">#{enterpriseRegisterAddress},
+            </if>
+            <if test="enterpriseCountryId != null  and enterpriseCountryId != ''  ">#{enterpriseCountryId},
+            </if>
+            <if test="enterprisePovince != null  and enterprisePovince != ''  ">#{enterprisePovince},
+            </if>
+            <if test="enterpriseCity != null  and enterpriseCity != ''  ">#{enterpriseCity},
+            </if>
+            <if test="enterpriseDistrict != null  and enterpriseDistrict != ''  ">#{enterpriseDistrict},
+            </if>
+            <if test="enterpriseBankAddress != null  and enterpriseBankAddress != ''  ">#{enterpriseBankAddress},
+            </if>
+            <if test="enterpriseTel != null  and enterpriseTel != ''  ">#{enterpriseTel},
+            </if>
+            <if test="enterpriseBankName != null  and enterpriseBankName != ''  ">#{enterpriseBankName},
+            </if>
+            <if test="enterpriseBankCountryId != null  and enterpriseBankCountryId != ''  ">#{enterpriseBankCountryId},
+            </if>
+            <if test="enterpriseBankProvince != null  and enterpriseBankProvince != ''  ">#{enterpriseBankProvince},
+            </if>
+            <if test="enterpriseBankCity != null  and enterpriseBankCity != ''  ">#{enterpriseBankCity},
+            </if>
+            <if test="enterpriseBankDistrict != null  and enterpriseBankDistrict != ''  ">#{enterpriseBankDistrict},
+            </if>
+            <if test="enterpriseBankId != null  and enterpriseBankId != ''  ">#{enterpriseBankId},
+            </if>
+            <if test="enterpriseOwner != null  and enterpriseOwner != ''  ">#{enterpriseOwner},
+            </if>
+            <if test="enterpriseCapital != null  and enterpriseCapital != ''  ">#{enterpriseCapital},
+            </if>
+            <if test="enterpriseTime != null  and enterpriseTime != ''  ">#{enterpriseTime},
+            </if>
+            <if test="enterpriseType != null  and enterpriseType != ''  ">#{enterpriseType},
+            </if>
+            <if test="enterpriseIndustry != null  and enterpriseIndustry != ''  ">#{enterpriseIndustry},
+            </if>
+            <if test="enterpriseOirganization != null  and enterpriseOirganization != ''  ">#{enterpriseOirganization},
+            </if>
+            <if test="enterpriseRegisterAddressCity != null  and enterpriseRegisterAddressCity != ''  ">#{enterpriseRegisterAddressCity},
+            </if>
+            <if test="enterpriseUsedName != null  and enterpriseUsedName != ''  ">#{enterpriseUsedName},
+            </if>
+            <if test="enterpriseNameEn != null  and enterpriseNameEn != ''  ">#{enterpriseNameEn},
+            </if>
+            <if test="enterpriseInsured != null  and enterpriseInsured != ''  ">#{enterpriseInsured},
+            </if>
+            <if test="enterprisePeople != null  and enterprisePeople != ''  ">#{enterprisePeople},
+            </if>
+            <if test="enterpriseScope != null  and enterpriseScope != ''  ">#{enterpriseScope},
+            </if>
+            <if test="enterpriseValidDateStart != null  and enterpriseValidDateStart != ''  ">#{enterpriseValidDateStart},
+            </if>
+            <if test="enterpriseValidDateend != null  and enterpriseValidDateend != ''  ">#{enterpriseValidDateend},
+            </if>
+            <if test="enterpriseEgisterAddressCity != null  and enterpriseEgisterAddressCity != ''  ">#{enterpriseEgisterAddressCity},
+            </if>
+            <if test="enterpriseRegisterAddressDistrict != null  and enterpriseRegisterAddressDistrict != ''  ">#{enterpriseRegisterAddressDistrict},
+            </if>
+            <if test="enterpriseRegisterAddressFormatAddress != null  and enterpriseRegisterAddressFormatAddress != ''  ">#{enterpriseRegisterAddressFormatAddress},
+            </if>
+            <if test="enterpriseRegisterAddressGps != null  and enterpriseRegisterAddressGps != ''  ">#{enterpriseRegisterAddressGps},
+            </if>
+            <if test="enterpriseRegisterAddressProvince != null  and enterpriseRegisterAddressProvince != ''  ">#{enterpriseRegisterAddressProvince},
+            </if>
+            <if test="enterpriseTaxpayerRegisterId != null  and enterpriseTaxpayerRegisterId != ''  ">#{enterpriseTaxpayerRegisterId},
+            </if>
+            <if test="enterpriseUniversalCreditIdAgencyCode != null  and enterpriseUniversalCreditIdAgencyCode != ''  ">#{enterpriseUniversalCreditIdAgencyCode},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateEnterpriseAll" parameterType="Enterprise">
+        update sys_enterprise
+        set enterprise_name_ch = #{enterpriseNameCh},
+        enterprise_type = #{enterpriseType},
+        enterprise_id = #{enterpriseId},
+        enterprise_universal_credit_id_agency_code = #{enterpriseUniversalCreditIdAgencyCode},
+        enterprise_capital = #{enterpriseCapital},
+        enterprise_time = #{enterpriseTime},
+        enterprise_register_address = #{enterpriseRegisterAddress},
+        enterprise_country_id = #{enterpriseCountryId},
+        enterprise_bank_city = #{enterpriseBankCity},
+        enterprise_bank_district = #{enterpriseBankDistrict},
+        enterprise_bank_province = #{enterpriseBankProvince},
+        enterprise_city = #{enterpriseCity},
+        enterprise_district = #{enterpriseDistrict},
+        enterprise_id = #{enterpriseId},
+        enterprise_register_address_format_address = #{enterpriseRegisterAddressFormatAddress},
+        enterprise_register_address_city = #{enterpriseRegisterAddressCity},
+        enterprise_taxpayer_register_id = #{enterpriseTaxpayerRegisterId},
+        enterprise_valid_date_start = #{enterpriseValidDateStart},
+        enterprise_valid_dateEnd = #{enterpriseValidDateend},
+        enterprise_register_address_gps = #{enterpriseRegisterAddressGps},
+        enterprise_register_address_province = #{enterpriseRegisterAddressProvince}
+        where id = #{id}
+    </update>
+
+    <update id="updateEnterprise" parameterType="Enterprise">
+        update sys_enterprise
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="enterpriseNameCh != null  and enterpriseNameCh != ''  ">enterprise_name_ch = #{enterpriseNameCh},
+            </if>
+            <if test="enterpriseId != null  and enterpriseId != ''  ">enterprise_id = #{enterpriseId},
+            </if>
+            <if test="enterpriseRegisterAddress != null  and enterpriseRegisterAddress != ''  ">enterprise_register_address = #{enterpriseRegisterAddress},
+            </if>
+            <if test="enterpriseCountryId != null  and enterpriseCountryId != ''  ">enterprise_country_id = #{enterpriseCountryId},
+            </if>
+            <if test="enterprisePovince != null  and enterprisePovince != ''  ">enterprise_povince = #{enterprisePovince},
+            </if>
+            <if test="enterpriseCity != null  and enterpriseCity != ''  ">enterprise_city = #{enterpriseCity},
+            </if>
+            <if test="enterpriseDistrict != null  and enterpriseDistrict != ''  ">enterprise_district = #{enterpriseDistrict},
+            </if>
+            <if test="enterpriseBankAddress != null  and enterpriseBankAddress != ''  ">enterprise_bank_address = #{enterpriseBankAddress},
+            </if>
+            <if test="enterpriseTel != null  and enterpriseTel != ''  ">enterprise_tel = #{enterpriseTel},
+            </if>
+            <if test="enterpriseBankName != null  and enterpriseBankName != ''  ">enterprise_bank_name = #{enterpriseBankName},
+            </if>
+            <if test="enterpriseBankCountryId != null  and enterpriseBankCountryId != ''  ">enterprise_bank_country_id = #{enterpriseBankCountryId},
+            </if>
+            <if test="enterpriseBankProvince != null  and enterpriseBankProvince != ''  ">enterprise_bank_province = #{enterpriseBankProvince},
+            </if>
+            <if test="enterpriseBankCity != null  and enterpriseBankCity != ''  ">enterprise_bank_city = #{enterpriseBankCity},
+            </if>
+            <if test="enterpriseBankDistrict != null  and enterpriseBankDistrict != ''  ">enterprise_bank_district = #{enterpriseBankDistrict},
+            </if>
+            <if test="enterpriseBankId != null  and enterpriseBankId != ''  ">enterprise_bank_id = #{enterpriseBankId},
+            </if>
+            <if test="enterpriseOwner != null  and enterpriseOwner != ''  ">enterprise_owner = #{enterpriseOwner},
+            </if>
+            <if test="enterpriseCapital != null  and enterpriseCapital != ''  ">enterprise_capital = #{enterpriseCapital},
+            </if>
+            <if test="enterpriseTime != null  and enterpriseTime != ''  ">enterprise_time = #{enterpriseTime},
+            </if>
+            <if test="enterpriseType != null  and enterpriseType != ''  ">enterprise_type = #{enterpriseType},
+            </if>
+            <if test="enterpriseIndustry != null  and enterpriseIndustry != ''  ">enterprise_industry = #{enterpriseIndustry},
+            </if>
+            <if test="enterpriseOirganization != null  and enterpriseOirganization != ''  ">enterprise_oirganization = #{enterpriseOirganization},
+            </if>
+            <if test="enterpriseRegisterAddressCity != null  and enterpriseRegisterAddressCity != ''  ">enterprise_register_address_city = #{enterpriseRegisterAddressCity},
+            </if>
+            <if test="enterpriseUsedName != null  and enterpriseUsedName != ''  ">enterprise_used_name = #{enterpriseUsedName},
+            </if>
+            <if test="enterpriseNameEn != null  and enterpriseNameEn != ''  ">enterprise_name_en = #{enterpriseNameEn},
+            </if>
+            <if test="enterpriseInsured != null  and enterpriseInsured != ''  ">enterprise_insured = #{enterpriseInsured},
+            </if>
+            <if test="enterprisePeople != null  and enterprisePeople != ''  ">enterprise_people = #{enterprisePeople},
+            </if>
+            <if test="enterpriseScope != null  and enterpriseScope != ''  ">enterprise_scope = #{enterpriseScope},
+            </if>
+            <if test="enterpriseValidDateStart != null  and enterpriseValidDateStart != ''  ">enterprise_valid_date_start = #{enterpriseValidDateStart},
+            </if>
+            <if test="enterpriseValidDateend != null  and enterpriseValidDateend != ''  ">enterprise_valid_dateEnd = #{enterpriseValidDateend},
+            </if>
+            <if test="enterpriseEgisterAddressCity != null  and enterpriseEgisterAddressCity != ''  ">enterprise_egister_address_city = #{enterpriseEgisterAddressCity},
+            </if>
+            <if test="enterpriseRegisterAddressDistrict != null  and enterpriseRegisterAddressDistrict != ''  ">enterprise_register_address_district = #{enterpriseRegisterAddressDistrict},
+            </if>
+            <if test="enterpriseRegisterAddressFormatAddress != null  and enterpriseRegisterAddressFormatAddress != ''  ">enterprise_register_address_format_address = #{enterpriseRegisterAddressFormatAddress},
+            </if>
+            <if test="enterpriseRegisterAddressGps != null  and enterpriseRegisterAddressGps != ''  ">enterprise_register_address_gps = #{enterpriseRegisterAddressGps},
+            </if>
+            <if test="enterpriseRegisterAddressProvince != null  and enterpriseRegisterAddressProvince != ''  ">enterprise_register_address_province = #{enterpriseRegisterAddressProvince},
+            </if>
+            <if test="enterpriseTaxpayerRegisterId != null  and enterpriseTaxpayerRegisterId != ''  ">enterprise_taxpayer_register_id = #{enterpriseTaxpayerRegisterId},
+            </if>
+            <if test="enterpriseUniversalCreditIdAgencyCode != null  and enterpriseUniversalCreditIdAgencyCode != ''  ">enterprise_universal_credit_id_agency_code = #{enterpriseUniversalCreditIdAgencyCode},
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteEnterpriseById" parameterType="Long">
+        delete from sys_enterprise where id = #{id}
+    </delete>
+
+    <delete id="deleteEnterpriseByIds" parameterType="String">
+        delete from sys_enterprise where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

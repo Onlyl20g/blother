@@ -1,0 +1,959 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>金科控股-影像系统</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/dependency/bootstrap4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/dependency/mdui/css/mdui.min.css"/>
+    <link rel="stylesheet" href="/dependency/easyupload/easy-upload.css"/>
+    <link rel="stylesheet" href="/dependency/zTree_v3/css/zTreeStyle/zTreeStyle.css"/>
+    <link rel="sylesheet" href="/dependency/layui/css/layui.css"/>
+    <link rel="sttylesheet" href="/dependency/bootstrap-table/locale/bootstrap-table.min.css"/>
+    <link rel="stylesheet" href="/dependency/toastr/toastr.min.css"/>
+    <style>
+        .blockFile {
+            float: left;
+            margin: 5px 10px;
+            padding: 5px 5px;
+            width: 100px;
+            height: 100px;
+            line-height: 100px;
+            text-align: center;
+        }
+
+        .show-file {
+            width: 60px;
+            height: 60px;
+        }
+
+        .checkBox {
+            position: relative;
+            top: -92px;
+            right: -24px;
+        }
+
+        .file-name {
+            margin-top: -50px;
+            height: 20px;
+        }
+
+        .mdui-checkbox input[type=checkbox]:checked + .mdui-checkbox-icon:after {
+            background-color: #757575 !important;
+            border-color: #757575 !important;
+        }
+
+        .mdui-list-item-active {
+            color: #4152b2 !important;
+        }
+
+        .mdui-list-item:hover {
+            color: #4152b2 !important;
+        }
+
+        .row:hover {
+            background-color: #f7f7f7 !important;
+            border-color: #757575 !important;
+        }
+
+        .btn_style {
+            padding: .375rem .75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #ced4da;
+            border-radius: .25rem;
+        }
+
+        .container {
+            max-width: 90% !important;
+            overflow-x: hidden
+        }
+
+        .show-word {
+            margin: 0 8px;
+            padding-right: 66px;
+            overflow: visible !important;
+            text-overflow: inherit !important;
+            white-space: nowrap;
+        }
+
+        button {
+            outline: none !important;
+        }
+    </style>
+</head>
+<body class="mdui-drawer-body-left" style="overflow-x: hidden">
+<!--system-->
+<input id="system" type="text" th:value="${system}"/>
+<input id="subject" type="text" th:value="${subject}"/>
+<!-- 导航栏 -->
+<div class="mdui-appbar mdui-appbar-inset mdui-appbar-fixed">
+    <div class="mdui-toolbar mdui-color-grey-50">
+        <a href="javascript:;" id="toggle" class="mdui-btn mdui-btn-icon"><i
+                class="mdui-icon material-icons">menu</i></a>
+        <button class="mdui-btn mdui-btn-dense toHidden_1 show-word" title="下载全部文件" onclick="downloadAllFiles()">
+            <i class="mdui-icon material-icons " style="margin-top:-3px;">cloud_download</i>
+            全部下载
+        </button>
+        <button class="mdui-btn mdui-btn-dense toHidden_1" onclick="downloadFiles()"><i
+                class="mdui-icon material-icons" style="margin-top:-3px;">cloud_download</i>下载
+        </button>
+        <button class="mdui-btn mdui-btn-dense toHidden_1" onclick="showSelectUpload();" th:if="${insertState}"><i
+                class="mdui-icon material-icons" style="margin-top:-3px;">&#xe145;</i>添加
+        </button>
+        <button class="mdui-btn mdui-btn-dense toHidden_1" onclick="removeFile();" th:if="${readState}"><i
+                class="mdui-icon material-icons" style="margin-top:-3px;">remove</i>删除
+        </button>
+        <button class="mdui-btn mdui-btn-dense toHidden_1" onclick="editFile();" th:if="${readState}"><i
+                class="mdui-icon material-icons" style="margin-top:-3px;">edit</i>重命名
+        </button>
+        <button class="mdui-btn mdui-btn-dense toHidden_1" id="sort-icon" onclick="sortArrange(this)">
+            <i class="mdui-icon material-icons">format_list_bulleted</i>
+        </button>
+        <div class="mdui-toolbar mdui-color-grey-20">
+            <input id="code" hidden value="">
+            <div class="mdui-toolbar-spacer" id="title"
+                 style="text-align: center;font-size: 1.2em;font-weight: 600;"></div>
+            <div class="image" style="margin-right: -14px;"><img src="../../img/profile.jpg" height="40px"
+                                                                 width="40px" alt="jinke"
+                                                                 style="border-radius:20px"/></div>
+            <a href="javascript:;" style="font-size: 14px;" class="mdui-typo-title" id="userName"></a>
+            <a class="mdui-btn" style="font-size: 14px;" href="../../logout">退出登录</a>
+        </div>
+    </div>
+</div>
+
+<!-- 侧边栏 -->
+<div class="mdui-drawer mdui-drawer-full-height mdui-shadow-4" id="drawer">
+    <div class="mdui-appbar">
+        <div class="mdui-toolbar mdui-color-indigo" onclick="linkHref();" style="cursor:pointer;">
+            <img src="/dependency/images/demo/jinke_logo_light.png" width="100%"/>
+        </div>
+    </div>
+    <ul class="mdui-list filelist-activi" id="nav">
+
+    </ul>
+</div>
+
+<!-- 内容 -->
+<div id="content" style="width: 100% ;padding-top: 20px;margin-top: 60px;margin-bottom: 60px;">
+
+</div>
+
+<div id="fileInfo" style="display: none;">
+    <input type="hidden" id="fileInfoId">
+    <div class="row" style="margin: 20px;">
+        <label class="col-sm-2 control-label" style="text-align: right;margin-top: 5px;">文件：</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control no-border" readonly id="fileFullNameInfo"
+                   style="border: none; background-color: white;">
+        </div>
+    </div>
+    <div class="row" style="margin: 20px;">
+        <label class="col-sm-2 control-label" style="text-align: right;margin-top: 5px;">资料模块：</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control no-border" readonly id="fileSizeInfo"
+                   style="border: none; background-color: white;">
+        </div>
+    </div>
+    <div class="row" style="margin: 20px;">
+        <label class="col-sm-2 control-label" style="text-align: right;margin-top: 5px;">上传时间：</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control no-border" readonly id="fileCreateTimeInfo"
+                   style="border: none; background-color: white;">
+        </div>
+    </div>
+    <div class="row" style="margin: 20px;">
+        <div id="link-img">
+        </div>
+    </div>
+</div>
+<div id="videoOpen" class="center-parent"
+     style="display: none;position:relative;width: 100%;height: 100%;text-align: center;">
+</div>
+
+<!-- 底部 -->
+<nav class="navbar navbar-expand-sm bg-light navbar-dark fixed-bottom" style="text-align: center;height: 50px">
+    <p class="text-muted text-center small p-0 mb-4" style="margin: 0 auto;">&copy;2019 <label>重庆金科商业保理有限公司</label></p>
+</nav>
+</div>
+
+<div id="edit-file-info" style="display: none;">
+    <input type="hidden" id="eidt-file-info-id">
+    <div class="row" style="margin: 20px;">
+        <label class="col-sm-2 control-label" style="text-align: right;margin-top: 5px;">文件名：</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control no-border" id="editFileFullNameInfo"
+                   style=" background-color: white;">
+            <input type="text" class="form-control no-border" id="editFileType" hidden
+                   style="border: none; background-color: white;">
+        </div>
+    </div>
+</div>
+
+</div>
+<div id="add-file-btn" style="display: none;text-align: center;padding: 10px 0 0;">
+    <button type="button" class="btn btn-success" style="width:200px;" onclick="uploadFiles();">PC上传</button>
+    <br>
+    <button type="button" class="btn btn-success" style="width:200px;margin: 5px 0;" onclick="loadLineImages();">我的文件
+    </button>
+    <br>
+    <button type="button" class="btn btn-success" style="width:200px;" onclick="uploadQRCode();">二维码上传</button>
+</div>
+
+<div id="file_data" οnkeydοwn="bindEnter(event)" style="display: none;">
+    <div οnkeydοwn="bindEnter(event)"
+         style="position: absolute;top: 0px;height: 60px;line-height: 60px;margin-left: 0px; background-color: #fafafa;z-index: 10;width: 100%;">
+        <form style="text-align: right;">
+            <div class="form-group" style="vertical-align: middle;">
+                <input type="text" class="btn_style" id="condition" placeholder="搜索文件名">
+                <button id="search-btn" class="mdui-btn mdui-color-blue-400" type="button" onclick="filterFile();"
+                        style="margin:0px 10px;">
+                    搜索
+                </button>
+                <button id="add-btn" class="mdui-btn mdui-color-blue-400" type="button" onclick="addFiles();"
+                        style="margin:0px 10px;">
+                    添加
+                </button>
+            </div>
+        </form>
+
+    </div>
+    <div style="height: 60px;"></div>
+    <div id="tag" style=" height: 90%;overflow-y:scroll;">
+    </div>
+</div>
+
+<div id="qrcode-div" style="display: none;">
+    <div id="qrcode" style="padding: 20px 122px; "></div>
+    <div style="padding: 20px 10px 0;">
+        <input class="form-control no-border" id="url" onclick="selectUrl(this);" readonly>
+    </div>
+    <div style="text-align: center;padding: 5px;">
+        <span id="upload-path"></span>
+    </div>
+    <div style="text-align: center;">
+        <button class="btn btn-success" onclick="copyText();" type="button" style="padding: 5px 28px;">复制</button>
+    </div>
+</div>
+
+
+<script src="/dependency/js/jquery-2.1.1.min.js"></script>
+<script src="/dependency/bootstrap4/js/bootstrap.min.js"></script>
+<script src="/dependency/mdui/js/mdui.min.js"></script>
+<script src="/dependency/js/main.js"></script>
+<script src="/dependency/easyupload/easyUpload.js"></script>
+<script src="/dependency/easyupload/vendor/jquery.cookie-1.4.1.min.js"></script>
+<script src="/dependency/layui/layui.all.js"></script>
+<script src="/dependency/layui/layui.js"></script>
+<script src="/dependency/layui/lay/modules/layer.js"></script>
+<!--ztree-->
+<script src="/dependency/zTree_v3/js/jquery.ztree.all.js"></script>
+<script src="/dependency/zTree_v3/js/jquery.ztree.all.min.js"></script>
+<!--bootstrap table-->
+<script src="/dependency/bootstrap-table/bootstrap-table.min.js"></script>
+<script src="/dependency/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+<script src="/dependency/bootstrapvalidator/bootstrapValidator.min.js"></script>
+<script src="/dependency/bootstrap-table/bootstrap-editable.js"></script>
+<script src="/dependency/bootstrap-table/bootstrap-table-editable.js"></script>
+<script src="/dependency/toastr/toastr.min.js"></script>
+<script src="/dependency/js/qrcode.js"></script>
+<script type="application/javascript">
+    var billId = "", path = '', sysType;
+    var qrcode = new QRCode("qrcode");
+    var files = {
+        data: [],
+        newData: []
+    };
+    $(function () {
+        billId = window.location.href.split("=")[1].split("&")[0];
+        // sysType = window.location.href.split("=")[2];
+        sysType = $("#system").val();
+        sysType = "factoring"
+        findBillId(billId);
+        loadNav(billId);
+        getPath();
+        findUserName();
+        // if(sessionStorage.getItem("sort") == undefined || sessionStorage.getItem("sort") == "block"){
+        //
+        // }
+        // if ($("#sort-icon")[0].innerText = "format_list_bulleted") {
+        //     sessionStorage.setItem("sort", "block");
+        // } else {
+        //     sessionStorage.setItem("sort", "list");
+        // }
+
+        if(sessionStorage.getItem("sort") != "block"){
+            $("#sort-icon")[0].click();
+        }
+    });
+
+    /**
+     * 获取当前用户信息
+     */
+    function findUserName() {
+        $.ajax({
+            url: "/system/user/getName",
+            type: "post",
+            dataType: "json",
+            success: function (data) {
+                $("#userName").text(data.msg);
+            },
+            error: function (data) {
+
+            }
+        });
+    }
+
+    function findBillId(billId) {
+        $.ajax({
+            url: '/system/billId/list',
+            type: 'post',
+            dateType: 'json',
+            data: {'system': sysType, 'billId': billId},
+            success: function (data) {
+                if (data == null || data == undefined || data.rows.length == 0) {
+                    $("#faildFile").show();
+                    return;
+                }
+                $("#successFile").show();
+            }
+        })
+    }
+
+    /**
+     * 初始code模块
+     */
+    function loadNav() {
+        $.ajax({
+            url: '/system/fileAttachType/listFile',
+            type: 'post',
+            dateType: 'json',
+            data: {'sysType': sysType},
+            success: function (data) {
+                if (data.rows.length > 0) {
+                    var nav = "";
+                    var obj = data.rows;
+                    for (var i = 0; i < obj.length; i++) {
+                        nav += "<li class=\"mdui-list-item mdui-ripple\" id=\"" + obj[i].code +
+                            "\" onclick=\"findFile(this);\">" +
+                            "<i class=\"mdui-list-item-avatar mdui-icon material-icons mdui-hidden-xs\">folder</i>" +
+                            "<div class=\"mdui-list-item-content\">" + obj[i].infoName + "</div></li>";
+                    }
+                    $("#nav").html(nav);
+                    loadStatus("");
+                }
+            }
+        });
+    }
+
+    /**
+     * 获取路径请求路径ip
+     */
+    function getPath() {
+        var http = window.location.href.split("//")[0];
+        var address = window.location.href.split("//")[1].split("/")[0];
+        path = http + "//" + address;
+    }
+
+    /**
+     * 控制文件模块显示
+     */
+    function findFile(btn) {
+        $(btn).addClass("mdui-list-item-active").siblings("li").removeClass("mdui-list-item-active");
+        var blockName = btn.id;
+        var text = btn.innerText.replace("folder", "");
+        $("#title").text(text);
+        $("#code").val(blockName);
+        loadData(blockName);
+    }
+
+    /**
+     *  下载文件
+     */
+    function downloadFiles() {
+        var data = "";
+        $("input:checkbox:checked").each(function () {
+            if (this.id != "") {
+                data += this.id + ",";
+            }
+        });
+
+        if (data === "") {
+            return;
+        }
+        data = data.substring(0, data.length - 1);
+        if (data.indexOf(",") === -1) {
+            window.location.href = "/system/file/downloadFileByHKId?id=" + data;
+        } else {
+            window.location.href = "/system/file/downFileByHKAll?urls=" + data;
+        }
+    }
+
+    /**
+     * 根据文件code查看文件
+     */
+    function loadData(blockName) {
+        $.ajax({
+            url: '/system/hkFile/findOtherSysFile',
+            type: 'post',
+            dateType: 'json',
+            data: {'billId': billId, 'code': blockName, "str2": sysType},
+            success: function (data) {
+                if ($("#sort-icon")[0].innerText == "format_list_bulleted") {
+                    blockStyleShow(data);
+                } else {
+                    listStyleShow(data);
+                }
+            }
+        })
+    }
+
+    /**
+     * 横排显示文件信息
+     */
+    function blockStyleShow(data) {
+        var html = "";
+        var obj = data;
+        for (var i = 0; i < obj.length; i++) {
+            var src = path + '/system/file/downFile?url=' + obj[i].filePath + '&id=' + obj[i].id;
+            // var type = obj[i].fileFullName.split('.')[1];
+            var type = obj[i].fileFullName.substr(obj[i].fileFullName.lastIndexOf(".") + 1);
+            // var showName = obj[i].fileFullName.split('.')[0];
+            var showName = obj[i].fileFullName.substr(0, obj[i].fileFullName.lastIndexOf("."));
+            if (showName.length > 5) {
+                showName = showName.substr(0, 3) + "..." + showName.substr(showName.length - 2, showName.length);
+            }
+            if (type == "docx" || type == "doc") {
+
+                html += "<div class='blockFile' title='" + obj[i].fileFullName.substr(0, obj[i].fileFullName.lastIndexOf(".")) + "' onclick=\"selectFile(this);\" ondblclick='openInfo(" + JSON.stringify(obj[i]) + ");'><div><img class=\"show-file\" src=\"/dependency/images/demo/ico/docx.png\"><div class=\"file-name\">" + showName + "</div></div><div><input class=\"checkBox\" type=\"checkbox\" id=\"" + obj[i].id + "\" name=\"checkFile\" hidden onclick='ctrShow(event)'></div></div>";
+            } else if (type == "jpg" || type == "jpeg" || type == "gif" || type == "png" || type == "bmp") {
+
+                html += "<div class='blockFile' title='" + obj[i].fileFullName.substr(0, obj[i].fileFullName.lastIndexOf(".")) + "'  onclick=\"selectFile(this);\" ondblclick='openInfo(" + JSON.stringify(obj[i]) + ");'><div><img class=\"show-file\" src=\"" + src + "\"><div class=\"file-name\">" + showName + "</div></div><div><input class=\"checkBox\"  type=\"checkbox\" id=\"" + obj[i].id + "\" name=\"checkFile\" hidden onclick='ctrShow(event)'></div></div>";
+            } else {
+                html += "<div class='blockFile' title='" + obj[i].fileFullName.substr(0, obj[i].fileFullName.lastIndexOf(".")) + "'  onclick=\"selectFile(this);\" ondblclick='openInfo(" + JSON.stringify(obj[i]) + ");'><div><img class=\"show-file\" src=\"/dependency/images/demo/ico/file.png\"><div class=\"file-name\">" + showName + "</div></div><div><input class=\"checkBox\"  type=\"checkbox\" id=\"" + obj[i].id + "\" name=\"checkFile\" hidden onclick='ctrShow(event)'></div></div>";
+            }
+        }
+        $("#content").html(html);
+    }
+
+    /**
+     * 列表显示文件信息
+     */
+    function listStyleShow(data) {
+        var html = "<div class=\"container\" style=\"position: fixed;top: 60px;background-color: #f7f7f7;z-index: 10;\"><div class=\"row\" style=\"max-height: 60px;height: 60px;line-height: 60px;\"><div class=\"col-xs-1 col-md-1 col-lg-1\" style=\"max-height: 60px;\"><input type=\"checkbox\" style=\"max-height: 60px;\" onclick=\"checkBoxAll(this);\"></div><div class=\"col-xs-1 col-md-1 col-lg-1\" style=\"max-height: 60px;\"></div><div class=\"col-xs-6 col-md-7 col-lg-7\" style=\"max-height: 60px;\">文件名</div><div class=\"col-xs-4 col-md-3 col-lg-3\" style=\"max-height: 60px;\">日期</div></div></div><div class=\"container\" style=\"position: absolute;\"><div class=\"row\" style=\"max-height: 40px;height: 40px;line-height: 40px;\"></div>";
+        for (var i = 0; i < data.length; i++) {
+            var obj = data[i];
+            console.log(obj)
+            var src = path + '/system/file/downFile?url=' + obj.filePath + '&id=' + obj.id;
+
+            var type = obj.fileFullName.substr(obj.fileFullName.lastIndexOf(".") + 1);
+            // var type = obj.fileFullName.split('.')[1];
+            var showName = obj.fileFullName;//截取文件名showImg(obj)
+            if (showName.length > 30) {
+                showName = showName.substr(0, 29) + "...";
+            }
+            if (type == "docx" || type == "doc") {
+                html += "<div class=\"row\" onclick='$(\"#\" + " + obj.id + " + \"\").click();' ondblclick='openInfo(" + JSON.stringify(obj) + ");'  style=\"max-height: 60px;height: 60px;line-height: 60px;overflow: hidden;\"><div class=\"col-xs-1 col-md-1 col-lg-1\"><input type=\"checkbox\" id=\"" + obj.id + "\" onclick=\"stopPro(event)\"></div><div class=\"col-xs-1 col-md-1 col-lg-1\"><img style=\"width: 36px;height: 36px;\" src=\"/dependency/images/demo/ico/docx.png\"></div><div class=\"col-xs-6 col-md-7 col-lg-7\" title=\"" + obj.fileFullName + "\">" + showName + "</div><div class=\"col-xs-4 col-md-3 col-lg-3\">" + obj.creditTime + "</div></div>";
+            } else if (type == "jpg" || type == "jpeg" || type == "gif" || type == "png" || type == "bmp") {
+                html += "<div class=\"row\" onclick='$(\"#\" + " + obj.id + " + \"\").click();' ondblclick='openInfo(" + JSON.stringify(obj) + ");' style=\"max-height: 60px;height: 60px;line-height: 60px;overflow: hidden;\"><div class=\"col-xs-1 col-md-1 col-lg-1\"><input type=\"checkbox\" id=\"" + obj.id + "\" onclick=\"stopPro(event)\"></div><div class=\"col-xs-1 col-md-1 col-lg-1\"><img style=\"width: 36px;height: 36px;\" src=\"" + src + "\"></div><div class=\"col-xs-6 col-md-7 col-lg-7\" title=\"" + obj.fileFullName + "\">" + showName + "</div><div class=\"col-xs-4 col-md-3 col-lg-3\">" + obj.creditTime + "</div></div>";
+            } else {
+                html += "<div class=\"row\" onclick='$(\"#\" + " + obj.id + " + \"\").click();' ondblclick='openInfo(" + JSON.stringify(obj) + ");' style=\"max-height: 60px; height: 60px;line-height: 60px;overflow: hidden;\"><div class=\"col-xs-1 col-md-1 col-lg-1\"><input type=\"checkbox\" id=\"" + obj.id + "\" onclick=\"stopPro(event)\"></div><div class=\"col-xs-1 col-md-1 col-lg-1\"><img style=\"width: 36px;height: 36px;\" src=\"/dependency/images/demo/ico/file.png\"></div><div class=\"col-xs-6 col-md-7 col-lg-7\" title=\"" + obj.fileFullName + "\">" + showName + "</div><div class=\"col-xs-4 col-md-3 col-lg-3\">" + obj.creditTime + "</div></div>";
+            }
+        }
+        html += "</div>";
+        $("#content").html(html);
+    }
+
+    /**
+     * 初始化页面
+     */
+    function loadStatus(blockName) {
+        $.ajax({
+            url: '/system/hkFile/linkOtherSys',
+            type: 'post',
+            dateType: 'json',
+            data: {'billId': billId, "u": window.location.href, 'code': blockName},
+            success: function (data) {
+                $("#nav")[0].firstChild.click();
+            }
+        });
+    }
+
+
+    /**
+     * 单击复选框按钮显示隐藏
+     */
+    function selectFile(btn) {
+        var checkBox = btn.childNodes[1].childNodes[0];
+        $(checkBox).click();
+        $(checkBox).prop("hidden", !$(checkBox).prop("checked"));
+    }
+
+    /**
+     * 查看详细信息
+     */
+    function openInfo(obj) {
+        $("#link-img").html("");
+        $("#fileFullNameInfo").val(obj.fileFullName);
+        $("#fileSizeInfo").val(obj.str1);
+        $("#fileCreateTimeInfo").val(obj.creditTime);
+        // var type = obj.fileFullName.split(".")[1];
+        var type = obj.fileFullName.substr(obj.fileFullName.lastIndexOf(".") + 1);
+        if (type == "jpg" || type == "jpeg" || type == "gif" || type == "png" || type == "bmp") {
+            var html = "<a href=\"javascript:;\" id=\"viewOnline\" onclick='showImg(" + JSON.stringify(obj) + ");' style=\"margin-left: 136px;\">在线查看</a>";
+            $("#link-img").html(html);
+        }
+        layer.open({
+            type: 1,
+            title: ' ',
+            shadeClose: false,
+            shade: [0.8, '#393D49'],
+            maxmin: true, //开启最大化最小化按钮
+            area: ['50%', '50%'],
+            content: $("#fileInfo"),
+            btn: ['取消'],
+            yes: function () {
+                layer.closeAll();
+            },
+            cancel: function (index, layero) {
+                layer.closeAll();
+            }
+        });
+    }
+
+    /**
+     * 查看原图
+     */
+    function showImg(obj) {
+        var src = path + '/system/file/downFile?url=' + obj.filePath + '&id=' + obj.id;
+        var html = " <img style=\"max-width: 100%;max-height: 100%;\" src=\"".concat(src, "\">");
+        $("#videoOpen").html(html);
+        layer.open({
+            type: 1,
+            title: ' ',
+            shadeClose: false,
+            shade: [0.8, '#393D49'],
+            maxmin: true, //开启最大化最小化按钮
+            area: ['40%', '60%'],
+            content: $("#videoOpen"),
+        });
+    }
+
+    /**
+     * 查看原图
+     */
+    function showImage(path) {
+        var src = path;
+        var html = " <img style=\"max-width: 100%;max-height: 100%;\" src=\"".concat(src, "\">");
+        $("#videoOpen").html(html);
+        layer.open({
+            type: 1,
+            title: ' ',
+            shadeClose: false,
+            shade: [0.8, '#393D49'],
+            maxmin: true, //开启最大化最小化按钮
+            area: ['40%', '60%'],
+            content: $("#videoOpen"),
+        });
+    }
+
+    function stopPro(e) {
+        window.event ? window.event.cancelBubble = true : e.stopPropagation();
+    }
+
+    /**
+     * 选中复选框控制显示与隐藏
+     */
+    function ctrShow(e) {
+        window.event ? window.event.cancelBubble = true : e.stopPropagation();
+        var node = e.target;
+        $(node).prop("hidden", !$(node).prop("checked"));
+    }
+
+    /**
+     * 更改显示文件格式
+     * @param btn
+     */
+    function sortArrange(btn) {
+        if (btn.innerText == "format_list_bulleted") {
+            btn.innerHTML = '<i class="mdui-icon material-icons" id="">format_line_spacing</i>';
+            sessionStorage.setItem("sort","list");
+        } else {
+            btn.innerHTML = '<i class="mdui-icon material-icons" id="">format_list_bulleted</i>';
+            sessionStorage.setItem("sort","block");
+        }
+        loadData($("#code").val());
+    }
+
+    function uploadFiles() {
+        sessionStorage.setItem("blockName", $("#title").text());
+        sessionStorage.setItem("code", $("#code").val());
+        sessionStorage.setItem("billId", billId);
+        sessionStorage.setItem("sysType", sysType);
+        layer.open({
+            type: 2,
+            title: '文件上传',
+            shadeClose: true,
+            shade: [0.8, '#393D49'],
+            maxmin: true, //开启最大化最小化按钮
+            area: ['65%', '85%'],
+            content: ['../../customer/uploadsysfile', 'no'],
+            success: function (layero, index) {
+                layer.close(index - 1);
+            },
+            end: function () {
+                loadData($("#code").val());
+            }
+        });
+    }
+
+    function linkHref() {
+        window.open(window.location.href.split("//")[0] + "/main");
+    }
+
+    function showSelectUpload() {
+        layer.open({
+            type: 1,
+            title: '添加文件',
+            shadeClose: true,
+            shade: [0.8, '#393D49'],
+            maxmin: false, //开启最大化最小化按钮
+            area: ['300px', '200px'],
+            content: $("#add-file-btn"),
+            scrollbar: false, // 父页面 滚动条 禁止
+            yes: function () {
+                layer.closeAll();
+            }
+        });
+    }
+
+    function loadLineImages() {
+        sessionStorage.setItem("sysType", sysType);
+        sessionStorage.setItem("code", $("#code").val());
+        sessionStorage.setItem("billId", billId);
+        layer.open({
+            type: 2,
+            // scrollbar: false,
+            title: ' ',
+            area: ["90%", "90%"],
+            content: ["onlinefile", "no"],
+            resize: false,
+            offset: 'auto',
+            end: function () {
+                layer.closeAll();
+                loadData($("#code").val());
+            }
+        });
+    }
+
+    function uploadQRCode() {
+        var innerText = $("#title").text();
+        $("#upload-path")[0].innerText = "上传路径：" + innerText.replace(/[\r\n]/g, "");
+        qrcode.clear();
+        makeCode(innerText);
+    }
+
+    function makeCode(innerText) {
+        var elText = document.getElementById("code");
+        if (!elText.value) {
+            return;
+        }
+        $.ajax({
+            url: "/system/hkFile/findPath",
+            type: "POST",
+            data: {},
+            async: false,
+            dataType: "json",
+            success: function (data) {
+                var url = encodeURI("http://" + data.host + "/customer/uploadsysfilebyqcr?i=" + billId + "&s=" + sysType + "&c=" + $("#subject").val());
+                $("#url").val(url);
+                qrcode.makeCode(url);
+                layer.open({
+                    type: 1,
+                    // scrollbar: false,
+                    title: innerText,
+                    area: ["500px", "500px"],
+                    content: $("#qrcode-div"),
+                    resize: false,
+                    offset: 'auto',
+                    end: function () {
+                        layer.closeAll();
+                        loadData($("#code").val());
+                    }
+                });
+            }
+        });
+    }
+
+
+    function addFiles() {
+        var checkbox = $('#tag input[type=checkbox]:checked');
+        if (checkbox.length == 0) {
+            showResult("请选择文件...", '关闭', 1);
+        } else {
+            selectOcrImg();
+        }
+    }
+
+    function loadImgList() {
+        $("#tag").empty();
+        $.ajax({
+            url: "/system/file/listFiles",
+            type: "POST",
+            data: {},
+            async: false,
+            dataType: "json",
+            contentType: "application/json",
+            success: function (data) {
+                files.data = data.rows;
+                files.newData = data.rows;
+                addContent(data.rows);
+            },
+            error: function (data) {
+            }
+        });
+
+    }
+
+    function addContent(newDate) {
+        var code = "";
+        code += "<ul class=\"mdui-list\">";
+        var row = null;
+        var dataSize = newDate.length;
+        for (var i = 0; i < dataSize; i++) {
+            row = newDate[i];
+            var src = window.location.href.split("customer")[0] + "/system/file/loadFile" + "?id=" + row.id;
+            if (row.fileClass == "img") {
+                code += "<li class=\"mdui-list-item mdui-ripple\" onclick='$(\"#" + row.id + "\").click();' >";
+//            ondblclick='selectOcrImg(" + row.id + ")'
+                code += "<div class=\"mdui-list-item-content mdui-col-xs-1\"><input name='ocrImg' style='position: relative;top: 0px;visibility: hidden;' type='checkbox' value='" + row.id + "' id='" + row.id + "' onclick='myToggle(event)'></div>";
+                code += "<div class=\"mdui-list-item-avatar\" onclick='showImage(\"" + src + "\")'><img width='56px'src=\"" + src + "\"></div>";
+                code += "<div class=\"mdui-list-item-content mdui-col-xs-7 \">" + row.name + "</div>";
+//            code += "<div class=\"mdui-list-item-content mdui-col-xs-1\">" + fileSizeFormatter(row.fileSize) + "</div>";
+                code += "<div class=\"mdui-list-item-content mdui-col-xs-2\" style='text-align:left;'>" + row.createTime + "</div>";
+                code += "</li>";
+            } else if (row.fileClass == "document") {
+                code += "<li class=\"mdui-list-item mdui-ripple\" onclick='$(\"#" + row.id + "\").click();' >";
+//            ondblclick='selectOcrImg(" + row.id + ")'
+                code += "<div class=\"mdui-list-item-content mdui-col-xs-1\"><input name='ocrImg' style='position: relative;top: 0px;visibility: hidden;' type='checkbox' value='" + row.id + "' id='" + row.id + "' onclick='myToggle(event)'></div>";
+                code += "<div class=\"mdui-list-item-avatar\" onclick='showImage(\"" + src + "\")'><img width='56px'src=\"/dependency/images/demo/ico/file.png\"></div>";
+                code += "<div class=\"mdui-list-item-content mdui-col-xs-7 \">" + row.name + "</div>";
+//            code += "<div class=\"mdui-list-item-content mdui-col-xs-1\">" + fileSizeFormatter(row.fileSize) + "</div>";
+                code += "<div class=\"mdui-list-item-content mdui-col-xs-2\" style='text-align:left;'>" + row.createTime + "</div>";
+                code += "</li>";
+            } else if (row.fileClass == "other") {
+                code += "<li class=\"mdui-list-item mdui-ripple\" onclick='$(\"#" + row.id + "\").click();' >";
+//            ondblclick='selectOcrImg(" + row.id + ")'
+                code += "<div class=\"mdui-list-item-content mdui-col-xs-1\"><input name='ocrImg' style='position: relative;top: 0px;visibility: hidden;' type='checkbox' value='" + row.id + "' id='" + row.id + "' onclick='myToggle(event)'></div>";
+                code += "<div class=\"mdui-list-item-avatar\" onclick='showImage(\"" + src + "\")'><img width='56px'src=\"/dependency/images/demo/ico/file.png\"></div>";
+                code += "<div class=\"mdui-list-item-content mdui-col-xs-7 \">" + row.name + "</div>";
+//            code += "<div class=\"mdui-list-item-content mdui-col-xs-1\">" + fileSizeFormatter(row.fileSize) + "</div>";
+                code += "<div class=\"mdui-list-item-content mdui-col-xs-2\" style='text-align:left;'>" + row.createTime + "</div>";
+                code += "</li>";
+            }
+
+        }
+        code += "</ul>";
+        $("#tag").append(code);
+    }
+
+    //控制显示/隐藏
+    function myToggle(e) {
+        window.event ? window.event.cancelBubble = true : e.stopPropagation();
+        if ($(e.target).css('visibility') === 'hidden') {
+            /* $("input[name='ocrImg']").attr('checked', false);
+             $("input[name='ocrImg']").css("visibility", "hidden");*/
+            e.target.checked = true;
+            $(e.target).css('visibility', 'visible');//元素显示
+        } else {
+            $(e.target).css('visibility', 'hidden');//元素隐藏
+        }
+    }
+
+
+    function selectOcrImg() {
+        // layer.confirm('你确定要添加该文件?', {icon: 3, title: '提示'}, function (index) {
+        var checkbox = $('input[type=checkbox]:checked');
+        checkbox.each(function (i, domEle) {
+            var id = domEle.id;
+            $.ajax({
+                type: 'POST',
+                url: '/system/file/addSysOtherFile',
+                data: {"id": id, "billId": billId, "code": $("#code").val(), "sysType": sysType},
+                dataType: 'JSON',
+                success: function (data) {
+
+                    loadData($("#code").val());
+                    layer.closeAll()
+                }
+            });
+        });
+    }
+
+    /**
+     * 显示提示信息
+     * @param content
+     * @param type
+     */
+    var showResult = function (content, btn, closeBtn) {
+        layer.open({
+            title: '提示',
+            btn: btn,
+            closeBtn: closeBtn,
+            content: content
+        });
+    };
+
+    function filterFile() {
+        $("#tag").html("");
+        var condition = $("#condition").val();
+        var newDate = [];
+        for (var i = 0; i < files.data.length; i++) {
+            var file = files.data[i];
+            var b = file.name.includes(condition);
+            if (b) {
+                newDate.push(file);
+            }
+        }
+        addContent(newDate);
+    }
+
+    function checkBoxAll(btn) {
+        $('input[type=checkbox]').prop("checked", $(btn).prop("checked"))
+    }
+
+    function removeFile() {
+        var checkbox = $('#content input[type=checkbox]:checked');
+        var ids = "";
+        checkbox.each(function (i, domEle) {
+            ids += domEle.id + ",";
+        });
+        if (ids == "") {
+            return;
+        }
+        layer.confirm('你确定要删除该文件', {icon: 3, title: '提示'}, function (index) {
+            $.ajax({
+                type: 'POST',
+                url: '/system/hkFile/remove',
+                data: {"ids": ids},
+                dataType: 'JSON',
+                success: function (data) {
+                    layer.closeAll();
+                    loadData($("#code").val());
+                }
+            });
+        });
+    }
+
+    function editFile() {
+        var checkbox = $('#content input[type=checkbox]:checked');
+        if (checkbox.length == 0 || checkbox.length > 1) {
+            layer.alert("请选择一个文件");
+            return;
+        }
+        $.ajax({
+            type: 'POST',
+            url: '/system/hkFile/findHKFileById',
+            data: {"id": checkbox[0].id},
+            dataType: 'JSON',
+            success: function (data) {
+                var obj = data.hkFile;
+                var oobJson = JSON.stringify(obj);
+                $("#eidt-link-img").html("");
+                $("#editFileFullNameInfo").val(obj.fileFullName.substr(0, obj.fileFullName.lastIndexOf(".")));
+                $("#editFileType").val(obj.fileFullName.substr(obj.fileFullName.lastIndexOf(".") + 1));
+                layer.open({
+                    type: 1,
+                    title: ' ',
+                    shadeClose: false,
+                    shade: [0.8, '#393D49'],
+                    maxmin: true, //开启最大化最小化按钮
+                    area: ['50%', '30%'],
+                    content: $("#edit-file-info"),
+                    btn: ['修改', '取消'],
+                    yes: function () {
+                        edutFileName(oobJson);
+                    },
+                    cancel: function (index, layero) {
+                        layer.close(index);
+                    }
+                });
+            }
+        });
+    }
+
+    function edutFileName(objJson) {
+        if ($("#editFileFullNameInfo").val() == "") {
+            layer.alert("文件名不能为空");
+            return;
+        }
+        var fileFullName = $("#editFileFullNameInfo").val() + "." + $("#editFileType").val();
+        var obj = JSON.parse(objJson);
+        var billId = obj.billId;
+        var str2 = obj.str2;
+        var code = obj.code;
+        $.ajax({
+            type: 'POST',
+            url: "/system/hkFile/isSameName",
+            data: {
+                "fileFullName": fileFullName,
+                "billId": billId,
+                "str2": str2,
+                "code": code
+            },
+            dataType: 'JSON',
+            success: function (data) {
+                if (data.result != 0) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/system/hkFile/edit',
+                        data: {"id": obj.id, "fileFullName": fileFullName},
+                        dataType: 'JSON',
+                        success: function (data) {
+                            layer.closeAll();
+                            loadData($("#code").val());
+                        }
+                    });
+                } else {
+                    layer.open({
+                        title: '提示',
+                        content: '文件名重复,请重新命名'
+                    });
+                }
+            }
+        });
+    }
+
+    function downloadAllFiles() {
+        $.ajax({
+            type: 'POST',
+            url: '/system/file/findHKFiles',
+            data: {"billId": billId},
+            dataType: 'JSON',
+            success: function (data) {
+                if (data > 0) {
+                    window.location.href = "/system/file/downHKFiles?billId=" + billId;
+                }
+            }
+        });
+    }
+
+    function copyText() {
+        var input = document.getElementById("url");
+        input.select(); // 选中文本
+        document.execCommand("copy"); // 执行浏览器复制命令
+    }
+
+    function selectUrl(btn) {
+        btn.select();
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+    <title>金科保理获客系统</title>
+    <meta name="description" content="金科保理获客系统">
+    <link href="/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link href="/css/font-awesome.min.css" th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
+    <link href="/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>
+    <link href="/css/login.min.css" th:href="@{/css/login.min.css}" rel="stylesheet"/>
+    <link href="/ruoyi/css/ry-ui.css" th:href="@{/ruoyi/css/ry-ui.css?v=3.4.0}" rel="stylesheet"/>
+    <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html"/>
+    <![endif]-->
+    <link rel="shortcut icon" href="/img/favicon.ico" th:href="@{favicon.ico}"/>
+    <style type="text/css">label.error {
+        position: inherit;
+    }</style>
+
+    <script th:inline="javascript"> var ctx = [[@{/}]];
+        var captchaType = [[${captchaType}]]; </script>
+    <!-- 全局js -->
+    <script src="/js/jquery.min.js" th:src="@{/js/jquery.min.js}"></script>
+    <script src="/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+    <!-- 验证插件 -->
+    <script src="/ajax/libs/validate/jquery.validate.min.js"
+            th:src="@{/ajax/libs/validate/jquery.validate.min.js}"></script>
+    <script src="/ajax/libs/validate/messages_zh.min.js"
+            th:src="@{/ajax/libs/validate/messages_zh.min.js}"></script>
+    <script src="/ajax/libs/layer/layer.min.js" th:src="@{/ajax/libs/layer/layer.min.js}"></script>
+    <script src="/ajax/libs/blockUI/jquery.blockUI.js" th:src="@{/ajax/libs/blockUI/jquery.blockUI.js}"></script>
+    <script src="/ruoyi/js/ry-ui.js" th:src="@{/ruoyi/js/ry-ui.js?v=3.4.0}"></script>
+    <script src="/ruoyi/login.js" th:src="@{/ruoyi/login.js}"></script>
+    <script>
+        if (window.top !== window.self) {
+            window.top.location = window.location
+        }
+    </script>
+</head>
+
+<body class="signin">
+
+<div class="signinpanel">
+    <div class="row">
+        <div class="col-sm-7">
+            <div class="signin-info">
+                <div class="logopanel m-b">
+                    <h1><img alt="[ 金科保理获客系统 ]" src="/img/factoring_logo_light.png" th:src="@{/img/factoring_logo_light.png}"
+                             width="260px" height="46px"></h1>
+                </div>
+                <div class="m-b"></div>
+                <h4>欢迎使用 <strong>金科保理获客系统</strong></h4>
+                <ul class="m-b">
+                    <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> 公开透明</li>
+                    <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> 迅速放款</li>
+                    <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> 全程追溯</li>
+                    <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> ......</li>
+                </ul>
+                <!--<strong>还没有账号？ <a href="#">立即注册&raquo;</a></strong>-->
+            </div>
+        </div>
+        <div class="col-sm-5">
+            <form id="signupForm">
+                <h4 class="no-margins">登录：</h4>
+                <p class="m-t-md">金科保理获客系统</p>
+                <input type="text" name="username" class="form-control uname" placeholder="用户名"/>
+                <input type="password" name="password" class="form-control pword" placeholder="密码"/>
+                <div class="row m-t" th:if="${captchaEnabled==true}">
+                    <div class="col-xs-6">
+                        <input type="text" name="validateCode" class="form-control code" placeholder="验证码" maxlength="5"
+                               autocomplete="off">
+                    </div>
+                    <div class="col-xs-6">
+                        <a href="javascript:void(0);" title="点击更换验证码">
+                            <img th:src="@{captcha/captchaImage(type=${captchaType})}" class="imgcode" width="85%"/>
+                        </a>
+                    </div>
+                </div>
+                <div class="checkbox-custom" th:classappend="${captchaEnabled==false} ? 'm-t'">
+                    <input type="checkbox" id="rememberme" name="rememberme"> <label for="rememberme">记住我</label>
+                </div>
+                <button class="btn btn-success btn-block" id="btnSubmit" data-loading="正在验证登录，请稍后...">登录</button>
+            </form>
+        </div>
+    </div>
+    <div class="signup-footer">
+        <div class="pull-left">
+            &copy; 2019 All Rights Reserved. JINK <br>
+        </div>
+    </div>
+</div>
+<div id="change_pwd" style="overflow: hidden; display: none; color: black;">
+    <form class="form-horizontal m" id="form-user-resetPwd">
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">登录名称：</label>
+            <div class="col-sm-8">
+                <input class="form-control" type="text" readonly="true" name="loginName" id="loginName"/>
+            </div>
+        </div>
+        <!--<div class="form-group">
+            <label class="col-sm-3 control-label">提示：</label>
+            <div class="col-sm-8">
+                &lt;!&ndash;<span></span>&ndash;&gt;
+                <input class="form-control" type="text" style="border: none;color: red;" value="密码由数字+字母或特殊字符，长度不得小于8位">
+            </div>
+        </div>-->
+        <div class="form-group">
+            <label class="col-sm-3 control-label">新密码：</label>
+            <div class="col-sm-8">
+                <input class="form-control" type="password" name="password" id="password">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">确认密码：</label>
+            <div class="col-sm-8">
+                <input class="form-control" type="password" name="confirm_password" id="confirm_password">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="form-group">
+                <label class="col-sm-3 control-label"></label>
+                <div class="col-sm-8" style="text-align: right;">
+                    <button type="submit" class="btn btn-sm btn-primary" style="margin-right: 14px;padding:5px 16px;">
+                        提交
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+</html>

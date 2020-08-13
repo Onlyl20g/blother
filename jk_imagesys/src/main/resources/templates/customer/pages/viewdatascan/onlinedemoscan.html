@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scan and upload documents in browsers | Dynamic Web TWAIN Online Demo</title>
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8"/>
+    <meta http-equiv="Content-Language" content="en-us"/>
+    <meta http-equiv="X-UA-Compatible" content="requiresActiveX=true"/>
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0"/>
+    <meta name="description"
+          content="This online demo application (JavaScript + ASP.NET-C#) shows how to use the Dynamic Web TWAIN SDK to control any TWAIN compatible scanners in a web page."/>
+    <meta name="keyword" content="Dynamsoft, TWAIN, Scanners, SDK, Scanning"/>
+    <link rel="stylesheet" href="../../dependency/layui/css/layui.css"/>
+    <link rel="stylesheet" href="../../dependency/zTree_v3/css/zTreeStyle/zTreeStyle.css"/>
+    <link href="../../ocr/Style/style.css" type="text/css" rel="stylesheet"/>
+    <script src="../../ocr/Scripts/common.js?t=170607"></script>
+    <script>
+        if (dynamsoft.onlineNavInfo.deviceType == 'pc') {
+
+        } else {
+
+            window.location.replace("https://demo.dynamsoft.com/MBC/");
+        }
+    </script>
+</head>
+
+<body>
+<div id="wrapper">
+    <div id="demoContent">
+        <div id="dwtScanDemo">
+            <div id="DWTcontainer" class="container">
+                <div id="DWTcontainerTop">
+                    <div id="divEdit">
+                        <ul class="operateGrp">
+                            <li><img src="../../ocr/Images/ShowEditor.png" title="显示图片编辑器" alt="显示图片编辑器" id="btnEditor"
+                                     onclick="btnShowImageEditor_onclick()"/></li>
+                            <li><img src="../../ocr/Images/RotateLeft.png" title="向左旋转" alt="向左旋转" id="btnRotateL"
+                                     onclick="btnRotateLeft_onclick()"/></li>
+                            <li><img src="../../ocr/Images/RotateRight.png" title="右旋" alt="右旋" id="btnRotateR"
+                                     onclick="btnRotateRight_onclick()"/></li>
+                            <li><img src="../../ocr/Images/Rotate180.png" alt="旋转180" title="旋转180"
+                                     onclick="btnRotate180_onclick()"/></li>
+                            <li><img src="../../ocr/Images/Mirror.png" title="镜子" alt="镜子" id="btnMirror"
+                                     onclick="btnMirror_onclick()"/></li>
+                            <li><img src="../../ocr/Images/Flip.png" title="翻动" alt="翻动" id="btnFlip"
+                                     onclick="btnFlip_onclick()"/></li>
+                            <li><img src="../../ocr/Images/RemoveSelectedImages.png" title="删除所选图像" alt="删除所选图像"
+                                     id="DW_btnRemoveCurrentImage" onclick="btnRemoveCurrentImage_onclick();"/></li>
+                            <li><img src="../../ocr/Images/RemoveAllImages.png" title="删除所有图像" alt="删除所有图像"
+                                     id="DW_btnRemoveAllImages" onclick="btnRemoveAllImages_onclick();"/></li>
+                            <li><img src="../../ocr/Images/ChangeSize.png" title="更改图像尺寸" alt="更改图像尺寸"
+                                     id="btnChangeImageSize" onclick="btnChangeImageSize_onclick();"/></li>
+                            <li><img src="../../ocr/Images/Crop.png" title="裁切" alt="裁切" id="btnCrop"
+                                     onclick="btnCrop_onclick();"/></li>
+                        </ul>
+                        <div id="ImgSizeEditor" style="visibility:hidden">
+                            <ul>
+                                <li>
+                                    <label for="img_height">New Height :
+                                        <input type="text" id="img_height" style="width:50%;" size="10"/>
+                                        pixel</label>
+                                </li>
+                                <li>
+                                    <label for="img_width">New Width :&nbsp;
+                                        <input type="text" id="img_width" style="width:50%;" size="10"/>
+                                        pixel</label>
+                                </li>
+                                <li>Interpolation method:
+                                    <select size="1" id="InterpolationMethod">
+                                        <option value=""></option>
+                                    </select>
+                                </li>
+                                <li style="text-align:center;">
+                                    <input type="button" value="   OK   " id="btnChangeImageSizeOK"
+                                           onclick="btnChangeImageSizeOK_onclick();"/>
+                                    <input type="button" value=" Cancel " id="btnCancelChange"
+                                           onclick="btnCancelChange_onclick();"/>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="dwtcontrolContainer"></div>
+                    <div id="btnGroupBtm" class="clearfix"></div>
+                </div>
+                <div id="ScanWrapper">
+                    <div id="divScanner" class="divinput">
+                        <ul class="PCollapse">
+                            <li>
+                                <div class="divType">
+                                    <div class="mark_arrow expanded"></div>
+                                    自定义扫描
+                                </div>
+                                <div id="div_ScanImage" class="divTableStyle">
+                                    <ul id="ulScaneImageHIDE">
+                                        <li>
+                                            <label for="source">
+                                                <p>选择来源:</p>
+                                            </label>
+                                            <select size="1" id="source" style="position:relative;"
+                                                    onchange="source_onchange()">
+                                                <option value=""></option>
+                                            </select>
+                                        </li>
+                                        <li style="display:none;" id="pNoScanner"><a href="javascript: void(0)"
+                                                                                     class="ShowtblLoadImage"
+                                                                                     style="color:#fe8e14"
+                                                                                     id="aNoScanner">（未检测到TWAIN兼容驱动程序）</a>
+                                        </li>
+                                        <li id="divProductDetail"></li>
+                                        <li class="tc">
+                                            <input id="btnScan" disabled="disabled" type="button" value="扫描"
+                                                   onclick="acquireImage();"/>
+                                        </li>
+                                    </ul>
+                                    <!-- <div id="tblLoadImage" style="visibility:hidden;"> <a href="javascript: void(0)" class="ClosetblLoadImage"><img src="Images/icon-ClosetblLoadImage.png" alt="Close tblLoadImage"/></a>
+                                         <p>You can Install a Virtual Scanner:</p>
+                                         <p><a id="samplesource32bit" href="https://download.dynamsoft.com/tool/twainds.win32.installer.2.1.3.msi">32-bit Sample Source</a> <a id="samplesource64bit" style="display:none;" href="https://download.dynamsoft.com/tool/twainds.win64.installer.2.1.3.msi">64-bit Sample Source</a> from <a target="_blank" href="http://www.twain.org">TWG</a></p>
+                                     </div> -->
+                                </div>
+                            </li>
+                            <li id="liLoadImage">
+                                <div class="divType">
+                                    <div class="mark_arrow collapsed"></div>
+                                    加载图像或PDF
+                                </div>
+                                <div id="div_LoadLocalImage" style="display: none" class="divTableStyle">
+                                    <ul>
+                                        <li class="tc">
+                                            <input class="btnOrg" type="button" value="加载"
+                                                   onclick="return btnLoadImagesOrPDFs_onclick()"/>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div id="divUpload" class="divinput mt30" style="position:relative">
+                        <ul>
+                            <li class="toggle">保存文件</li>
+                            <li>
+                                <span class="btnOrg" style="padding: 6px 8px;" onclick="upFile(this)">上传存储地址：</span>
+                                <input type="text" hidden size="20" id="txt_fileAddressId"/>
+                                <input type="text" disabled size="20" id="txt_fileAddress"/>
+                            </li>
+                            <li>
+                                <p>文档名称：</p>
+                                <input type="text" size="20" id="txt_fileName"/>
+                            </li>
+                            <li style="padding-right:0;">
+                                <label for="imgTypebmp">
+                                    <input type="radio" value="bmp" name="ImageType" id="imgTypebmp"
+                                           onclick="rd_onclick();"/>
+                                    BMP</label>
+                                <label for="imgTypejpeg">
+                                    <input type="radio" value="jpg" name="ImageType" id="imgTypejpeg"
+                                           onclick="rd_onclick();"/>
+                                    JPEG</label>
+                                <label for="imgTypetiff">
+                                    <input type="radio" value="tif" name="ImageType" id="imgTypetiff"
+                                           onclick="rdTIFF_onclick();"/>
+                                    TIFF</label>
+                                <label for="imgTypepng">
+                                    <input type="radio" value="png" name="ImageType" id="imgTypepng"
+                                           onclick="rd_onclick();"/>
+                                    PNG</label>
+                                <label for="imgTypepdf">
+                                    <input type="radio" value="pdf" name="ImageType" id="imgTypepdf"
+                                           onclick="rdPDF_onclick();"/>
+                                    PDF</label>
+                            </li>
+                            <li>
+                                <label for="MultiPageTIFF">
+                                    <input type="checkbox" id="MultiPageTIFF"/>
+                                    多页TIFF</label>
+                                <label for="MultiPagePDF">
+                                    <input type="checkbox" id="MultiPagePDF"/>
+                                    多页PDF</label>
+                            </li>
+                            <li>
+                                <input id="btnSave" class="btnOrg" type="button" value="保存到本地"
+                                       onclick="saveUploadImage('local')"/>
+                                <input id="btnUpload" class="btnOrg" type="button" value="上传到服务器"
+                                       onclick="saveUploadImage('server')"/>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- <div id="DWTcontainerBtm" class="clearfix">
+                    <div id="DWTemessageContainer"></div>
+                    <div id="divNoteMessage"> </div>
+                </div> -->
+            </div>
+        </div>
+    </div>
+</div>
+<div id="folderDiv" style="display: none;">
+    <div class="zTreeDemoBackground">
+        <ul id="tree" class="ztree"></ul>
+    </div>
+</div>
+<script>
+    window['bDWTOnlineDemo'] = true;
+</script>
+<script src="../../ocr/Scripts/jquery.js"></script>
+<script src="../../ocr/Resources/dynamsoft.webtwain.config.js"></script>
+<script src="../../ocr/Resources/dynamsoft.webtwain.initiate.js"></script>
+<script src="../../ocr/Resources/addon/dynamsoft.webtwain.addon.pdf.js"></script>
+<script src="../../ocr/Scripts/online_demo_operation.js"></script>
+<script src="../../ocr/Scripts/online_demo_initpage.js"></script>
+<script src="../../ajax/libs/layer/layer.min.js"></script>
+<script src="../../ajax/libs/layui/layui.js"></script>
+<script src="../../dependency/zTree_v3/js/jquery.ztree.all.js"></script>
+<script src="../../dependency/zTree_v3/js/jquery.ztree.all.min.js"></script>
+<script>
+    $("ul.PCollapse li>div").click(function () {
+        if ($(this).next().css("display") == "none") {
+            $(".divType").next().hide("normal");
+            $(".divType").children(".mark_arrow").removeClass("expanded");
+            $(".divType").children(".mark_arrow").addClass("collapsed");
+            $(this).next().show("normal");
+            $(this).children(".mark_arrow").removeClass("collapsed");
+            $(this).children(".mark_arrow").addClass("expanded");
+        }
+    });
+</script>
+<script>
+    // Assign the page onload fucntion.
+    $(function () {
+        pageonload();
+    });
+
+    function upFile(file) {
+        var setting = {
+            view: {
+                selectedMulti: true
+            },
+            check: {
+                enable: false
+            },
+            data: {
+                simpleData: {
+                    enable: true,//是否采用简单数据模式
+                    idKey: "businessId",//树节点ID名称
+                    pIdKey: "businessPid",//父节点ID名称
+                    rootPId: -1//根节点ID
+                }
+            }
+        };
+        $.ajax({
+            url: '/system/folder/list',
+            type: 'post',
+            dataType: "json",
+            success: function (data) {
+                $.fn.zTree.init($("#tree"), setting, data.rows);//初始化树节点时，添加同步获取的数据
+            }
+        });
+        layer.open({
+            type: 1,
+            title: '文件夹选择',
+            shadeClose: true,
+            shade: [0.8, '#393D49'],
+            maxmin: true, //开启最大化最小化按钮
+            area: ['30%', '40%'],
+            content: $("#folderDiv"),
+            btn: ['保存', '取消'],
+            yes: function (index, layero) {
+                var zTreeOjb = $.fn.zTree.getZTreeObj("tree");
+                var selectedNode = zTreeOjb.getSelectedNodes();
+                businessId = selectedNode[0].businessId;
+                var folderName = selectedNode[0].name;
+                $("#txt_fileAddress").val(folderName);
+                $("#txt_fileAddressId").val(businessId);
+                /* $(".folderId").val(businessId);
+                 $("#folderName").val(folderName);*/
+                layer.close(index);
+            }
+        });
+    }
+</script>
+</body>
+</html>

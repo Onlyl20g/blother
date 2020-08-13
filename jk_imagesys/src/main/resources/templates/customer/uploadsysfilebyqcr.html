@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>文件上传</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/dependency/bootstrap4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/dependency/mdui/css/mdui.min.css"/>
+    <link rel="stylesheet" href="/dependency/easyupload/easy-upload.css"/>
+    <link rel="stylesheet" href="/dependency/zTree_v3/css/zTreeStyle/zTreeStyle.css"/>
+    <link rel="sylesheet" href="/dependency/layui/css/layui.css"/>
+    <link rel="sttylesheet" href="/dependency/bootstrap-table/locale/bootstrap-table.min.css"/>
+    <link rel="stylesheet" href="/dependency/toastr/toastr.min.css"/>
+    <script type="text/javascript">
+
+    </script>
+    <style>
+        .upload-add-icon {
+            width: 70px;
+            height: 70px;
+            line-height: 70px;
+            font-size: 50px;
+            border: 1px solid rgba(0, 0, 0, .08);
+            text-align: center;
+            float: left;
+            margin: 3px;
+        }
+
+        .upload-word {
+            width: 70px;
+            height: 70px;
+            line-height: 70px;
+            font-size: 12px;
+            border: 1px solid rgba(0, 0, 0, .08);
+            text-align: center;
+            float: left;
+            margin: 3px;
+        }
+
+        .upload-content:hover {
+            background-color: #ffffff;
+        }
+
+        .upload-img {
+            width: 45px;
+            height: 45px;
+            margin-top: -9px;
+        }
+
+        .text {
+            position: absolute;
+            left: 50%;
+            margin-left: -50px;
+            top: 50%;
+            margin-top: -50px;
+            height: 100px;
+        }
+
+        .layui-layer-wrap {
+            margin-left: -90px !important;
+        }
+    </style>
+</head>
+<body class="mdui-drawer-body-left">
+<div class="mdui-row" style="margin-top: 40px">
+    <input type="file" hidden id="upload-file_local" multiple="multiple" onchange="changeFileContent(this)">
+    <input type="file" hidden id="upload-file_photo" onchange="changeFileContent(this)" accept="image/*"
+           capture="camera">
+    <ul class="mdui-list" style="margin-top: -20px;">
+    </ul>
+</div>
+
+
+<div id="selectUploadOpen" class="text" style="display: none;">
+    <button type="button" class="btn btn-success" style="width:200px;" id="_local" onclick="addHKFiles(this);">我的文件
+    </button>
+    <br>
+    <button type="button" class="btn btn-success" style="width:200px;margin: 5px 0;" id="_photo"
+            onclick="addHKFiles(this);">照相机
+    </button>
+</div>
+
+<input style="display: none;" hidden class="billId" id="billId" type="text"/>
+<!--新增文件夹-->
+<div id="lookImgDiv" style="display: none;width: 100%;height: 100%;text-align: center">
+    <img id="showImg" src="" style="max-width:100%;max-height:100%;">
+</div>
+<div id="videoOpen" class="center-parent"
+     style="display: none;position:relative;width: 100%;height: 100%;text-align: center;">
+</div>
+<!-- JavaScript -->
+<!-- <script src="js/jquery-3.2.1.min.js"></script> -->
+<script src="/dependency/js/jquery-2.1.1.min.js"></script>
+<script src="/dependency/bootstrap4/js/bootstrap.min.js"></script>
+<script src="/dependency/mdui/js/mdui.min.js"></script>
+<!--<script src="/dependency/js/main.js"></script>-->
+<script src="/dependency/easyupload/uploadqcr.js"></script>
+<script src="/dependency/easyupload/vendor/jquery.cookie-1.4.1.min.js"></script>
+<script src="/dependency/layui/layui.all.js"></script>
+<script src="/dependency/layui/layui.js"></script>
+<script src="/dependency/layui/lay/modules/layer.js"></script>
+<!--ztree-->
+<script src="/dependency/zTree_v3/js/jquery.ztree.all.js"></script>
+<script src="/dependency/zTree_v3/js/jquery.ztree.all.min.js"></script>
+<!--bootstrap table-->
+<script src="/dependency/bootstrap-table/bootstrap-table.min.js"></script>
+<script src="/dependency/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+<script src="/dependency/bootstrapvalidator/bootstrapValidator.min.js"></script>
+<script src="/dependency/bootstrap-table/bootstrap-editable.js"></script>
+<script src="/dependency/bootstrap-table/bootstrap-table-editable.js"></script>
+<script src="/dependency/toastr/toastr.min.js"></script>
+<script src="/dependency/js/qrcode.min.js"></script>
+<script type="application/javascript">
+    var params = decodeURI(window.location.href).split("=");
+    var id, result;
+    $.ajax({
+        url: "/system/fileAttachType/list",
+        type: "post",
+        data: {"sysType": params[2].split("&")[0]},
+        dataType: "json",
+        success: function (data) {
+            var objs = data.rows;
+            var html = "";
+            if (params[3] != "null" && params[3] != "") {
+                html += '<li class="mdui-list-item mdui-ripple" style="background-color: #ffffff;" ><div class=\"mdui-list-item-content\" style=\"text-align: center;padding: 20px;font-size: 32px;line-height: 40px;\">' + params[3] + '</div></li>';
+            }
+            for (var i = 0; i < objs.length; i++) {
+
+                var obj = objs[i];
+
+                // html += "<li class=\"mdui-list-item mdui-ripple\" style=\"background-color: rgba(0,0,0,.08);\" ><div class=\"mdui-list-item-content\">".concat(obj.infoName, "</div></li><li class=\"mdui-list-item mdui-ripple upload-content\" ><div style=\"\"><div onclick=\"addHKFiles(this)\" id=\"").concat(obj.code + "_local", "\" class=\"upload-add-icon\">+</div><div onclick=\"addHKFiles(this)\" id=\"").concat(obj.code + "_photo", "\" class=\"upload-add-icon\"><i class=\"mdui-icon material-icons\" style=\"margin-top:-5px;\">&#xe439;</i></div></div></li>");
+                html += "<li class=\"mdui-list-item mdui-ripple\" style=\"background-color: rgba(0,0,0,.08);\" ><div class=\"mdui-list-item-content\">".concat(obj.infoName, "</div></li><li class=\"mdui-list-item mdui-ripple upload-content\" ><div style=\"\"><div onclick=\"selectUpload(this)\" id=\"").concat(obj.code + "", "\" class=\"upload-add-icon\">+</div></div></li>");
+            }
+            $(".mdui-list").html(html);
+        }
+    });
+
+    function selectUpload(btn) {
+        result = btn.id;
+        layer.open({
+            type: 1,
+            title: ' ',
+            shadeClose: false,
+            shade: [0.8, '#393D49'],
+            maxmin: true, //开启最大化最小化按钮
+            area: ['100%', '40%'],
+            content: $("#selectUploadOpen"),
+        });
+    }
+
+    function addHKFiles(btn) {
+        layer.closeAll();
+        if (btn.id.split("_")[1] == "local") {
+            $("#upload-file_local")[0].click();
+        } else {
+            $("#upload-file_photo")[0].click();
+        }
+        id = result + "_local";
+    }
+
+    function changeFileContent(btn) {
+        var files = "";
+        if (btn.id == "upload-file_local") {
+            files = document.getElementById('upload-file_local').files;
+        } else {
+            files = document.getElementById('upload-file_photo').files;
+        }
+        var html = "";
+        if (files.length == 0) {
+            return;
+        }
+        var fileNames = [];
+        for (var i = 0; i < files.length; i++) {
+            fileNames[i] = files[i].name;
+        }
+        $.ajax({
+            url: "/system/hkFile/isSameName",
+            data: {
+                "fileFullName": fileNames.toString(),
+                "billId": params[1].split("&")[0],
+                "str2": params[2].split("&")[0],
+                "code": result
+            },
+            // processData: false, // 将数据转换成对象，不对数据做处理，故 processData: false
+            // contentType: false,    // 不设置数据类型
+            type: "POST",
+            dataType: "json",
+            cache: false,//false是不缓存，true为缓存
+            async: false,//true为异步，false为同步
+            success: function (data) {
+                if (data.result > 0) {
+                    layer.load(2, {
+                        shade: [0.4, '#393D49'],
+                        content: '上传中...',
+                        success: function (layero) {
+                            layero.find('.layui-layer-content').css({
+                                'paddingTop': '40px',
+                                'width': '60px',
+                                'textAlign': 'center',
+                                'backgroundPositionX': 'center'
+                            });
+                        }
+                    });
+                    setTimeout(function () {
+                        for (var i = 0; i < files.length; i++) {
+                            var arr = files[i].name.split(".");
+                            var typeClass = arr[arr.length - 1];
+                            var type = files[i].type;
+                            var formData = new FormData();                      // 创建一个form类型的数据
+                            formData.append("file", files[i]);     // 获取上传文件的数据
+                            formData.append("billId", params[1].split("&")[0]);
+                            formData.append("fileFullName", files[i].name);
+                            formData.append("str2", params[2].split("&")[0]);
+                            formData.append("code", result);
+                            if (type.includes("image")) {
+                                $.ajax({
+                                    url: "/system/hkFile/uploadHkFile",
+                                    data: formData,
+                                    processData: false, // 将数据转换成对象，不对数据做处理，故 processData: false
+                                    contentType: false,    // 不设置数据类型
+                                    type: "POST",
+                                    dataType: "json",
+                                    cache: false,//false是不缓存，true为缓存
+                                    async: false,//true为异步，false为同步
+                                    success: function (data) {
+                                        if (data.code == 0) {
+                                            var reader = new FileReader();
+                                            reader.readAsDataURL(files[i]);
+                                            var name = files[i].name.split(".")[0];
+                                            reader.onload = function (evt) {
+                                                var imgstr = evt.target.result; //base64字符串
+                                                /* html += `<div class="upload-add-icon" onclick='showImg(\"${imgstr}\");'>
+                                                 <img class="upload-img" src="${imgstr}" >
+                                             </div>`;*/
+                                                html += "<div class=\"upload-add-icon\" onclick='showImg(\"".concat(imgstr, "\");'><img class=\"upload-img\" src=\"").concat(imgstr, "\" ></div>");
+                                                $('#' + result).before(html)
+                                                html = "";
+                                            };
+                                        }
+                                        if (i == files.length - 1) {
+                                            layer.closeAll('loading');
+                                            $("#upload-file_local").val("");
+                                            $("#upload-file_photo").val("");
+                                        }
+                                    }
+                                });
+
+                            } else if (typeClass == "xls" || typeClass == "xlsx" || typeClass == "txt" || typeClass == "docx" || typeClass == "doc" || typeClass == "zip" || typeClass == "rar") {
+                                $.ajax({
+                                    url: "/system/hkFile/uploadHkFile",
+                                    data: formData,
+                                    processData: false, // 将数据转换成对象，不对数据做处理，故 processData: false
+                                    contentType: false,    // 不设置数据类型
+                                    type: "POST",
+                                    dataType: "json",
+                                    cache: false,//false是不缓存，true为缓存
+                                    async: false,//true为异步，false为同步
+                                    success: function (data) {
+                                        if (data.code == 0) {
+                                            var name = files[i].name.split(".")[0];
+                                            if (name.length > 4) {
+                                                name = name.substr(0, 2) + "..." + name.substr(name.length - 1, name.length);
+                                            }
+                                            html += "<div class=\"upload-word\" title=\"".concat(files[i].name.split(".")[0], "\" onclick='showInfo(\"\u4E0D\u652F\u6301\u6B64\u683C\u5F0F\u6587\u4EF6\")'>").concat(name, "</div>");
+                                            $('#' + result).before(html);
+                                            html = "";
+                                        }
+                                        if (i == files.length - 1) {
+                                            layer.closeAll('loading');
+                                            $("#upload-file_local").val("");
+                                            $("#upload-file_photo").val("");
+                                        }
+                                    }
+                                });
+                            } else {
+                                if (i == files.length - 1) {
+                                    layer.closeAll('loading');
+                                    $("#upload-file_local").val("");
+                                    $("#upload-file_photo").val("");
+                                }
+                            }
+                        }
+                    }, 1000);
+                } else {
+                    layer.open({
+                        title: "提示",
+                        content: "已存在重名文件,请重命名后上传"
+                    })
+                    $("#upload-file_local").val("");
+                    $("#upload-file_photo").val("");
+                }
+            }
+        });
+    }
+
+
+    function getBase64Image(img) {
+        var canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        var ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, img.width, img.height);
+        var ext = img.src.substring(img.src.lastIndexOf(".") + 1).toLowerCase();
+        var dataURL = canvas.toDataURL("image/" + ext);
+        return dataURL;
+
+    }
+
+    function showInfo(fileName) {
+        layer.msg(fileName, {
+            icon: 6,
+            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+        }, function () {
+            layer.closeAll();
+        });
+    }
+
+    function showImg(url) {
+        layer.closeAll();
+        var html = "<img style=\"max-width: 100%;max-height: 100%;\" src=\"".concat(url, "\">");
+        $("#videoOpen").html(html);
+        layer.open({
+            type: 1,
+            title: ' ',
+            shadeClose: false,
+            shade: [0.8, '#393D49'],
+            maxmin: true, //开启最大化最小化按钮
+            area: ['100%', '100%'],
+            content: $("#videoOpen")
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Start your development with a Design System for Bootstrap 4.">
+    <meta name="author" content="Creative Tim">
+    <title>提款记录</title>
+    <!--    <link th:href="@{/favicon.ico}" rel="shortcut icosn"/>-->
+    <link th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
+    <link href="/css/main/bootstrap.min14ed.css" th:href="@{/css/main/bootstrap.min14ed.css}"
+          rel="stylesheet"/>
+    <link th:href="@{/css/nucleo.css}" rel="stylesheet"/>
+    <link type="text/css" href="/css/argon.css?v=1.0.0" th:href="@{/css/argon.css}" rel="stylesheet">
+    <!--<link type="text/css" href="/argon/argonchange.css?v=1.0.0" th:href="@{/argon/argonchange.css}" rel="stylesheet">-->
+    <link th:href="@{/ruoyi/css/ry-ui.css}" rel="stylesheet"/>
+    <link href="/ajax/libs/bootstrap-table/bootstrap-table.min.css"
+          th:href="@{/ajax/libs/bootstrap-table/bootstrap-table.min.css}" rel="stylesheet"/>
+    <!-- Core -->
+    <script src="/js/jquery.min.js" th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <!--JQueryVali-->
+    <script src="/ajax/libs/validate/jquery.validate.min.js"
+            th:src="@{/ajax/libs/validate/jquery.validate.min.js}"></script>
+    <script src="/ajax/libs/validate/messages_zh.min.js"
+            th:src="@{/ajax/libs/validate/messages_zh.min.js}"></script>
+    <script src="/ajax/libs/validate/jquery.validate.extend.js"
+            th:src="@{/ajax/libs/validate/jquery.validate.extend.js}"></script>
+    <script src="/vendor/popper/popper.min.js" th:src="@{/vendor/popper/popper.min.js}"></script>
+    <script src="/vendor/headroom/headroom.min.js" th:src="@{/vendor/headroom/headroom.min.js}"></script>
+    <!-- Argon JS -->
+    <script src="/js/argon.js?v=1.0.0" th:src="@{/js/argon.js}"></script>
+    <script src="/js/piexif.js" th:src="@{/js/piexif.js}"></script>
+    <script src="/js/toastr.min.js" th:src="@{/js/toastr.min.js}"></script>
+    <!-- bootstrap-table 表格插件 -->
+    <script src="/ajax/libs/bootstrap-table/bootstrap-table.min.js"
+            th:src="@{/ajax/libs/bootstrap-table/bootstrap-table.min.js}"></script>
+    <script src="/ajax/libs/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"
+            th:src="@{/ajax/libs/bootstrap-table/locale/bootstrap-table-zh-CN.min.js}"></script>
+    <script src="/ajax/libs/bootstrap-table/extensions/mobile/bootstrap-table-mobile.js"
+            th:src="@{/ajax/libs/bootstrap-table/extensions/mobile/bootstrap-table-mobile.js}"></script>
+    <script src="/ajax/libs/bootstrap-table/extensions/toolbar/bootstrap-table-toolbar.min.js"
+            th:src="@{/ajax/libs/bootstrap-table/extensions/toolbar/bootstrap-table-toolbar.min.js}"></script>
+    <script src="/ajax/libs/bootstrap-table/extensions/columns/bootstrap-table-fixed-columns.js"
+            th:src="@{/ajax/libs/bootstrap-table/extensions/columns/bootstrap-table-fixed-columns.js}"></script>
+    <script src="/ajax/libs/layer/layer.min.js" th:src="@{/ajax/libs/layer/layer.min.js}"></script>
+    <script src="/ruoyi/js/ry-ui.js?v=3.4.0" th:src="@{/ruoyi/js/ry-ui.js}"></script>
+    <script src="/extra/js/drawrecord.js" th:src="@{/extra/js/drawrecord.js}"></script>
+
+    <th:block th:include="include :: bootstrap-fileinput-js"/>
+    <script> var ctx = "\/";
+    var captchaType = "math"; </script>
+</head>
+<body>
+<div class="container mb-5">
+    <!-- Inputs -->
+    <h3 class="h4 text-success font-weight-bold text-center mb-4">提款记录</h3>
+    <input id="billId" th:value="${billId}" hidden>
+    <input id="id" th:value="${id}" hidden>
+    <div class="mt-2 py-5 border-top text-center">
+        <div class="container-div">
+            <div class="row justify-content-center">
+                <div class="col-sm-12 select-table ">
+                    <table id="bootstrap-table" data-mobile-responsive="true"></table>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <span style="">当前所示的状态、数据等展示仅供参考，不作为双方是否开展保理融资业务的依据，双方的权利义务以最终签署合同为准</span>
+    </div>
+</div>
+</body>
+</html>

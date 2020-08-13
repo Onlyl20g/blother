@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>文件上传</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/dependency/bootstrap4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/dependency/mdui/css/mdui.min.css"/>
+    <link rel="stylesheet" href="/dependency/easyupload/easy-upload.css"/>
+    <link rel="stylesheet" href="/dependency/zTree_v3/css/zTreeStyle/zTreeStyle.css"/>
+    <link rel="sylesheet" href="/dependency/layui/css/layui.css"/>
+    <link rel="sttylesheet" href="/dependency/bootstrap-table/locale/bootstrap-table.min.css"/>
+    <link rel="stylesheet" href="/dependency/toastr/toastr.min.css"/>
+    <script type="text/javascript">
+
+    </script>
+</head>
+<body class="mdui-drawer-body-left">
+
+<div class="mdui-row" style="margin-top: 40px">
+    <div class="mdui-col-xs-6 mdui-col-offset-xs-2" style="margin-left: 0px">
+        <div id="easyContainer"></div>
+    </div>
+    <div id="folderDiv" style="display: none;">
+        <div class="zTreeDemoBackground">
+            <ul id="tree" class="ztree"></ul>
+        </div>
+    </div>
+</div>
+<input style="display: none;" class="billId" id="billId" type="text"/>
+<!--新增文件夹-->
+<div id="lookImgDiv" style="display: none;width: 100%;height: 100%;text-align: center">
+    <img id="showImg" src="" style="max-width:100%;max-height:100%;">
+</div>
+
+<!-- JavaScript -->
+<!-- <script src="js/jquery-3.2.1.min.js"></script> -->
+<script src="/dependency/js/jquery-2.1.1.min.js"></script>
+<script src="/dependency/bootstrap4/js/bootstrap.min.js"></script>
+<script src="/dependency/mdui/js/mdui.min.js"></script>
+<!--<script src="/dependency/js/main.js"></script>-->
+<script src="/dependency/easyupload/upload.js"></script>
+<script src="/dependency/easyupload/vendor/jquery.cookie-1.4.1.min.js"></script>
+<script src="/dependency/layui/layui.all.js"></script>
+<script src="/dependency/layui/layui.js"></script>
+<script src="/dependency/layui/lay/modules/layer.js"></script>
+<!--ztree-->
+<script src="/dependency/zTree_v3/js/jquery.ztree.all.js"></script>
+<script src="/dependency/zTree_v3/js/jquery.ztree.all.min.js"></script>
+<!--bootstrap table-->
+<script src="/dependency/bootstrap-table/bootstrap-table.min.js"></script>
+<script src="/dependency/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+<script src="/dependency/bootstrapvalidator/bootstrapValidator.min.js"></script>
+<script src="/dependency/bootstrap-table/bootstrap-editable.js"></script>
+<script src="/dependency/bootstrap-table/bootstrap-table-editable.js"></script>
+<script src="/dependency/toastr/toastr.min.js"></script>
+<script src="/dependency/js/qrcode.min.js"></script>
+<script type="application/javascript">
+    var selectId;
+    var uploadNum = 0;//记录加载次数
+    var LabelHtml;
+
+    if (typeof useFolder !== "undefined") {
+        if (useFolder === "" || useFolder === null) {
+            useFoledePath = '根目录';
+        }
+    } else {
+        useFolder = '';
+        useFoledePath = '根目录';
+    }
+
+
+    $('#easyContainer').easyUpload({
+        allowFileTypes: '*.jpg;*.doc;*.pdf;*.png;*.xls;*.xlsx;*.xls;*.txt;*.docx;*.zip;*.gif;*.rar;',//允许上传文件类型，格式';*.doc;*.pdf'
+        allowFileSize: 1000000,//允许上传文件大小(KB)
+        selectText: '选择文件',//选择文件按钮文案
+        multi: true,//是否允许多文件上传
+        multiNum: 1000,//多文件上传时允许的文件数
+        showNote: true,//是否展示文件上传说明
+        note: '提示：支持格式为doc、txt、xlsx、pdf、docx、zip等',//文件上传说明
+        showPreview: true,//是否显示文件预览
+        url: '/system/file/upload',//上传文件地址
+        fileName: 'file',//文件filename配置参数
+        formParam: {
+            fileLabel: $($(".fileLabel")[uploadNum]).val()
+        },//文件filename以外的配置参数，格式：{key1:value1,key2:value2}
+        timeout: 1800000,//请求超时时间
+        okCode: 200,
+        successFunc: function (res) {
+            var res1 = eval(res);
+            var success = res1.success[uploadNum];
+            var success1 = jQuery.parseJSON(success);
+            var path = success1.path;
+            var name1 = success1.fileName;
+            var fileLabel = $($(".fileLabel")[uploadNum]).val();
+            var index = path.lastIndexOf(".");
+            var suffix = path.substr(index + 1);
+            var fileFullName = name1 + "." + suffix;
+            if (uploadNum === $(".easy_upload_queue_item").length - 1) {
+                uploadNum = 0;
+                setTimeout(function () {
+                    parent.layer.closeAll(), parent.layer.msg('上传成功', {icon: 1})
+                }, 1000)
+            }
+            uploadNum++;
+            $.ajax({
+                url: "/system/hkFile/addHkFile",
+                data: {
+                    billId: sessionStorage.getItem("billId"),
+                    fileFullName: fileFullName,
+                    filePath: path,
+                    code: sessionStorage.getItem("code"),
+                    str2: sessionStorage.getItem("sysType")
+                },
+                type: "POST",
+                dataType: "json",
+                cache: false,//false是不缓存，true为缓存
+                async: false,//true为异步，false为同步
+                success: function (data) {
+                }
+            });
+        },//上传成功回调函数
+        errorFunc: function (res) {
+        },//上传失败回调函数
+        deleteFunc: function (res) {
+
+        }//删除文件回调函数
+    });
+
+
+    //标签查询
+    $(function () {
+        selectId = (Math.random() * 10000000).toString(16).substr(0, 3) + (new Date()).getTime() + Math.random().toString().substr(2, 5);
+        //var SelectHtml = '<select  class="fileLabel"  onfocus="selectLabel(this)" id="a'+selectId+'" name="fileLabel" style="width:100px;"></select>';
+        $.ajax({
+            url: "/system/fileLabel/list",
+            type: "post",
+            data: {},
+            dataType: "json",
+            success: function (data) {
+                $.each(data.rows, function (i, n) {
+                    LabelHtml += "<option  class='' value='" + n.id + "'>" + n.name + "</option>";
+                })
+            }
+        });
+        LabelHtml = "";
+    });
+
+    /* 图片回显 */
+    function lookImg(imgstr) {
+        layer.open({
+            type: 1,
+            title: '图片查看',
+            shadeClose: true,
+            shade: [0.8, '#393D49'],
+            maxmin: true, //开启最大化最小化按钮
+            area: ['50%', '80%'],
+            content: $("#lookImgDiv")
+        });
+        $("#showImg").attr("src", imgstr);
+    }
+
+</script>
+</body>
+</html>

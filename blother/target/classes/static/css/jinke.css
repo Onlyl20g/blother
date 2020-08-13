@@ -1,0 +1,5 @@
+.profile-container-mt {
+    position: relative;
+    z-index: 5;
+    margin-top: -500px !important;
+}

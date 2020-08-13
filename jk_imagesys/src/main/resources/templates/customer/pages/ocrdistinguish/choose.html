@@ -1,0 +1,55 @@
+<div class="mdui-container-fluid " id="choose">
+    <div class="mdui-col-xs-12" style="margin-top: 30px;">
+        <br>
+        <center><h1>OCR识别</h1></center>
+        <center><h4>请选择要识别的文件类型：</h4></center>
+        <br>
+        <div style="text-align: center;width: 100%;">
+            <label class="mdui-radio" style="margin-right: 50px;">
+                <input type="radio" name="group1" checked value="invoice"/>
+                <i class="mdui-radio-icon"></i>
+                发票识别
+            </label>
+            <label class="mdui-radio" style="margin-right: 50px;">
+                <input type="radio" name="group1" value="businessLicense"/>
+                <i class="mdui-radio-icon"></i>
+                营业执照识别
+            </label>
+            <label class="mdui-radio" style="margin-right: 50px;">
+                <input type="radio" name="group1" value="excel"/>
+                <i class="mdui-radio-icon"></i>
+                表单图片识别
+            </label>
+            <label class="mdui-radio">
+                <input type="radio" name="group1" value="word"/>
+                <i class="mdui-radio-icon"></i>
+                文字图片识别
+            </label>
+        </div>
+        <div class="mdui-row-xs-1" style="padding-top: 30px;">
+            <div class="mdui-col-xs-4 mdui-col-offset-xs-4">
+                <button class="mdui-btn mdui-btn-block mdui-color-blue mdui-ripple" onclick="next()">下一步</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="display: none;margin: 20px;" id="ocr_div" class="mdui-container-fluid ">
+    <iframe id="ocriframe" width="100%" height="500" style="border: none;"/>
+</div>
+
+<script type="text/javascript">
+    function next() {
+        sessionStorage.setItem("businessType", $("input[name='group1']:checked").val());
+        $("#choose").hide();
+        if ($("input[name='group1']:checked").val() == "invoice" || $("input[name='group1']:checked").val() == "businessLicense") {
+            $('#ocriframe').attr('src', 'customer/pages/ocrinvoice');
+        } else {
+            $('#ocriframe').attr('src', 'customer/pages/ocrdistinguishother');
+        }
+        $("#ocr_div").css("display", "block")
+    }
+
+    var ifm = document.getElementById("ocriframe");
+    ifm.height = document.documentElement.clientHeight;
+</script>

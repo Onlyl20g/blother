@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinke.project.customer.mapper.WithdrawMapper">
+
+    <resultMap type="Withdraw" id="WithdrawResult">
+        <result property="id" column="id"/>
+        <result property="billId" column="bill_id"/>
+        <result property="creditBillId" column="credit_bill_id"/>
+        <result property="amount" column="amount"/>
+        <result property="period" column="period"/>
+        <result property="sellerCorprName" column="seller_corpr_name"/>
+        <result property="buyerCorprName" column="buyer_corpr_name"/>
+        <result property="accountNumber" column="account_number"/>
+        <result property="accountBank" column="account_bank"/>
+        <result property="accountName" column="account_name"/>
+        <result property="repaymentNumber" column="repayment_number"/>
+        <result property="repaymentBank" column="repayment_bank"/>
+        <result property="repaymentName" column="repayment_name"/>
+        <result property="withdrawAppPath" column="withdraw_app_path"/>
+        <result property="status" column="status"/>
+        <result property="additionFilePath" column="addition_file_path"/>
+        <result property="str1" column="str1"/>
+        <result property="str2" column="str2"/>
+        <result property="str3" column="str3"/>
+        <result property="str4" column="str4"/>
+        <result property="str5" column="str5"/>
+    </resultMap>
+
+    <sql id="selectWithdrawVo">
+        select id, bill_id, credit_bill_id, amount, period, seller_corpr_name, buyer_corpr_name, account_number, account_bank, account_name, repayment_number, repayment_bank, repayment_name, withdraw_app_path, status, addition_file_path, str1, str2, str3, str4, str5 from sys_withdraw
+    </sql>
+
+    <select id="selectWithdrawList" parameterType="Withdraw" resultMap="WithdrawResult">
+        <include refid="selectWithdrawVo"/>
+        <where>
+            status <![CDATA[!= ]]> "deleted"
+            <if test="id != null ">and id = #{id}</if>
+            <if test="billId != null  and billId != '' ">and bill_id = #{billId}</if>
+            <if test="creditBillId != null  and creditBillId != '' ">and credit_bill_id = #{creditBillId}</if>
+            <if test="amount != null ">and amount = #{amount}</if>
+            <if test="period != null ">and period = #{period}</if>
+            <if test="sellerCorprName != null  and sellerCorprName != '' ">and seller_corpr_name = #{sellerCorprName}
+            </if>
+            <if test="buyerCorprName != null  and buyerCorprName != '' ">and buyer_corpr_name = #{buyerCorprName}</if>
+            <if test="accountNumber != null  and accountNumber != '' ">and account_number = #{accountNumber}</if>
+            <if test="accountBank != null  and accountBank != '' ">and account_bank = #{accountBank}</if>
+            <if test="accountName != null  and accountName != '' ">and account_name = #{accountName}</if>
+            <if test="repaymentNumber != null  and repaymentNumber != '' ">and repayment_number = #{repaymentNumber}
+            </if>
+            <if test="repaymentBank != null  and repaymentBank != '' ">and repayment_bank = #{repaymentBank}</if>
+            <if test="repaymentName != null  and repaymentName != '' ">and repayment_name = #{repaymentName}</if>
+            <if test="withdrawAppPath != null  and withdrawAppPath != '' ">and withdraw_app_path = #{withdrawAppPath}
+            </if>
+            <if test="status != null  and status != '' ">and status = #{status}</if>
+            <if test="additionFilePath != null  and additionFilePath != '' ">and addition_file_path =
+                #{additionFilePath}
+            </if>
+            <if test="str1 != null  and str1 != '' ">and str1 = #{str1}</if>
+            <if test="str2 != null  and str2 != '' ">and str2 = #{str2}</if>
+            <if test="str3 != null  and str3 != '' ">and str3 = #{str3}</if>
+            <if test="str4 != null  and str4 != '' ">and str4 = #{str4}</if>
+            <if test="str5 != null  and str5 != '' ">and str5 = #{str5}</if>
+        </where>
+    </select>
+
+    <select id="selectWithdrawById" parameterType="Long" resultMap="WithdrawResult">
+        <include refid="selectWithdrawVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="findWithdrawList" parameterType="Withdraw" resultMap="WithdrawResult">
+        select
+        dr.id, dr.bill_id, dr.credit_bill_id, dr.amount, dr.period, dr.seller_corpr_name, dr.buyer_corpr_name,
+        dr.account_number, dr.account_bank, dr.account_name, dr.repayment_number, dr.repayment_bank,
+        dr.repayment_name, dr.withdraw_app_path, dr.status, dr.addition_file_path
+        from	sys_credit cre,sys_withdraw dr
+        where
+            cre.bill_id = dr.credit_bill_id
+            and cre.supplier_bill_id= #{billId}
+            and dr.`status` = "audited"
+        group by dr.id
+    </select>
+
+    <insert id="insertWithdraw" parameterType="Withdraw" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_withdraw
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="billId != null  and billId != ''  ">bill_id,</if>
+            <if test="creditBillId != null  and creditBillId != ''  ">credit_bill_id,</if>
+            <if test="amount != null  ">amount,</if>
+            <if test="period != null  ">period,</if>
+            <if test="sellerCorprName != null  and sellerCorprName != ''  ">seller_corpr_name,</if>
+            <if test="buyerCorprName != null  and buyerCorprName != ''  ">buyer_corpr_name,</if>
+            <if test="accountNumber != null  and accountNumber != ''  ">account_number,</if>
+            <if test="accountBank != null  and accountBank != ''  ">account_bank,</if>
+            <if test="accountName != null  and accountName != ''  ">account_name,</if>
+            <if test="repaymentNumber != null  and repaymentNumber != ''  ">repayment_number,</if>
+            <if test="repaymentBank != null  and repaymentBank != ''  ">repayment_bank,</if>
+            <if test="repaymentName != null  and repaymentName != ''  ">repayment_name,</if>
+            <if test="withdrawAppPath != null  and withdrawAppPath != ''  ">withdraw_app_path,</if>
+            <if test="status != null  and status != ''  ">status,</if>
+            <if test="additionFilePath != null  and additionFilePath != ''  ">addition_file_path,</if>
+            <if test="str1 != null  and str1 != ''  ">str1,</if>
+            <if test="str2 != null  and str2 != ''  ">str2,</if>
+            <if test="str3 != null  and str3 != ''  ">str3,</if>
+            <if test="str4 != null  and str4 != ''  ">str4,</if>
+            <if test="str5 != null  and str5 != ''  ">str5,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="billId != null  and billId != ''  ">#{billId},</if>
+            <if test="creditBillId != null  and creditBillId != ''  ">#{creditBillId},</if>
+            <if test="amount != null  ">#{amount},</if>
+            <if test="period != null  ">#{period},</if>
+            <if test="sellerCorprName != null  and sellerCorprName != ''  ">#{sellerCorprName},</if>
+            <if test="buyerCorprName != null  and buyerCorprName != ''  ">#{buyerCorprName},</if>
+            <if test="accountNumber != null  and accountNumber != ''  ">#{accountNumber},</if>
+            <if test="accountBank != null  and accountBank != ''  ">#{accountBank},</if>
+            <if test="accountName != null  and accountName != ''  ">#{accountName},</if>
+            <if test="repaymentNumber != null  and repaymentNumber != ''  ">#{repaymentNumber},</if>
+            <if test="repaymentBank != null  and repaymentBank != ''  ">#{repaymentBank},</if>
+            <if test="repaymentName != null  and repaymentName != ''  ">#{repaymentName},</if>
+            <if test="withdrawAppPath != null  and withdrawAppPath != ''  ">#{withdrawAppPath},</if>
+            <if test="status != null  and status != ''  ">#{status},</if>
+            <if test="additionFilePath != null  and additionFilePath != ''  ">#{additionFilePath},</if>
+            <if test="str1 != null  and str1 != ''  ">#{str1},</if>
+            <if test="str2 != null  and str2 != ''  ">#{str2},</if>
+            <if test="str3 != null  and str3 != ''  ">#{str3},</if>
+            <if test="str4 != null  and str4 != ''  ">#{str4},</if>
+            <if test="str5 != null  and str5 != ''  ">#{str5},</if>
+        </trim>
+    </insert>
+
+    <update id="updateWithdraw" parameterType="Withdraw">
+        update sys_withdraw
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="billId != null  and billId != ''  ">bill_id = #{billId},</if>
+            <if test="creditBillId != null  and creditBillId != ''  ">credit_bill_id = #{creditBillId},</if>
+            <if test="amount != null  ">amount = #{amount},</if>
+            <if test="period != null  ">period = #{period},</if>
+            <if test="sellerCorprName != null  and sellerCorprName != ''  ">seller_corpr_name = #{sellerCorprName},</if>
+            <if test="buyerCorprName != null  and buyerCorprName != ''  ">buyer_corpr_name = #{buyerCorprName},</if>
+            <if test="accountNumber != null  and accountNumber != ''  ">account_number = #{accountNumber},</if>
+            <if test="accountBank != null  and accountBank != ''  ">account_bank = #{accountBank},</if>
+            <if test="accountName != null  and accountName != ''  ">account_name = #{accountName},</if>
+            <if test="repaymentNumber != null  and repaymentNumber != ''  ">repayment_number = #{repaymentNumber},</if>
+            <if test="repaymentBank != null  and repaymentBank != ''  ">repayment_bank = #{repaymentBank},</if>
+            <if test="repaymentName != null  and repaymentName != ''  ">repayment_name = #{repaymentName},</if>
+            <if test="withdrawAppPath != null  and withdrawAppPath != ''  ">withdraw_app_path = #{withdrawAppPath},</if>
+            <if test="status != null  and status != ''  ">status = #{status},</if>
+            <if test="additionFilePath != null  and additionFilePath != ''  ">addition_file_path =
+                #{additionFilePath},
+            </if>
+            <if test="str1 != null  and str1 != ''  ">str1 = #{str1},</if>
+            <if test="str2 != null  and str2 != ''  ">str2 = #{str2},</if>
+            <if test="str3 != null  and str3 != ''  ">str3 = #{str3},</if>
+            <if test="str4 != null  and str4 != ''  ">str4 = #{str4},</if>
+            <if test="str5 != null  and str5 != ''  ">str5 = #{str5},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWithdrawById" parameterType="Long">
+        delete from sys_withdraw where id = #{id}
+    </delete>
+
+    <delete id="deleteWithdrawByIds" parameterType="String">
+        delete from sys_withdraw where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

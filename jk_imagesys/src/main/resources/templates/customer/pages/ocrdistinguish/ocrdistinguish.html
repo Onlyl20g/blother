@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="../../ocr/Style/ds.demo.css">
+    <link rel="stylesheet" href="../../dependency/mdui/css/mdui.min.css"/>
+    <link rel="stylesheet" href="../../dependency/bootstrap4/css/bootstrap.min.css">
+    <script src="../../dependency/js/jquery-2.1.1.min.js"></script>
+    <script src="../../dependency/mdui/js/mdui.min.js"></script>
+    <script src="../../dependency/bootstrap4/js/bootstrap.min.js"></script>
+    <script src="../../ocr/Resources/dynamsoft.webtwain.config.js"></script>
+    <script src="../../ocr/Resources/dynamsoft.webtwain.initiate.js"></script>
+    <script src="../../ocr/Resources/addon/dynamsoft.webtwain.addon.pdf.js"></script>
+    <script src="../../ocr/OCRResources/dynamsoft.webtwain.addon.ocr.js"></script>
+    <script src="../../ajax/libs/layer/layer.min.js"></script>
+    <script src="../../ajax/libs/layui/layui.js"></script>
+    <style>
+        /*#dwtcontrolContainer>div>div{
+            height: 466px!important;
+        }
+
+        .dynamsoft-dwt-container-box>div>div, canvas {
+            height: 460px!important;
+        }*/
+        .btn_style {
+            padding: .375rem .75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #ced4da;
+            border-radius: .25rem;
+        }
+    </style>
+</head>
+
+<body>
+<div style="margin: 40px 0;width: 100%;text-align: center;">
+    <button class="mdui-btn mdui-color-blue-400" onclick="LoadImages();" style="margin-left: 30px;"><i
+            class="mdui-icon material-icons">add</i>上传本地文件
+    </button>
+    <button class="mdui-btn mdui-color-blue-400" onclick="loadLineImages();" style="margin-left: 30px;"><i
+            class="mdui-icon material-icons">add</i>选择在线文件
+    </button>
+    <button class="mdui-btn mdui-color-blue-500" onclick="DoOCR();" style="margin-left: 30px;">OCR扫描</button>
+    <button class="mdui-btn mdui-color-blue-600" onclick="RemoveSelected();" style="margin-left: 30px;">清空</button>
+    <button class="mdui-btn mdui-color-blue-600" onclick="save();" style="margin-left: 30px;">保存</button>
+</div>
+<div id="main">
+    <div class="container">
+        <div class="ct-lt clearfix">
+            <div id="dwtcontrolContainer"></div>
+        </div>
+        <div class="ct-rt">
+            <div class="content clearfix">
+                <ul class="lt" style="line-height: 36px;display: none;">
+                    <li>
+                        <input type="button" value="Scan" onclick="AcquireImage();" class="btn"/>
+                    </li>
+                    <li style="display: none;">Language:</li>
+                    <li>Output Format:</li>
+                    <li>
+                        <input type="button" value="Delete" onclick="RemoveSelected();" class="mt15 btn"/>
+                    </li>
+                </ul>
+                <ul class="rt" style="line-height: 36px;display: none;">
+                    <li>
+                        <input type="button" value="Open a Local Image" onclick="LoadImages();" class="btn w100p"/>
+                    </li>
+                    <li style="display: none;">
+                        <select size="1" id="ddlLanguages" class="w100p">
+                        </select>
+                    </li>
+                    <li>
+                        <select size="1" id="ddlOCROutputFormat" class="w100p">
+                        </select>
+                    </li>
+                    <li>
+                        <input type="button" value="OCR" onclick="DoOCR();" class="mt15 btn bgBlue w100p"/>
+                    </li>
+                </ul>
+                <div id="DWTcontainerBtm">
+                    <p>解析结果:</p>
+                    <div id="divNoteMessage" ondblclick="this.innerHTML=''"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div id="file_data" style="display: none;">
+    <!--<div class="mdui-col-xs-4" style="text-align: right;">条件查询</div>-->
+    <!--<div class="mdui-col-xs-4"><input type="text" ></div>-->
+    <!--<div class="mdui-col-xs-4"><input type="button" value="搜索"></div>-->
+    <div style="position: fixed;top: 52px;height: 60px;line-height: 60px;margin-left: 0px; background-color: #fafafa;z-index: 10;width: 700px;">
+        <form style="text-align: right;">
+            <div class="form-group" style="vertical-align: middle;">
+                <input type="text" class="btn_style" id="condition" placeholder="搜索文件名">
+                <button id="fat-btn" class="btn" type="button" onclick="filterFile();" style="margin:0px 10px;">
+                    搜索
+                </button>
+            </div>
+        </form>
+
+    </div>
+    <div style="height: 60px;"></div>
+    <div id="tag" style="overflow:scroll; height: 240px;">
+    </div>
+</div>
+
+<script src="../../ocr/ocrbasicclientside.js"></script>
+<script>
+    $.ajax({
+        url: "/system/user/isOnline",
+        type: "POST",
+        data: '',
+        async: false,
+        dataType: "json",
+        success: function (data) {
+            console.log(data)
+            /*if (data.code ==0) {
+
+            }*/
+        },
+        error: function (data) {
+            window.top.location.href = "logout";
+        }
+    })
+
+    var files = {
+        data: [],
+        newData: []
+    }
+
+    function loadLineImages() {
+        loadImgList();
+        layer.open({
+            type: 1,
+            scrollbar: false,
+            title: '文件信息',
+            area: ["700px", "400px"],
+            offset: '10px',
+            btn: ['确认', '取消'],
+//            offset: [document.documentElement.clientHeight, document.documentElement.clientWidth],
+            content: $('#file_data'),
+            yes: function (index, layero) {
+                var checkbox = $('input[type=checkbox]:checked');
+//               console.log(checkbox.val())
+//                selectOcrImg(id);
+                if (checkbox.val() == null) {
+                    showResult("请选择文件...", '关闭', 1);
+                } else {
+                    selectOcrImg(checkbox.val());
+                }
+            }
+        })
+    }
+
+    function loadImgList() {
+        $("#tag").empty();
+        $.ajax({
+            url: "/system/file/listImg",
+            type: "POST",
+            data: {},
+            async: false,
+            dataType: "json",
+            contentType: "application/json",
+            success: function (data) {
+                files.data = data.rows;
+                files.newData = data.rows;
+                addContent(data.rows);
+            },
+            error: function (data) {
+            }
+        });
+    }
+
+    function filterFile() {
+        $("#tag").html("");
+        var condition = $("#condition").val();
+        var newDate = [];
+        for (var file of files.data) {
+            var b = file.name.includes(condition);
+            if (b) {
+                newDate.push(file);
+            }
+        }
+        addContent(newDate);
+    }
+
+    function addContent(newDate) {
+        var code = "";
+        code += "<ul class=\"mdui-list\">";
+        var row = null;
+        var dataSize = newDate.length;
+        for (var i = 0; i < dataSize; i++) {
+            row = newDate[i];
+            code += "<li class=\"mdui-list-item mdui-ripple\" onclick='$(\"#" + row.id + "\").click();' ondblclick='selectOcrImg(" + row.id + ")' >";
+            code += "<div class=\"mdui-list-item-content mdui-col-xs-2\"><input name='ocrImg' style='position: relative;top: 0px;visibility: hidden;' type='checkbox' value='" + row.id + "' id='" + row.id + "' onclick='myToggle(event)'></div>";
+            code += "<div class=\"mdui-list-item-avatar\"><img width='56px'src=\"../../dependency/images/demo/ico/" + row.fileSuffix + ".png\" \"></div>";
+            code += "<div class=\"mdui-list-item-content mdui-col-xs-4 \">" + row.name + "</div>";
+            code += "<div class=\"mdui-list-item-content mdui-col-xs-2\">" + fileSizeFormatter(row.fileSize) + "</div>";
+            code += "<div class=\"mdui-list-item-content mdui-col-xs-2\" style='text-align:left;'>" + row.createTime + "</div>";
+            code += "</li>";
+        }
+        code += "</ul>";
+        $("#tag").append(code);
+    }
+
+    //传入KB值，返回格式化后的字符串
+    function fileSizeFormatter(fileSize) {
+        var str = "";
+        if (fileSize / 1024 >= 1) {
+            if (fileSize / 1024 / 1024 >= 1) {
+                str = fileSize / 1024 / 1024 + "";
+                if (str.length > 4) {
+                    return str.substring(0, 4) + "GB";
+                } else {
+                    return str;
+                }
+            } else {
+                str = fileSize / 1024 + "";
+                if (str.length > 4) {
+                    return str.substring(0, 4) + "MB";
+                } else {
+                    return str;
+                }
+            }
+        } else {
+            return fileSize + "KB";
+        }
+    }
+
+    //控制显示/隐藏
+    function myToggle(e) {
+        window.event ? window.event.cancelBubble = true : e.stopPropagation();
+        if ($(e.target).css('visibility') === 'hidden') {
+            $("input[name='ocrImg']").attr('checked', false);
+            $("input[name='ocrImg']").css("visibility", "hidden");
+            e.target.checked = true;
+            $(e.target).css('visibility', 'visible');//元素显示
+        } else {
+            $(e.target).css('visibility', 'hidden');//元素隐藏
+        }
+    }
+
+    function selectOcrImg(id) {
+        RemoveSelected();
+        sessionStorage.setItem("dataSource", "online");
+        $.ajax({
+            type: 'POST',
+            url: '/system/file/selectFileImg',
+            data: {"id": id},
+            dataType: 'JSON',
+            success: function (data) {
+                layer.closeAll();
+                LoadImageFromBase64Binary(data.baseDate, data.type, data.fileSize);
+                setTimeout(function () {
+                    DoOCR()
+                }, 1000);
+            }
+        })
+    }
+
+    function LoadImageFromBase64Binary(imagedata, type, fileSize) {
+        DWObject.SelectedImagesCount = 1;
+        DWObject.SetSelectedImageIndex(0, 0);
+        DWObject.GetSelectedImagesSize(type);
+        DWObject.LoadImageFromBase64Binary(imagedata, "5", function () {
+        }, function () {
+        });
+    }
+
+    var showResult = function (content, btn, closeBtn) {
+        layer.open({
+            title: '提示',
+            btn: btn,
+            closeBtn: closeBtn,
+            content: content
+        });
+    };
+
+    function save() {
+        var businessType = sessionStorage.getItem("businessType");
+        var dataSource = sessionStorage.getItem("dataSource");
+//        var file = sessionStorage.getItem("file");
+        var result = $("#divNoteMessage p").text().trim();
+        var formData = new FormData();
+//        formData.append("file", $("#ocr_data")[0].files[0]);
+        formData.append("businessType", businessType);
+        formData.append("dataSource", dataSource);
+        formData.append("result", result);
+        if (result == null || result == "" || result == "<br>") {
+            showResult("解析内容不能为空", '关闭', 1);
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: "/ocr/save",
+            cache: false,
+            data: formData,
+            dataType: "json",
+            mimeType: "multipart/form-data",
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                if (data.code == 200) {
+                    RemoveSelected();
+                    showResult("保存成功", '关闭', 1);
+                }
+            }
+        })
+    }
+
+</script>
+</body>
+
+</html>

@@ -1,0 +1,180 @@
+<center><h1>申请查看详细文件</h1></center>
+<!--<div class="mdui-row">
+    <div class="mdui-col-xs-6 mdui-col-offset-xs-2">
+        <div id="easyContainer" style="margin: 0 auto;">
+
+        </div>
+    </div>
+    <div id="folderDiv" style="display: none;">
+        <div class="zTreeDemoBackground">
+            <ul id="tree" class="ztree"></ul>
+        </div>
+    </div>
+</div>-->
+<div>
+    <div class="container">
+        <form role="form">
+            <div class="row">
+                <div class="col-md-2" style="text-align: right;">
+                    <label style="height: 40px;line-height: 40px;">过滤条件</label>
+                </div>
+                <div class="col-md-9">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="filter_id" placeholder="业务ID关键字查询">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2" style="text-align: right;">
+                    <label style="height: 40px;line-height: 40px;">业务ID</label>
+                </div>
+                <div class="col-md-9">
+                    <div class="form-group">
+                        <select id="billId" class="form-control">
+
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                </div>
+                <div class="col-md-9" style="text-align: right;">
+                    <div class="form-group">
+                        <button type="button" onclick="findHtml();" class="btn btn-primary" style="padding: 4px 18px;">
+                            确认
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!--文件分享-->
+<div id="show-link" style="display: none;overflow: hidden;">
+    <div class="row" style="margin-top:25px;">
+        <div class="col-md-1" style="text-align: right;">
+            <label style="height: 40px;line-height: 40px;">链接</label>
+        </div>
+        <div class="col-md-9" style="text-align: right;">
+            <div class="form-group">
+                <input id="fileLink" readonly class="form-control" type="text">
+            </div>
+        </div>
+        <div class="col-md-1" style="text-align: right;">
+            <!--<button type="button" onclick="copyText();" class="layui-btn layui-btn-normal">copy</button>-->
+            <!--<input type="button" onclick="copyText();" style="height: 40px;line-height: 40px;" value="copy">-->
+            <button type="button" onclick="copyText();" class="btn btn-info"
+                    style="font-size: 100%; padding: 7px 20px;">复制
+            </button>
+        </div>
+    </div>
+</div>
+<a href="#" id="link" style="display: none;" target="_blank">111</a>
+<head>
+    <script>
+
+
+        $(function () {
+            initBusinessId("");
+            $("#filter_id")[0].onkeyup = keyUpSearch;
+            $("#filter_id")[0].onchange = changeValue;
+        })
+
+        function keyUpSearch() {
+            initBusinessId(this.value);
+        }
+
+        function changeValue() {
+            initBusinessId(this.value);
+        }
+
+        function initBusinessId(billId) {
+            $.ajax({
+                url: "/system/hkFile/listBillId",
+                type: "post",
+                data: {"billId": billId},
+                dataType: "json",
+                cache: false,//false是不缓存，true为缓存
+                async: false,//true为异步，false为同步
+                success: function (data) {
+                    if (data.length > 0) {
+                        var html = "<option value=''></option>";
+                        for (var option of data) {
+                            if (option.subordinate == "credit") {
+                                html += "<option value=\"" + option.billId + "\">" + option.userName + "—授信申请-" + option.billId + "-" + option.creditTime + "</option>";
+                            } else {
+                                html += "<option value=\"" + option.billId + "\">" + option.userName + "-提款申请-" + option.billId + "-" + option.creditTime + "</option>";
+                            }
+//                            html += "<option value=\"" + option.id + "\">"+ option.billId + option.billId + "</option>";
+//                            html += `<option value="${option.id}">${option.billId}</option>`;
+                        }
+                        $("#billId").html(html);
+                    } else {
+                        $("#billId").html("");
+                    }
+                }
+            })
+        }
+
+        function findHtml() {
+            var id = $("#billId").val();
+            if (id == null || id == "") {
+
+//                alert("请选择要查看得业务ID...");
+                layer.msg('请选择要查看得业务ID...');
+                return;
+            }
+            $.ajax({
+//                url: "/system/hkFile/findHKById",
+                url: "/system/hkFile/shareFileUrl",
+                type: "post",
+                data: {"billId": id, "sysType": "factoring"},
+                dataType: "json",
+                cache: false,//false是不缓存，true为缓存
+                async: false,//true为异步，false为同步
+                success: function (data) {
+//                    var code = data.hkFile.subordinate;
+//                    var interface = data.hkFile.billId;
+                    var url = data.url;
+//                    interface = url + "/customer/pages/hkwithdraw?s=" + interface;
+                    var interface = url;
+                    /* if ("credit" == code) {
+                     interface = url + "/customer/pages/hkcredit?billId=" + interface;
+                     } else {
+                     interface = url + "/customer/pages/hkwithdraw?billId=" + interface;
+                     }*/
+                    $("#link")[0].href = interface;
+                    $("#fileLink").val(interface);
+                    productHtml();
+                }
+            })
+        }
+
+        function productHtml() {
+            layer.open({
+                type: 1,
+                title: ' ',
+                shadeClose: true,
+                shade: [0.8, '#393D49'],
+                maxmin: true, //开启最大化最小化按钮
+                area: ['60%', '30%'],
+                content: $("#show-link"),
+                btn: ['查看', '取消'],
+                yes: function (index, layero) {
+                    /*if ($("#fileLink").val() == null || $("#fileLink").val() == "") {
+                     alert("请")
+                     }*/
+                    $("#link")[0].click();
+                }
+            });
+        }
+
+        function copyText() {
+            $("#fileLink")[0].select();
+            document.execCommand("copy");
+            layer.msg("复制成功...");
+        }
+    </script>
+</head>

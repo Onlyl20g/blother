@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinke.project.customer.mapper.RepayRecordMapper">
+
+    <resultMap type="RepayRecord" id="RepayRecordResult">
+        <result property="id" column="id"/>
+        <result property="cashApplyId" column="cash_apply_id"/>
+        <result property="amount" column="amount"/>
+        <result property="pendingAmount" column="pending_amount"/>
+        <result property="loanRecord" column="loan_record"/>
+        <result property="repayDate" column="repay_date"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectRepayRecordVo">
+        select id, cash_apply_id, amount, pending_amount, loan_record, repay_date, remark from sys_repay_record
+    </sql>
+
+    <select id="selectRepayRecordList" parameterType="RepayRecord" resultMap="RepayRecordResult">
+        <include refid="selectRepayRecordVo"/>
+        <where>
+            cash_apply_id = #{cashApplyId}
+            <if test="id != null ">and id = #{id}
+            </if>
+            <!--<if test="cashApplyId != null  and cashApplyId != '' ">and cash_apply_id = #{cashApplyId}
+            </if>-->
+            <if test="amount != null ">and amount = #{amount}
+            </if>
+            <if test="loanRecord != null  and loanRecord != '' ">and loan_record = #{loanRecord}
+            </if>
+            <if test="pendingAmount != null ">and pending_amount = #{pendingAmount}
+            </if>
+            <if test="repayDate != null ">and repay_date = #{repayDate}
+            </if>
+            <if test="remark != null  and remark != '' ">and remark = #{remark}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectRepayRecordById" parameterType="Long" resultMap="RepayRecordResult">
+        <include refid="selectRepayRecordVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertRepayRecord" parameterType="RepayRecord" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_repay_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cashApplyId != null  and cashApplyId != ''  ">cash_apply_id,
+            </if>
+            <if test="amount != null  ">amount,
+            </if>
+            <if test="pendingAmount != null  ">pending_amount,
+            </if>
+            <if test="loanRecord != null  and loanRecord != ''  ">loan_record,
+            </if>
+            <if test="repayDate != null  ">repay_date,
+            </if>
+            <if test="remark != null  and remark != ''  ">remark,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="cashApplyId != null  and cashApplyId != ''  ">#{cashApplyId},
+            </if>
+            <if test="amount != null  ">#{amount},
+            </if>
+            <if test="pendingAmount != null  ">#{pendingAmount},
+            </if>
+            <if test="loanRecord != null  and loanRecord != ''  ">#{loanRecord},
+            </if>
+            <if test="repayDate != null  ">#{repayDate},
+            </if>
+            <if test="remark != null  and remark != ''  ">#{remark},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateRepayRecord" parameterType="RepayRecord">
+        update sys_repay_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="cashApplyId != null  and cashApplyId != ''  ">cash_apply_id = #{cashApplyId},
+            </if>
+            <if test="amount != null  ">amount = #{amount},
+            </if>
+            <if test="pendingAmount != null  ">pending_amount = #{pendingAmount},
+            </if>
+            <if test="loanRecord != null  and loanRecord != ''  ">loan_record = #{loanRecord},
+            </if>
+            <if test="repayDate != null  ">repay_date = #{repayDate},
+            </if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRepayRecordById" parameterType="Long">
+        delete from sys_repay_record where id = #{id}
+    </delete>
+
+    <delete id="deleteRepayRecordByIds" parameterType="String">
+        delete from sys_repay_record where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteRepayRecordByCashApplyId" parameterType="String">
+        delete from sys_repay_record where cash_apply_id = #{cashApplyId}
+    </delete>
+</mapper>

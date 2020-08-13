@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinke.project.system.fileAttachType.mapper.FileAttachTypeMapper">
+
+    <resultMap type="FileAttachType" id="FileAttachTypeResult">
+        <result property="id" column="id"/>
+        <result property="sysType" column="sys_type"/>
+        <result property="code" column="code"/>
+        <result property="infoName" column="info_name"/>
+    </resultMap>
+
+    <sql id="selectFileAttachTypeVo">
+        select id, sys_type, code, info_name from sys_file_attach_type
+    </sql>
+
+    <select id="selectFileAttachTypeList" parameterType="FileAttachType" resultMap="FileAttachTypeResult">
+        <include refid="selectFileAttachTypeVo"/>
+        <where>
+            <if test="id != null ">and id = #{id}</if>
+            <if test="sysType != null  and sysType != '' ">and sys_type = #{sysType}</if>
+            <if test="code != null  and code != '' ">and code = #{code}</if>
+            <if test="infoName != null  and infoName != '' ">and info_name = #{infoName}</if>
+        </where>
+    </select>
+
+    <select id="selectLikeFileAttachTypeList" parameterType="FileAttachType" resultMap="FileAttachTypeResult">
+        <include refid="selectFileAttachTypeVo"/>
+        <where>
+            <if test="id != null ">and id = #{id}</if>
+            <if test="sysType != null  and sysType != '' ">and sys_type like '%${sysType}%'</if>
+            <if test="code != null  and code != '' ">and code like '%${code}%'</if>
+            <if test="infoName != null  and infoName != '' ">and info_name like '%${infoName}%'</if>
+        </where>
+    </select>
+
+    <select id="selectFileAttachTypeById" parameterType="Long" resultMap="FileAttachTypeResult">
+        <include refid="selectFileAttachTypeVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertFileAttachType" parameterType="FileAttachType" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_file_attach_type
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sysType != null  and sysType != ''  ">sys_type,</if>
+            <if test="code != null  and code != ''  ">code,</if>
+            <if test="infoName != null  and infoName != ''  ">info_name,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sysType != null  and sysType != ''  ">#{sysType},</if>
+            <if test="code != null  and code != ''  ">#{code},</if>
+            <if test="infoName != null  and infoName != ''  ">#{infoName},</if>
+        </trim>
+    </insert>
+
+    <update id="updateFileAttachType" parameterType="FileAttachType">
+        update sys_file_attach_type
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="sysType != null  and sysType != ''  ">sys_type = #{sysType},</if>
+            <if test="code != null  and code != ''  ">code = #{code},</if>
+            <if test="infoName != null  and infoName != ''  ">info_name = #{infoName},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFileAttachTypeById" parameterType="Long">
+        delete from sys_file_attach_type where id = #{id}
+    </delete>
+
+    <delete id="deleteFileAttachTypeByIds" parameterType="String">
+        delete from sys_file_attach_type where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

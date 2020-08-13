@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinke.project.system.buyer.mapper.BuyerMapper">
+
+    <resultMap type="Buyer" id="BuyerResult">
+        <result property="buyerId" column="buyer_id"/>
+        <result property="buyerName" column="buyer_name"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <sql id="selectBuyerVo">
+        select buyer_id, buyer_name, create_by, create_time from sys_buyer
+    </sql>
+
+    <select id="selectBuyerList" parameterType="Buyer" resultMap="BuyerResult">
+        <include refid="selectBuyerVo"/>
+        <where>
+            <if test="buyerId != null  and buyerId != '' ">and buyer_id = #{buyerId}
+            </if>
+            <if test="buyerName != null  and buyerName != '' ">and buyer_name = #{buyerName}
+            </if>
+            <if test="createBy != null  and createBy != '' ">and create_by = #{createBy}
+            </if>
+            <if test="createTime != null ">and create_time = #{createTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectBuyerById" parameterType="String" resultMap="BuyerResult">
+        <include refid="selectBuyerVo"/>
+        where buyer_id = #{buyerId}
+    </select>
+
+    <select id="selectBuyerTime" parameterType="String" resultMap="BuyerResult">
+        <include refid="selectBuyerVo"/>
+        ORDER BY create_time DESC
+        limit 1
+    </select>
+
+    <insert id="insertBuyer" parameterType="Buyer">
+        insert into sys_buyer
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="buyerId != null  and buyerId != ''  ">buyer_id,
+            </if>
+            <if test="buyerName != null  and buyerName != ''  ">buyer_name,
+            </if>
+            <if test="createBy != null  and createBy != ''  ">create_by,
+            </if>
+            <if test="createTime != null  ">create_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="buyerId != null  and buyerId != ''  ">#{buyerId},
+            </if>
+            <if test="buyerName != null  and buyerName != ''  ">#{buyerName},
+            </if>
+            <if test="createBy != null  and createBy != ''  ">#{createBy},
+            </if>
+            <if test="createTime != null  ">#{createTime},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateBuyer" parameterType="Buyer">
+        update sys_buyer
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="buyerName != null  and buyerName != ''  ">buyer_name = #{buyerName},
+            </if>
+            <if test="createBy != null  and createBy != ''  ">create_by = #{createBy},
+            </if>
+            <if test="createTime != null  ">create_time = #{createTime},
+            </if>
+        </trim>
+        where buyer_id = #{buyerId}
+    </update>
+
+    <delete id="deleteBuyerById" parameterType="String">
+        delete from sys_buyer where buyer_id = #{buyerId}
+    </delete>
+
+    <delete id="deleteBuyerByIds" parameterType="String">
+        delete from sys_buyer where buyer_id in
+        <foreach item="buyerId" collection="array" open="(" separator="," close=")">
+            #{buyerId}
+        </foreach>
+    </delete>
+
+</mapper>
